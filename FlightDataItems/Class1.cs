@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassLibrary
+namespace FlightDataItems
 {
-    public class CAT10
+    public class Class1
     {
-        
     }
 }

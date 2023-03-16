@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsterixDecoder", "AsterixDe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{20454078-271C-4D46-A8C4-9B40F7E47FFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightDataItems", "FlightDataItems\FlightDataItems.csproj", "{7E685445-12F8-4FBC-8D0B-115C7651AADC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{20454078-271C-4D46-A8C4-9B40F7E47FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20454078-271C-4D46-A8C4-9B40F7E47FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20454078-271C-4D46-A8C4-9B40F7E47FFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E685445-12F8-4FBC-8D0B-115C7651AADC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E685445-12F8-4FBC-8D0B-115C7651AADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E685445-12F8-4FBC-8D0B-115C7651AADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E685445-12F8-4FBC-8D0B-115C7651AADC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
