@@ -17,12 +17,5 @@ namespace AsterixDecoder
         {
             InitializeComponent();
         }
-
-        private void Menu_Load(object sender, EventArgs e)
-        {
-            CAT10 cAT10 = new CAT10();
-            string hex = "2f";
-            label1.Text = cAT10.HexToBinary(hex);
-        }
     }
 }
