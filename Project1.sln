@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightDataItems", "FlightDataItems\FlightDataItems.csproj", "{7E685445-12F8-4FBC-8D0B-115C7651AADC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{B8EDD2B7-284E-47CD-A93D-E3BDF9940F97}"
+	ProjectSection(ProjectDependencies) = postProject
+		{20454078-271C-4D46-A8C4-9B40F7E47FFC} = {20454078-271C-4D46-A8C4-9B40F7E47FFC}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +32,10 @@ Global
 		{7E685445-12F8-4FBC-8D0B-115C7651AADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E685445-12F8-4FBC-8D0B-115C7651AADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E685445-12F8-4FBC-8D0B-115C7651AADC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8EDD2B7-284E-47CD-A93D-E3BDF9940F97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8EDD2B7-284E-47CD-A93D-E3BDF9940F97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8EDD2B7-284E-47CD-A93D-E3BDF9940F97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8EDD2B7-284E-47CD-A93D-E3BDF9940F97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

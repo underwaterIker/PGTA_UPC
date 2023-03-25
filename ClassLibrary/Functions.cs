@@ -14,34 +14,36 @@ namespace ClassLibrary
         List<CAT21> listCAT21 = new List<CAT21>();
 
         // READ FILE
-        public void readFile(string path)
+        public string[] readFile(string path)
         {
-            byte[] file = File.ReadAllBytes(path);
+            byte[] file_byte = File.ReadAllBytes(path);
+            string[] file_string = file_byte.Select(x => Convert.ToString(x, 2).PadLeft(8, '0')).ToArray(); // maybe there is a FASTER way to do this
 
-            for (int i=0; i<= file.Length; i++)
+            for (int i=0; i < file_string.Length; )
             {
                 // CAT
-                int cat = file[i];
+                int cat = file_byte[i];
 
                 // LENGTH
-                byte[] length_Bytes = { file[i + 2], file[i + 1] }; // order changed because we have 'big endian' and the function is 'little endian'
+                byte[] length_Bytes = { file_byte[i + 2], file_byte[i + 1] }; // order changed because we have 'big endian' and the function is 'little endian'
                 int length = BitConverter.ToInt16(length_Bytes, 0);
 
                 // Save message in corresponding list
                 if (cat == 10)
                 {
-                    byte[] cat10data = file.Skip(i+3).Take(length).ToArray(); // maybe there is a better way to do this?
+                    string[] cat10data = file_string.Skip(i+3).Take(length-3).ToArray(); // maybe there is a better way to do this?
                     CAT10 data = new CAT10(cat10data);
                     listCAT10.Add(data);
                 }
                 if (cat == 21)
                 {
-                    byte[] cat21data = file.Skip(i + 3).Take(length).ToArray(); // maybe there is a better way to do this?
+                    string[] cat21data = file_string.Skip(i + 3).Take(length-3).ToArray(); // maybe there is a better way to do this?
                     CAT21 data = new CAT21(cat21data);
                     listCAT21.Add(data);
                 }
-                i = i + 3 + length;
-            }            
+                i = i + length;
+            }
+            return file_string;
         }
 
         // CONVERTER FUNCTIONS

@@ -8,9 +8,9 @@ namespace ClassLibrary
 {
     public class CAT10
     {
-        byte[] data;
+        string[] data;
 
-        public CAT10(byte[] message)
+        public CAT10(string[] message)
         {
             this.data = message;
 
