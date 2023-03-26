@@ -10,12 +10,12 @@ namespace ClassLibrary
 {
     public class Functions
     {
-        List<CAT10> listCAT10 = new List<CAT10>();
-        List<CAT21> listCAT21 = new List<CAT21>();
-
         // READ FILE
-        public string[] readFile(string path)
+        public static string[] readFile(string path)
         {
+            List<CAT10> listCAT10 = new List<CAT10>();
+            List<CAT21> listCAT21 = new List<CAT21>();
+
             byte[] file_byte = File.ReadAllBytes(path);
             string[] file_string = file_byte.Select(x => Convert.ToString(x, 2).PadLeft(8, '0')).ToArray(); // maybe there is a FASTER way to do this
 
@@ -46,6 +46,49 @@ namespace ClassLibrary
             return file_string;
         }
 
+        private static Dictionary<char, string> OnesComplement = new Dictionary<char, string> { { '0', "1" }, { '1', "0" } };
+        // A2 Complement function
+        public static string TwosComplement(string str)
+        {
+            int n = str.Length;
+
+            // Traverse the string to get
+            // first '1' from the last of string
+            int i;
+            for (i = n - 1; i >= 0; i--)
+            {
+                if (str[i] == '1')
+                {
+                    break;
+                }
+            }
+
+            // If there exists no '1' concat 1
+            // at the starting of string
+            if (i == -1)
+            {
+                return "1" + str;
+            }
+
+            // Continue traversal after the
+            // position of first '1'
+            for (int k = i - 1; k >= 0; k--)
+            {
+                // Just flip the values
+                if (str[k] == '1')
+                {
+                    str.Remove(k, k + 1 - k).Insert(k, "0");
+                }
+                else
+                {
+                    str.Remove(k, k + 1 - k).Insert(k, "1");
+                }
+            }
+
+            // return the modified string
+            return str;
+        }
+
         // CONVERTER FUNCTIONS
         public string HexToBinary(string hexadecimal)
         {
@@ -55,8 +98,7 @@ namespace ClassLibrary
 
         public int BinToNum(string bin)
         {
-            int number = Convert.ToInt32(bin, 2);
-            return number;
+            return Convert.ToInt32(bin, 2);
         }
 
         // READ FILE CONVERTING HEX TO BIN

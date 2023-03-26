@@ -19,18 +19,22 @@ namespace Testing
             // Here goes the function to be tested
             test_readFile();
 
+            /*
+            CAT10 cat10 = new CAT10();
+            cat10.MessageType("00000100");
+            Console.WriteLine(cat10.data.MessageType);
+            */
+
             time.Stop();
             Console.WriteLine(time.Elapsed);
             Console.ReadLine();
         }
 
-        static void test_readFile()
+        private static void test_readFile()
         {
-            Functions functions = new Functions();
-
             // Testing readFile function
             string path = @"D:\Proyectos\PGTA_UPC\Archivos AST\201002-lebl-080001_smr.ast";
-            string[] file = functions.readFile(path);
+            string[] file = Functions.readFile(path);
 
             Console.WriteLine(file[0]);
             Console.WriteLine(file[1]);

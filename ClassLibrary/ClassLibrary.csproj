@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="CAT10.cs" />
     <Compile Include="CAT21.cs" />
+    <Compile Include="Data.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
