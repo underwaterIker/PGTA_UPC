@@ -16,14 +16,20 @@ namespace Testing
             Stopwatch time = new Stopwatch();
             time.Start();
 
-            // Here goes the function to be tested
-            test_readFile();
+            /// Here goes the function to be tested
 
+            /// TEST OF READFILE() FUNCTION FROM FUNCTIONS CLASS
+            //test_readFile();
+
+            /// TEST OF MESSAGETYPE() FUNCTION DECODER FROM CAT10 CLASS
             /*
             CAT10 cat10 = new CAT10();
             cat10.MessageType("00000100");
             Console.WriteLine(cat10.data.MessageType);
             */
+
+            /// TEST OF TWOSCOMPLEMENT() FUNCTION FROM FUNCTIONS CLASS
+            //Console.WriteLine(Functions.TwosComplement2Int("1111101100110001")); //-1231
 
             time.Stop();
             Console.WriteLine(time.Elapsed);

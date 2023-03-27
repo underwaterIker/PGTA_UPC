@@ -46,85 +46,84 @@ namespace ClassLibrary
             return file_string;
         }
 
-        private static Dictionary<char, string> OnesComplement = new Dictionary<char, string> { { '0', "1" }, { '1', "0" } };
         // A2 Complement function
-        public static string TwosComplement(string str)
+        public static int TwosComplement2Int(string str)
         {
-            int n = str.Length;
-
-            // Traverse the string to get
-            // first '1' from the last of string
-            int i;
-            for (i = n - 1; i >= 0; i--)
+            if (str[0] == '1')
             {
-                if (str[i] == '1')
-                {
-                    break;
-                }
-            }
+                // Ones complement done with str.replace()
+                StringBuilder onesComplement = new StringBuilder(str);
+                onesComplement = onesComplement.Replace('0', '2');
+                onesComplement = onesComplement.Replace('1', '0');
+                onesComplement = onesComplement.Replace('2', '1');
 
-            // If there exists no '1' concat 1
-            // at the starting of string
-            if (i == -1)
+                // Twos complement
+                StringBuilder twosComplement = onesComplement;
+                for (int i = 0; i < twosComplement.Length; i++)
+                {
+                    int index = twosComplement.Length - i - 1;
+                    if (twosComplement[index] == '1')
+                    {
+                        twosComplement.Remove(index, 1).Insert(index, "0");
+                        //twosComplement[index] = '0';
+                    }
+                    else
+                    {
+                        twosComplement.Remove(index, 1).Insert(index, "1");
+                        //twosComplement[index] = '1';
+                        break;
+                    }
+                }
+                return -Bin2Num(twosComplement.ToString());
+            }
+            else
             {
-                return "1" + str;
+                return Bin2Num(str);
             }
-
-            // Continue traversal after the
-            // position of first '1'
-            for (int k = i - 1; k >= 0; k--)
-            {
-                // Just flip the values
-                if (str[k] == '1')
-                {
-                    str.Remove(k, k + 1 - k).Insert(k, "0");
-                }
-                else
-                {
-                    str.Remove(k, k + 1 - k).Insert(k, "1");
-                }
-            }
-
-            // return the modified string
-            return str;
         }
 
         // CONVERTER FUNCTIONS
-        public string HexToBinary(string hexadecimal)
-        {
-            string binary = Convert.ToString(Convert.ToInt32(hexadecimal, 16), 2).PadLeft(hexadecimal.Length * 4, '0');
-            return binary;
-        }
-
-        public int BinToNum(string bin)
+        public static int Bin2Num(string bin)
         {
             return Convert.ToInt32(bin, 2);
         }
 
+        public static string Bin2Hex(string bin)
+        {
+            return Convert.ToInt32(bin, 2).ToString("X");
+            // this would not work with strings of more than 64 bits
+        }
+
+        public static string Hex2Bin(string hex)
+        {
+            string binary = Convert.ToString(Convert.ToInt32(hex, 16), 2).PadLeft(hex.Length * 4, '0');
+            return binary;
+        }
+
         // READ FILE CONVERTING HEX TO BIN
-        public string[] readFile_HexToBin(string[] fileHex)
+        public static string[] readFile_Hex2Bin(string[] fileHex)
         {
             
             string[] fileBin = new string[] {};
             //string[] fileBin = new string[100];
             for (int i = 0; i <= fileHex.Length; i++)
             {
-                fileBin[i] = HexToBinary(fileHex[i]);
+                fileBin[i] = Hex2Bin(fileHex[i]);
             }
             return fileBin;
         }
 
         // CAT & LENGTH
-        public int cat(string cat)
+        public static int cat(string cat)
         {
-            int category = BinToNum(cat);
+            int category = Bin2Num(cat);
             return category;
         }
 
-        public int length(string octet1, string octet2)
+        public static int length(string octet1, string octet2)
         {
             string octet12 = octet1 + octet2;
-            int length = BinToNum(octet12);
+            int length = Bin2Num(octet12);
             return length;
         }
 
