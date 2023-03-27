@@ -30,5 +30,17 @@ namespace ClassLibrary
         public double[] CalculatedAcceleration { get; set; }
 
         public string TargetAddress { get; set; }
+
+        public string TargetIdentification_STI { get; set; }
+        public string TargetIdentification_Characters { get; set; }
+
+        public double ModeSMBData_REP { get; set; }
+        public double ModeSMBData_MBData { get; set; }
+        public double ModeSMBData_BDS1 { get; set; }
+        public double ModeSMBData_BDS2 { get; set; }
+
+        public double TargetSizeAndOrientation_Length { get; set; }
+        public double TargetSizeAndOrientation_Orientation { get; set; }
+        public double TargetSizeAndOrientation_Width { get; set; }
     }
 }
