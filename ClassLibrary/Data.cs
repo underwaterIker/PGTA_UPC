@@ -54,7 +54,7 @@ namespace ClassLibrary
         public double MeasuredHeight { get; set; }
 
         //Data Item I010/131, Amplitude of Primary Plot
-        public int AmplitudPrimayPlot { get; set; }
+        public int AmplitudePrimayPlot { get; set; }
 
         // Data Item I010/140: Time of Day
         public double TimeofDay { get; set; }
@@ -91,20 +91,20 @@ namespace ClassLibrary
         public string TargetIdentification_Characters { get; set; }
 
         // Data Item I010/250, Mode S MB Data
-        public double ModeSMBData_REP { get; set; }
-        public double ModeSMBData_MBData { get; set; }
-        public double ModeSMBData_BDS1 { get; set; }
-        public double ModeSMBData_BDS2 { get; set; }
+        public int ModeSMBData_REP { get; set; }
+        public int[] ModeSMBData_MBData { get; set; }
+        public int[] ModeSMBData_BDS1 { get; set; }
+        public int[] ModeSMBData_BDS2 { get; set; }
 
         // Data Item I010/270, Target Size & Orientation
-        public double TargetSizeAndOrientation_Length { get; set; }
+        public int TargetSizeAndOrientation_Length { get; set; }
         public double TargetSizeAndOrientation_Orientation { get; set; }
-        public double TargetSizeAndOrientation_Width { get; set; }
+        public int TargetSizeAndOrientation_Width { get; set; }
 
         // Data Item I010/280, Presence
-        public double Presence_DRHO { get; set; }
-        public double Presence_DTHETA { get; set; }
         public int Presence_REP { get; set; }
+        public int[] Presence_DRHO { get; set; }
+        public double[] Presence_DTHETA { get; set; }
 
         // Data Item I010/300, Vehicle Fleet Identification
         public string VehicleFleetIdentification { get; set; }

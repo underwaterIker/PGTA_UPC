@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
@@ -10,68 +11,15 @@ namespace ClassLibrary
     public class CAT10
     {
         // Content of the CAT10 message
-        string[] message; // Maybe its useless
+        byte[] CAT10_message; // Maybe its useless
         
         // Where the decodificated data will be stored
         public Data data = new Data();
 
-        // DICTIONARIES
-        // Data Item I010/000, Message Type
-        private IDictionary<int, string> MessageType_dict = new Dictionary<int, string>() { { 1, "Target Report" }, { 2, "Start of Update Cycle" }, { 3, "Periodic Status Message" }, { 4, "Event-triggered Status Message" } };
-
-        // Data Item I010/020, Target Report Descriptor
-        private IDictionary<string, string> TargetReportDescriptor_TYP_dict = new Dictionary<string, string>() { { "000", "SSR multilateration" }, { "001", "Mode S multilateration" }, { "010", "ADS-B" }, { "011", "PSR" }, { "100", "Magnetic Loop System" }, { "101", "Not defined" }, { "111", "Other types" } };
-        private IDictionary<char, string> TargetReportDescriptor_DCR_dict = new Dictionary<char, string>() { { '0', "No differential correction (ADS-B)" }, { '1', "Differential correction (ADS-B)" } };
-        private IDictionary<char, string> TargetReportDescriptor_CHN_dict = new Dictionary<char, string>() { { '0', "Chain 1" }, { '1', "Chain 2" } };
-        private IDictionary<char, string> TargetReportDescriptor_GBS_dict = new Dictionary<char, string>() { { '0', "Transponder Ground bit not set" }, { '1', "Transponder Ground bit set" } };
-        private IDictionary<char, string> TargetReportDescriptor_CRT_dict = new Dictionary<char, string>() { { '0', "No Corrupted reply in multilateration" }, { '1', "Corrupted replies in multilateration" } };
-        private IDictionary<char, string> TargetReportDescriptor_SIM_dict = new Dictionary<char, string>() { { '0', "Actual target report" }, { '1', "Simulated target report " } };
-        private IDictionary<char, string> TargetReportDescriptor_TST_dict = new Dictionary<char, string>() { { '0', "Default" }, { '1', "Test Target" } };
-        private IDictionary<char, string> TargetReportDescriptor_RAB_dict = new Dictionary<char, string>() { { '0', "Report from target transponder" }, { '1', "Report from field monitor (fixed transponder)" } };
-        private IDictionary<string, string> TargetReportDescriptor_LOP_dict = new Dictionary<string, string>() { { "00", "Undetermined" }, { "01", "Loop start" }, { "10", "Loop finish" } };
-        private IDictionary<string, string> TargetReportDescriptor_TOT_dict = new Dictionary<string, string>() { { "00", "Undetermined" }, { "01", "Aircraft" }, { "10", "Ground vehicle" }, { "11", "Helicopter" } };
-        private IDictionary<char, string> TargetReportDescriptor_SPI_dict = new Dictionary<char, string>() { { '0', "Absence of SPI " }, { '1', "Special Position Identification" } };
-
-        // Data Item I010/060, Mode-3/A Code in Octal Representation and...
-        // Data Item I010/090, Flight Level in Binary Representation
-        private IDictionary<char, string> Mode3ACodeV_and_FlightLevelV_dict = new Dictionary<char, string>() { { '0', "Code validated" }, { '1', "Code not validated" } };
-        private IDictionary<char, string> Mode3ACodeG_and_FlightLevelG_dict = new Dictionary<char, string>() { { '0', "Default" }, { '1', "Garbled code" } };
-        private IDictionary<char, string> Mode3ACodeL_dict = new Dictionary<char, string>() { { '0', "Mode-3/A code derived from the reply of the transponder" }, { '1', "Mode-3/A code not extracted during the last scan" } };
-
-        // Data Item I010/170, Track Status
-        private IDictionary<char, string> TrackStatus_CNF_dict = new Dictionary<char, string>() { { '0', "Confirmed track" }, { '1', "Track in initialisation phase" } };
-        private IDictionary<char, string> TrackStatus_TRE_dict = new Dictionary<char, string>() { { '0', "Default" }, { '1', "Last report for a track" } };
-        private IDictionary<string, string> TrackStatus_CST_dict = new Dictionary<string, string>() { { "00", "No extrapolation" }, { "01", "Predictable extrapolation due to sensor refresh period" }, { "10", "Predictable extrapolation in masked area" }, { "11", "Extrapolation due to unpredictable absence of detection" } };
-        private IDictionary<char, string> TrackStatus_MAH_dict = new Dictionary<char, string>() { { '0', "Default" }, { '1', "Horizontal manoeuvre" } };
-        private IDictionary<char, string> TrackStatus_TCC_dict = new Dictionary<char, string>() { { '0', "Tracking performed in 'Sensor Plane', i.e. neither slant range correction nor projection was applied." }, { '1', "Slant range correction and a suitable projection technique are used to track in a 2D.reference plane, tangential to the earth model at the Sensor Site co-ordinates." } };
-        private IDictionary<char, string> TrackStatus_STH_dict = new Dictionary<char, string>() { { '0', "Measured position" }, { '1', "Smoothed position" } };
-        private IDictionary<string, string> TrackStatus_TOM_dict = new Dictionary<string, string>() { { "00", "Unknown type of movement" }, { "01", "Taking-off" }, { "10", "Landing" }, { "11", "Other types of movement" } };
-        private IDictionary<string, string> TrackStatus_DOU_dict = new Dictionary<string, string>() { { "000", "No doubt" }, { "001", "Doubtful correlation (undetermined reason)" }, { "010", "Doubtful correlation in clutter" }, { "011", "Loss of accuracy" }, { "100", "Loss of accuracy in clutter" }, { "101", "Unstable track" }, { "110", "Previously coasted" } };
-        private IDictionary<string, string> TrackStatus_MRS_dict = new Dictionary<string, string>() { { "00", "Merge or split indication undetermined" }, { "01", "Track merged by association to plot" }, { "10", "Track merged by non-association to plot" }, { "11", "Split track" } };
-        private IDictionary<char, string> TrackStatus_GHO_dict = new Dictionary<char, string>() { { '0', "Default" }, { '1', "Ghost track" } };
-
-        // Data Item I010/245, Target Identification
-        private IDictionary<string, string> TartgetIdentificationSTI_dict = new Dictionary<string, string>() { { "00", "Callsign or registration downlinked from transponder" }, { "01", "Callsign not downlinked from transponder" }, { "10", "Registration not downlinked from transponder" } };
-        private IDictionary<string, string> TargetIdentificationCharacters_dict = new Dictionary<string, string>() { { "000001", "A" }, { "000010", "B" }, { "000011", "C" }, { "000100", "D" }, { "000101", "E" }, { "000110", "F" }, { "000111", "G" }, { "001000", "H" }, { "001001", "I" }, { "001010", "J" }, { "001011", "K" }, { "001100", "L" }, { "001101", "M" }, { "001110", "N" }, { "001111", "O" }, { "010000", "P" }, { "010001", "Q" }, { "010010", "R" }, { "010011", "S" }, { "010100", "T" }, { "010101", "U" }, { "010110", "V" }, { "010111", "W" }, { "011000", "X" }, { "011001", "Y" }, { "011010", "Z" }, { "100000", " " }, { "110000", "0" }, { "110001", "1" }, { "110010", "2" }, { "110011", "3" }, { "110100", "4" }, { "110101", "5" }, { "110110", "6" }, { "110111", "7" }, { "111000", "8" }, { "111001", "9" } };
-
-        // Data Item I010/300, Vehicle Fleet Identification
-        private IDictionary<int, string> VehicleFleetIdentification_VFI_dict = new Dictionary<int, string>() { { 0, "Unknown" }, { 1, "ATC equipment maintenance" }, { 2, "Airport maintenance" }, { 3, "Fire" }, { 4, "Bird scarer" }, { 5, "Snow plough" }, { 6, "Runway sweeper" }, { 7, "Emergency" }, { 8, "Police" }, { 9, "Bus" }, { 10, "Tug (push/tow)" }, { 11, "Grass cutter" }, { 12, "Fuel" }, { 13, "Baggage" }, { 14, "Catering" }, { 15, "Aircraft maintenance" }, { 16, "Flyco (follow me)" } };
-
-        // Data Item I010/310, Pre-programmed Message
-        private IDictionary<char, string> PreprogrammedMessage_TRB_dict = new Dictionary<char, string>() { { '0', "Default" }, { '1', "In Trouble" } };
-        private IDictionary<int, string> PreprogrammedMessage_MSG_dict = new Dictionary<int, string>() { { 1, "Towing aircraf" }, { 2, "'Follow me' operation" }, { 3, "Runway check" }, { 4, "Emergency operation (fire, medical…)" }, { 5, "Work in progress (maintenance, birds scarer, sweepers…)" } };
-
-        // Data Item I010/550, System Status
-        private IDictionary<string, string> SystemStatus_NOGO_dict = new Dictionary<string, string>() { { "00", "Operational" }, { "01", "Degraded" }, { "10", "NOGO" } };
-        private IDictionary<char, string> SystemStatus_OVL_dict = new Dictionary<char, string>() { { '0', "No overload" }, { '1', "Overload" } };
-        private IDictionary<char, string> SystemStatus_TSV_dict = new Dictionary<char, string>() { { '0', "valid" }, { '1', "invalid" } };
-        private IDictionary<char, string> SystemStatus_DIV_dict = new Dictionary<char, string>() { { '0', "Normal Operation" }, { '1', "Diversity degraded" } };
-        private IDictionary<char, string> SystemStatus_TTF_dict = new Dictionary<char, string>() { { '0', "Test Target Operative" }, { '1', "Test Target Failure" } };
-
         // CONSTRUCTOR
-        public CAT10(string[] message)
+        public CAT10(byte[] message)
         {
-            this.message = message; // Maybe its useless
+            this.CAT10_message = message; // Maybe its useless
 
 
             // Aqui dentro vamos a ir decodificando el mensaje usando las funciones que vamos
@@ -79,6 +27,9 @@ namespace ClassLibrary
             // va a quedar todo decodificado
         }
 
+        public CAT10() { }
+
+        
         // METHODS
         // CAT10 Decodification function
         private void Decodification(string Type, string[] dataitems, int numoctet)
@@ -92,7 +43,7 @@ namespace ClassLibrary
                     break;
 
                 case "DataSourceIdentifier":
-                    DataSourceIdentifier(dataitems);
+                    //DataSourceIdentifier(dataitems);
 
                     break;
 
@@ -208,282 +159,471 @@ namespace ClassLibrary
         }
 
         // Data Item I010/000, Message Type
-        private void MessageType(string octet1)
+        private void MessageType(byte octet1)
         {
-            data.MessageType = MessageType_dict[Convert.ToInt16(octet1, 2)];
+            data.MessageType = CAT10_dict.MessageType_dict[octet1];
         }
 
         // Data Item I010/010, Data Source Identifier
-        private void DataSourceIdentifier(string[] octets)
+        private void DataSourceIdentifier(byte[] octets)
         {
-            int SAC = Functions.Bin2Num(octets[0]);
-            int SIC = Functions.Bin2Num(octets[1]);
-            data.DataSourceIdentifier_SAC = SAC;
-            data.DataSourceIdentifier_SIC = SIC;
-
+            //int SAC = octets[0];
+            //int SIC = octets[1];
+            data.DataSourceIdentifier_SAC = octets[0];
+            data.DataSourceIdentifier_SIC = octets[1];
         }
 
         // Data Item I010/020, Target Report Descriptor
-        private void TargetReportDescriptor(string[] octets)
+        private void TargetReportDescriptor(byte[] octets)
         {
-            data.TargetReportDescriptor_TYP = TargetReportDescriptor_TYP_dict[octets[0].Substring(0, 3)];
-            data.TargetReportDescriptor_DCR = TargetReportDescriptor_DCR_dict[octets[0][3]];
-            data.TargetReportDescriptor_CHN = TargetReportDescriptor_CHN_dict[octets[0][4]];
-            data.TargetReportDescriptor_GBS = TargetReportDescriptor_GBS_dict[octets[0][5]];
-            data.TargetReportDescriptor_CRT = TargetReportDescriptor_CRT_dict[octets[0][6]];
+            BitArray bits = new BitArray(octets);
+            
+            string TYP_boolString = bits[7].ToString() + bits[6] + bits[5];
+            data.TargetReportDescriptor_TYP = CAT10_dict.TargetReportDescriptor_TYP_dict[TYP_boolString];
+            data.TargetReportDescriptor_DCR = CAT10_dict.TargetReportDescriptor_DCR_dict[bits[4]];
+            data.TargetReportDescriptor_CHN = CAT10_dict.TargetReportDescriptor_CHN_dict[bits[3]];
+            data.TargetReportDescriptor_GBS = CAT10_dict.TargetReportDescriptor_GBS_dict[bits[2]];
+            data.TargetReportDescriptor_CRT = CAT10_dict.TargetReportDescriptor_CRT_dict[bits[1]];
 
-            if (octets[0][7] == '1')
+            if (bits[0] == true)
             {
-                data.TargetReportDescriptor_SIM = TargetReportDescriptor_SIM_dict[octets[1][0]];
-                data.TargetReportDescriptor_TST = TargetReportDescriptor_TST_dict[octets[1][1]];
-                data.TargetReportDescriptor_RAB = TargetReportDescriptor_RAB_dict[octets[1][2]];
-                data.TargetReportDescriptor_LOP = TargetReportDescriptor_LOP_dict[octets[1].Substring(3, 2)];
-                data.TargetReportDescriptor_TOT = TargetReportDescriptor_TOT_dict[octets[1].Substring(5, 2)];
+                data.TargetReportDescriptor_SIM = CAT10_dict.TargetReportDescriptor_SIM_dict[bits[15]];
+                data.TargetReportDescriptor_TST = CAT10_dict.TargetReportDescriptor_TST_dict[bits[14]];
+                data.TargetReportDescriptor_RAB = CAT10_dict.TargetReportDescriptor_RAB_dict[bits[13]];
+                string LOP_boolString = bits[12].ToString() + bits[11];
+                data.TargetReportDescriptor_LOP = CAT10_dict.TargetReportDescriptor_LOP_dict[LOP_boolString];
+                string TOT_boolString = bits[10].ToString() + bits[9];
+                data.TargetReportDescriptor_TOT = CAT10_dict.TargetReportDescriptor_TOT_dict[TOT_boolString];
 
-                if(octets[1][7] == '1')
+                if(bits[8] == true)
                 {
-                    data.TargetReportDescriptor_SPI = TargetReportDescriptor_SPI_dict[octets[2][0]];
+                    data.TargetReportDescriptor_SPI = CAT10_dict.TargetReportDescriptor_SPI_dict[bits[23]];
                 }
             }
         }
 
         //Data Item I010/040, Measured Position in Polar Co-ordinates
-        private void MeasuredPositioninPolarCoordinates(string[] octets)
+        private void MeasuredPositioninPolarCoordinates(byte[] octets)
         {
             double LSB_RHO = 1; // m
             double LSB_theta = 360 / Math.Pow(2, 16); // degrees
 
-            double RHO = LSB_RHO * Functions.Bin2Num(octets[0] + octets[1]);
-            double THETA = LSB_theta * Functions.Bin2Num(octets[2] + octets[3]);
+            byte[] RHO_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
+            byte[] THETA_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
+
+            double RHO = LSB_RHO * Functions.CombineBytes2Int(RHO_bytes);
+            double THETA = LSB_theta * Functions.CombineBytes2Int(THETA_bytes);
             
             data.MeasuredPositioninPolarCoordinates_RHO = RHO;
             data.MeasuredPositioninPolarCoordinates_THETA = THETA;
         }
 
         // Data Item I010/041, Position in WGS-84 Co-ordinates
-        private void PositionWGS84Coordinates(string[] octets)
+        private void PositionWGS84Coordinates(byte[] octets)
         {
             double LSB = 180 / Math.Pow(2, 31); // degrees
-            double latitude  = LSB * Functions.TwosComplement2Int(octets[0] + octets[1] + octets[2] + octets[3]);
-            double longitude = LSB * Functions.TwosComplement2Int(octets[4] + octets[5] + octets[6] + octets[7]);
+
+            byte[] latitude_bytes = new byte[4] { octets[3], octets[2], octets[1], octets[0] }; // Reversed
+            byte[] longitude_bytes = new byte[4] { octets[7], octets[6], octets[5], octets[4] }; // Reversed
+
+            double latitude  = LSB * Functions.TwosComplement2Int_fromBytes(latitude_bytes);
+            double longitude = LSB * Functions.TwosComplement2Int_fromBytes(longitude_bytes);
+
             data.PositionWGS84Coordinates[0] = latitude;
             data.PositionWGS84Coordinates[1] = longitude;
         }
 
         // Data Item I010/042, Position in Cartesian Co-ordinates
-        private void PositionCartesianCoordinates(string[] octets)
+        private void PositionCartesianCoordinates(byte[] octets)
         {
             double LSB = 1; // m
-            double x = LSB * Functions.TwosComplement2Int(octets[0] + octets[1]);
-            double y = LSB * Functions.TwosComplement2Int(octets[2] + octets[3]);
+
+            byte[] x_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
+            byte[] y_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
+
+            double x = LSB * Functions.TwosComplement2Int_fromBytes(x_bytes);
+            double y = LSB * Functions.TwosComplement2Int_fromBytes(y_bytes);
+
             data.PositionCartesianCoordinates[0] = x;
             data.PositionCartesianCoordinates[1] = y;
         }
 
         // Data Item I010/060, Mode-3/A Code in Octal Representation
-        private void Mode3ACodeOctalRepresentation(string[] octets)
+        private void Mode3ACodeOctalRepresentation(byte[] octets)
         {
-            data.Mode3ACode_V = Mode3ACodeV_and_FlightLevelV_dict[octets[0][0]];
-            data.Mode3ACode_G = Mode3ACodeG_and_FlightLevelG_dict[octets[0][1]];
-            data.Mode3ACode_L = Mode3ACodeL_dict[octets[0][2]];
+            octets.Reverse();
+            BitArray bits = new BitArray(octets);
 
-            string A = Functions.Bin2Num(octets[0].Substring(4, 3)).ToString();
-            string B = Functions.Bin2Num(octets[0][7] + octets[1].Substring(0, 2)).ToString();
-            string C = Functions.Bin2Num(octets[1].Substring(2, 3)).ToString();
-            string D = Functions.Bin2Num(octets[1].Substring(5, 3)).ToString();
+            // BE CAREFUL WITH BITS AND BYTES ORDER !!!!!!!!!
+            data.Mode3ACode_V = CAT10_dict.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
+            data.Mode3ACode_G = CAT10_dict.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
+            data.Mode3ACode_L = CAT10_dict.Mode3ACodeL_dict[bits[13]];
+
+            // We create BitArrays for A, B, C & D and fill them with the corresponding bits
+            BitArray bits_A = new BitArray(3);
+            BitArray bits_B = new BitArray(3);
+            BitArray bits_C = new BitArray(3);
+            BitArray bits_D = new BitArray(3);
+            for (int i = 0; i < 3; i++)
+            {
+                bits_A[i] = bits[9 + i];
+                bits_B[i] = bits[6 + i];
+                bits_C[i] = bits[3 + i];
+                bits_D[i] = bits[i];
+            }
+
+            // We convert the BitArrays to a number, and then to string
+            string A = Functions.BitArray2Int(bits_A).ToString();
+            string B = Functions.BitArray2Int(bits_B).ToString();
+            string C = Functions.BitArray2Int(bits_C).ToString();
+            string D = Functions.BitArray2Int(bits_D).ToString();
+
             data.Mode3ACode_Reply = A + B + C + D;
         }
 
         // Data Item I010/090, Flight Level in Binary Representation
-        private void FlightLevelBinaryRepresentation(string[] octets)
+        private void FlightLevelBinaryRepresentation(byte[] octets)
         {
-            data.FlightLevel_V = Mode3ACodeV_and_FlightLevelV_dict[octets[0][0]];
-            data.FlightLevel_G = Mode3ACodeG_and_FlightLevelG_dict[octets[0][1]];
+            octets.Reverse();
+            BitArray bits = new BitArray(octets);
+
+            data.FlightLevel_V = CAT10_dict.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
+            data.FlightLevel_G = CAT10_dict.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
+
+            bits.Length = bits.Length - 2;
 
             double LSB = 1 / 4; // FL
-            double FL = LSB * Functions.TwosComplement2Int(octets[0].Substring(2, 6) + octets[1]);
+            double FL = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
             data.FlightLevel_FL = FL;
         }
 
         // Data Item I010/091, Measured Height
-        private void MeasuredHeight(string[] octets)
+        private void MeasuredHeight(byte[] octets)
         {
             double LSB = 6.25; // ft
-            double measuredHeight = LSB * Functions.TwosComplement2Int(octets[0] + octets[1]);
+
+            byte[] measuredHeight_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
+
+            double measuredHeight = LSB * Functions.TwosComplement2Int_fromBytes(measuredHeight_bytes);
             data.MeasuredHeight = measuredHeight;
         }
 
         //Data Item I010/131, Amplitude of Primary Plot
-        private void AmplitudPrimayPlot(string octet1)
+        private void AmplitudePrimayPlot(byte octet1)
         {
-            data.AmplitudPrimayPlot = Functions.Bin2Num(octet1);
+            data.AmplitudePrimayPlot = octet1;
         }
 
         // Data Item I010/140: Time of Day
-        private void TimeofDay(string[] octets)
+        private void TimeofDay(byte[] octets)
         {
+            octets.Reverse();
+
             double LSB = 1 / 128; // s
-            double timeOfDay = LSB * Functions.Bin2Num(octets[0] + octets[1] + octets[2]);
+            double timeOfDay = LSB * Functions.CombineBytes2Int(octets);
             data.TimeofDay = timeOfDay;
         }
 
         // Data Item I010/161: Track Number
-        private void TrackNumber(string[] octets)
+        private void TrackNumber(byte[] octets)
         {
-            data.TrackNumber = Functions.Bin2Num(octets[0].Substring(4, 4) + octets[1]);
+            octets.Reverse();
+
+            data.TrackNumber = Functions.CombineBytes2Int(octets);
         }
 
         // Data Item I010/170, Track Status
-        private void TrackStatus(string[] octets)
+        private void TrackStatus(byte[] octets)
         {
-            data.TrackStatus_CNF = TrackStatus_CNF_dict[octets[0][0]];
-            data.TrackStatus_TRE = TrackStatus_TRE_dict[octets[0][1]];
-            data.TrackStatus_CST = TrackStatus_CST_dict[octets[0].Substring(2, 2)];
-            data.TrackStatus_MAH = TrackStatus_MAH_dict[octets[0][4]];
-            data.TrackStatus_TCC = TrackStatus_TCC_dict[octets[0][5]];
-            data.TrackStatus_STH = TrackStatus_STH_dict[octets[0][6]];
+            BitArray bits = new BitArray(octets);
 
-            if (octets[0][7] == '1')
+            data.TrackStatus_CNF = CAT10_dict.TrackStatus_CNF_dict[bits[7]];
+            data.TrackStatus_TRE = CAT10_dict.TrackStatus_TRE_dict[bits[6]];
+            string CST_boolString = bits[5].ToString() + bits[4];
+            data.TrackStatus_CST = CAT10_dict.TrackStatus_CST_dict[CST_boolString];
+            data.TrackStatus_MAH = CAT10_dict.TrackStatus_MAH_dict[bits[3]];
+            data.TrackStatus_TCC = CAT10_dict.TrackStatus_TCC_dict[bits[2]];
+            data.TrackStatus_STH = CAT10_dict.TrackStatus_STH_dict[bits[1]];
+
+            if (bits[0] == true)
             {
-                data.TrackStatus_TOM = TrackStatus_TOM_dict[octets[1].Substring(0, 2)];
-                data.TrackStatus_DOU = TrackStatus_DOU_dict[octets[1].Substring(2, 3)];
-                data.TrackStatus_MRS = TrackStatus_MRS_dict[octets[1].Substring(5, 2)];
+                string TOM_boolString = bits[15].ToString() + bits[14];
+                data.TrackStatus_TOM = CAT10_dict.TrackStatus_TOM_dict[TOM_boolString];
+                string DOU_boolString = bits[13].ToString() + bits[12] + bits[11];
+                data.TrackStatus_DOU = CAT10_dict.TrackStatus_DOU_dict[DOU_boolString];
+                string MRS_boolString = bits[10].ToString() + bits[9];
+                data.TrackStatus_MRS = CAT10_dict.TrackStatus_MRS_dict[MRS_boolString];
 
-                if (octets[1][7] == '1')
+                if (bits[8] == true)
                 {
-                    data.TrackStatus_GHO = TrackStatus_GHO_dict[octets[2][0]];
+                    data.TrackStatus_GHO = CAT10_dict.TrackStatus_GHO_dict[bits[23]];
                 }
             }
         }
 
         // Data Item I010/200, Calculated Track Velocity in Polar Co-ordinates
-        private void CalculatedTrackVelocityPolarCoordinates(string[] octets)
+        private void CalculatedTrackVelocityPolarCoordinates(byte[] octets)
         {
             double LSB_GroundSpeed = 0.22; // kt
-            double GroundSpeed = LSB_GroundSpeed * Functions.TwosComplement2Int(octets[0] + octets[1]);
-
             double LSB_TrackAngle = 360 / Math.Pow(2, 16); // degrees
-            double TrackAngle = LSB_TrackAngle * Functions.TwosComplement2Int(octets[2] + octets[3]);
+
+            byte[] GroundSpeed_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
+            byte[] TrackAngle_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
+
+            double GroundSpeed = LSB_GroundSpeed * Functions.TwosComplement2Int_fromBytes(GroundSpeed_bytes);
+            double TrackAngle = LSB_TrackAngle * Functions.TwosComplement2Int_fromBytes(TrackAngle_bytes);
 
             data.CalculatedTrackVelocityPolarCoordinates[0] = GroundSpeed;
             data.CalculatedTrackVelocityPolarCoordinates[1] = TrackAngle;
         }
 
         // Data Item I010/202, Calculated Track Velocity in Cartesian Co-ordinates
-        private void CalculatedTrackVelocityCartesianCoordinates(string[] octets)
+        private void CalculatedTrackVelocityCartesianCoordinates(byte[] octets)
         {
             double LSB = 0.25; // m/s
-            double Vx = LSB * Functions.TwosComplement2Int(octets[0] + octets[1]);
-            double Vy = LSB * Functions.TwosComplement2Int(octets[2] + octets[3]);
+
+            byte[] Vx_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
+            byte[] Vy_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
+
+            double Vx = LSB * Functions.TwosComplement2Int_fromBytes(Vx_bytes);
+            double Vy = LSB * Functions.TwosComplement2Int_fromBytes(Vy_bytes);
+
             data.CalculatedTrackVelocityCartesianCoordinates[0] = Vx;
             data.CalculatedTrackVelocityCartesianCoordinates[1] = Vy;
         }
 
         // Data Item I010/210, Calculated Acceleration
-        private void CalculatedAcceleration(string[] octets)
+        private void CalculatedAcceleration(byte[] octets)
         {
             double LSB = 0.25; // m/(s^2)
-            double Ax = LSB * Functions.TwosComplement2Int(octets[0]);
-            double Ay = LSB * Functions.TwosComplement2Int(octets[1]);
+
+            byte[] Ax_bytes = new byte[1] { octets[0] }; // Reversed (no need to reverse, array of length 1)
+            byte[] Ay_bytes = new byte[1] { octets[1] }; // Reversed (no need to reverse, array of length 1)
+
+            double Ax = LSB * Functions.TwosComplement2Int_fromBytes(Ax_bytes);
+            double Ay = LSB * Functions.TwosComplement2Int_fromBytes(Ay_bytes);
+
             data.CalculatedAcceleration[0] = Ax;
             data.CalculatedAcceleration[1] = Ay;
         }
 
         // Data Item I010/220, Target Address
-        private void TargetAddress(string[] octets)
+        private void TargetAddress(byte[] octets)
         {
-            string TargetAddress = Functions.Bin2Hex(octets[0] + octets[1] + octets[2]);
+            byte[] TargetAddress_bytes = new byte[3] { octets[2], octets[1], octets[0] }; // Reversed
+
+            int TargetAddress_int = Functions.CombineBytes2Int(TargetAddress_bytes);
+            string TargetAddress = TargetAddress_int.ToString("X");
+
             data.TargetAddress = TargetAddress;
         }
 
         // Data Item I010/245, Target Identification
-        private void TargetIdentification(string[] octets)
+        private void TargetIdentification(byte[] octets)
         {
-            data.TargetIdentification_STI = TartgetIdentificationSTI_dict[octets[0].Substring(0, 2)];
+            octets.Reverse();
+            BitArray bits = new BitArray(octets);
 
-            string char1 = TargetIdentificationCharacters_dict[octets[1].Substring(0, 6)];
-            string char2 = TargetIdentificationCharacters_dict[octets[1].Substring(6, 2)+octets[2].Substring(0, 4)];
-            string char3 = TargetIdentificationCharacters_dict[octets[2].Substring(4, 4) + octets[3].Substring(0, 2)];
-            string char4 = TargetIdentificationCharacters_dict[octets[3].Substring(2, 6)];
-            string char5 = TargetIdentificationCharacters_dict[octets[4].Substring(0, 6)];
-            string char6 = TargetIdentificationCharacters_dict[octets[4].Substring(6, 2) + octets[5].Substring(0, 4)];
-            string char7 = TargetIdentificationCharacters_dict[octets[5].Substring(4, 4) + octets[6].Substring(0, 2)];
-            string char8 = TargetIdentificationCharacters_dict[octets[6].Substring(2, 6)];
+            // Characters
+            BitArray char8_bits = new BitArray(6);
+            BitArray char7_bits = new BitArray(6);
+            BitArray char6_bits = new BitArray(6);
+            BitArray char5_bits = new BitArray(6);
+            BitArray char4_bits = new BitArray(6);
+            BitArray char3_bits = new BitArray(6);
+            BitArray char2_bits = new BitArray(6);
+            BitArray char1_bits = new BitArray(6);
+
+            for (int i=0; i<bits.Length-8; i++)
+            {
+                if (i < 6)
+                {
+                    char8_bits[i] = bits[i];
+                }
+                if (i >= 6 && i < 12)
+                {
+                    char7_bits[i] = bits[i];
+                }
+                if (i >= 12 && i < 18)
+                {
+                    char6_bits[i] = bits[i];
+                }
+                if (i >= 18 && i < 24)
+                {
+                    char5_bits[i] = bits[i];
+                }
+                if (i >= 24 && i < 30)
+                {
+                    char4_bits[i] = bits[i];
+                }
+                if (i >= 30 && i < 36)
+                {
+                    char3_bits[i] = bits[i];
+                }
+                if (i >= 36 && i < 42)
+                {
+                    char2_bits[i] = bits[i];
+                }
+                if (i >= 42 && i < 48)
+                {
+                    char1_bits[i] = bits[i];
+                }
+            }
+
+            int char8_int = Functions.BitArray2Int(char8_bits);
+            int char7_int = Functions.BitArray2Int(char7_bits);
+            int char6_int = Functions.BitArray2Int(char6_bits);
+            int char5_int = Functions.BitArray2Int(char5_bits);
+            int char4_int = Functions.BitArray2Int(char4_bits);
+            int char3_int = Functions.BitArray2Int(char3_bits);
+            int char2_int = Functions.BitArray2Int(char2_bits);
+            int char1_int = Functions.BitArray2Int(char1_bits);
+
+            string char8 = CAT10_dict.TargetIdentificationCharacters_dict[char8_int];
+            string char7 = CAT10_dict.TargetIdentificationCharacters_dict[char7_int];
+            string char6 = CAT10_dict.TargetIdentificationCharacters_dict[char6_int];
+            string char5 = CAT10_dict.TargetIdentificationCharacters_dict[char5_int];
+            string char4 = CAT10_dict.TargetIdentificationCharacters_dict[char4_int];
+            string char3 = CAT10_dict.TargetIdentificationCharacters_dict[char3_int];
+            string char2 = CAT10_dict.TargetIdentificationCharacters_dict[char2_int];
+            string char1 = CAT10_dict.TargetIdentificationCharacters_dict[char1_int];
+
             data.TargetIdentification_Characters = char1 + char2 + char3 + char4 + char5 + char6 + char7 + char8;
+
+            // STI
+            BitArray STI_bits = new BitArray(octets[6]);
+
+            string STI_boolString = STI_bits[7].ToString() + STI_bits[6];
+
+            data.TargetIdentification_STI = CAT10_dict.TartgetIdentificationSTI_dict[STI_boolString];
         }
 
         // Data Item I010/250, Mode S MB Data
-        private void ModeSMBData(string[] octets)
+        private void ModeSMBData(byte[] octets)
         {
-            double REP = Functions.Bin2Num(octets[0]);
-            double MBData = Functions.Bin2Num(octets[1] + octets[2] + octets[3] + octets[4] + octets[5] + octets[6] + octets[7]);
-            double BDS1 = Functions.Bin2Num(octets[8].Substring(0, 4));
-            double BDS2 = Functions.Bin2Num(octets[8].Substring(4, 4));
+            int REP = octets[0];
+            data.ModeSMBData_REP = REP; // maybe it is not necessary to save REP in Data
 
-            data.ModeSMBData_REP = REP;
-            data.ModeSMBData_MBData = MBData;
-            data.ModeSMBData_BDS1 = BDS1;
-            data.ModeSMBData_BDS2 = BDS2;
+            for(int i = 0; i < 1+REP; i++)
+            {
+                byte[] MBData_bytes = new byte[7] { octets[8*i + 7], octets[8*i + 6], octets[8*i + 5], octets[8*i + 4], octets[8*i + 3], octets[8*i + 2], octets[8*i + 1] }; // Reversed
+
+                BitArray BDS_bits = new BitArray(octets[8*i + 8]);
+
+                BitArray BDS1_bits = new BitArray(4);
+                BDS1_bits[0] = BDS_bits[4];
+                BDS1_bits[1] = BDS_bits[5];
+                BDS1_bits[2] = BDS_bits[6];
+                BDS1_bits[3] = BDS_bits[7];
+
+                BitArray BDS2_bits = new BitArray(4);
+                BDS2_bits[0] = BDS_bits[0];
+                BDS2_bits[1] = BDS_bits[1];
+                BDS2_bits[2] = BDS_bits[2];
+                BDS2_bits[3] = BDS_bits[3];
+
+                int MBData = Functions.CombineBytes2Int(MBData_bytes);
+                int BDS1 = Functions.BitArray2Int(BDS1_bits);
+                int BDS2 = Functions.BitArray2Int(BDS2_bits);
+
+                data.ModeSMBData_MBData[i] = MBData;
+                data.ModeSMBData_BDS1[i] = BDS1;
+                data.ModeSMBData_BDS2[i] = BDS2;
+            }
         }
 
         // Data Item I010/270, Target Size & Orientation
-        private void TargetSizeAndOrientation(string[] octets)
+        private void TargetSizeAndOrientation(byte[] octets)
         {
-            double LSB_Length = 1; // m
-            double length = LSB_Length * Functions.Bin2Num(octets[0].Substring(0, 7));
-            data.TargetSizeAndOrientation_Length = length;
+            BitArray bits = new BitArray(octets);
 
-            if (octets[0][7] == '1')
+            BitArray Length_bits = new BitArray(7);
+            BitArray Orientation_bits = new BitArray(7);
+            BitArray Width_bits = new BitArray(7);
+
+            for (int i = 0; i < 7; i++)
             {
+                Length_bits[i] = bits[i+1];
+                if (bits[0] == true)
+                {
+                    Orientation_bits[i] = bits[i + 9];
+                    if (bits[8] == true)
+                    {
+                        Width_bits[i] = bits[i + 17];
+                    }
+                }
+            }
+
+            // Length
+            int LSB_Length = 1; // m
+            int Length = LSB_Length * Functions.BitArray2Int(Length_bits);
+            data.TargetSizeAndOrientation_Length = Length;
+
+            if (bits[0] == true)
+            {
+                // Orientation
                 double LSB_Orientation = 360 / 128; // degrees
-                double orientation = LSB_Orientation * Functions.Bin2Num(octets[1].Substring(0, 7));
+                double orientation = LSB_Orientation * Functions.BitArray2Int(Orientation_bits);
                 data.TargetSizeAndOrientation_Orientation = orientation;
 
-                if (octets[1][7] == '1')
+                if (bits[8] == true)
                 {
-                    double LSB_Width = 1; // m
-                    double width = LSB_Width * Functions.Bin2Num(octets[2].Substring(0, 7));
+                    // Width
+                    int LSB_Width = 1; // m
+                    int width = LSB_Width * Functions.BitArray2Int(Width_bits);
                     data.TargetSizeAndOrientation_Width = width;
                 }
             }
         }
 
         // Data Item I010/280, Presence
-        private void Presence(string[] octets)
+        private void Presence(byte[] octets)
         {
-            data.Presence_REP = Functions.Bin2Num(octets[0]);
+            int REP = octets[0];
+            data.Presence_REP = REP; // maybe it is not necessary to save REP in Data
 
-            double LSB_DRHO = 1; // m
+            int LSB_DRHO = 1; // m
             double LSB_DTHETA = 0.15; //degrees
 
-            double DRHO = LSB_DRHO * Functions.Bin2Num(octets[1]);
-            double DTHETA = LSB_DTHETA * Functions.Bin2Num(octets[2]);
+            for (int i = 0; i < 1 + REP; i++)
+            {
+                int DRHO = LSB_DRHO * octets[2*i + 1];
+                double DTHETA = LSB_DTHETA * octets[2*i +2];
 
-            data.Presence_DRHO = DRHO;
-            data.Presence_DTHETA = DTHETA;
+                data.Presence_DRHO[i] = DRHO;
+                data.Presence_DTHETA[i] = DTHETA;
+            }
         }
 
         // Data Item I010/300, Vehicle Fleet Identification
-        private void VehicleFleetIdentification(string octet1)
+        private void VehicleFleetIdentification(byte octet1)
         {
-            data.VehicleFleetIdentification = VehicleFleetIdentification_VFI_dict[Functions.Bin2Num(octet1)];
+            data.VehicleFleetIdentification = CAT10_dict.VehicleFleetIdentification_VFI_dict[octet1];
         }
 
         // Data Item I010/310, Pre-programmed Message
-        private void PreprogrammedMessage(string octet1)
+        private void PreprogrammedMessage(byte octet1)
         {
-            data.PreprogrammedMessage_TRB = PreprogrammedMessage_TRB_dict[octet1[0]];
-            data.PreprogrammedMessage_MSG = PreprogrammedMessage_MSG_dict[Functions.Bin2Num(octet1.Substring(1, 7))];
+            BitArray bits = new BitArray(octet1);
+
+            data.PreprogrammedMessage_TRB = CAT10_dict.PreprogrammedMessage_TRB_dict[bits[7]];
+
+            //bits.Length = bits.Length - 1;
+            bits[7] = false;
+
+            data.PreprogrammedMessage_MSG = CAT10_dict.PreprogrammedMessage_MSG_dict[Functions.BitArray2Int(bits)];
         }
 
         // Data Item I010/500, Standard Deviation of Position
-        private void StandardDeviationPosition(string[] octets)
+        private void StandardDeviationPosition(byte[] octets)
         {
             double LSB = 0.25; // m and (m^2)
 
-            double SDx = LSB * Functions.Bin2Num(octets[0]);
-            double SDy = LSB * Functions.Bin2Num(octets[1]);
-            double Covariance = LSB * Functions.TwosComplement2Int(octets[2] + octets[3]);
+            byte[] Covariance_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
+
+            double SDx = LSB * octets[0];
+            double SDy = LSB * octets[1];
+            double Covariance = LSB * Functions.TwosComplement2Int_fromBytes(Covariance_bytes);
 
             data.StandardDeviationPosition_SDx = SDx;
             data.StandardDeviationPosition_SDy = SDy;
@@ -491,16 +631,17 @@ namespace ClassLibrary
         }
 
         // Data Item I010/550, System Status
-        private void SystemStatusMessageType(string octet1)
+        private void SystemStatusMessageType(byte octet1)
         {
-            string NOGO = octet1.Substring(0, 2);
+            BitArray bits = new BitArray(octet1);
 
-            data.SystemStatusMessageType_NOGO = SystemStatus_NOGO_dict[NOGO];
-            data.SystemStatusMessageType_OVL = SystemStatus_OVL_dict[octet1[2]];
-            data.SystemStatusMessageType_TSV = SystemStatus_TSV_dict[octet1[3]];
-            data.SystemStatusMessageType_DIV = SystemStatus_DIV_dict[octet1[4]];
-            data.SystemStatusMessageType_TTF = SystemStatus_TTF_dict[octet1[5]];
+            string NOGO_boolString = bits[7].ToString() + bits[6];
+            data.SystemStatusMessageType_NOGO = CAT10_dict.SystemStatus_NOGO_dict[NOGO_boolString];
+            data.SystemStatusMessageType_OVL = CAT10_dict.SystemStatus_OVL_dict[bits[5]];
+            data.SystemStatusMessageType_TSV = CAT10_dict.SystemStatus_TSV_dict[bits[4]];
+            data.SystemStatusMessageType_DIV = CAT10_dict.SystemStatus_DIV_dict[bits[3]];
+            data.SystemStatusMessageType_TTF = CAT10_dict.SystemStatus_TTF_dict[bits[2]];
         }
-
+        
     }
 }

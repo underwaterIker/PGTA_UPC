@@ -5,84 +5,113 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Security.Policy;
+using System.Collections;
 
 namespace ClassLibrary
 {
     public class Functions
     {
-        // READ FILE
-        public static string[] readFile(string path)
+        // Combine n bytes to a number (bytes have to be already reversed)
+        public static int CombineBytes2Int(byte[] bytes)
         {
-            List<CAT10> listCAT10 = new List<CAT10>();
-            List<CAT21> listCAT21 = new List<CAT21>();
-
-            byte[] file_byte = File.ReadAllBytes(path);
-            string[] file_string = file_byte.Select(x => Convert.ToString(x, 2).PadLeft(8, '0')).ToArray(); // maybe there is a FASTER way to do this
-
-            for (int i=0; i < file_string.Length; )
+            double combinedBytes = bytes[0];
+            for (int i = 1; i < bytes.Length; i++)
             {
-                // CAT
-                int cat = file_byte[i];
-
-                // LENGTH
-                byte[] length_Bytes = { file_byte[i + 2], file_byte[i + 1] }; // order changed because we have 'big endian' and the function is 'little endian'
-                int length = BitConverter.ToInt16(length_Bytes, 0);
-
-                // Save message in corresponding list
-                if (cat == 10)
-                {
-                    string[] cat10data = file_string.Skip(i+3).Take(length-3).ToArray(); // maybe there is a better way to do this?
-                    CAT10 data = new CAT10(cat10data);
-                    listCAT10.Add(data);
-                }
-                if (cat == 21)
-                {
-                    string[] cat21data = file_string.Skip(i + 3).Take(length-3).ToArray(); // maybe there is a better way to do this?
-                    CAT21 data = new CAT21(cat21data);
-                    listCAT21.Add(data);
-                }
-                i = i + length;
+                combinedBytes += Math.Pow(2, 8 * i) * bytes[i];
             }
-            return file_string;
+            return (int)combinedBytes;
         }
 
-        // A2 Complement function
-        public static int TwosComplement2Int(string str)
+        // A2 Complement function from Bytes (bytes have to be already reversed)
+        public static int TwosComplement2Int_fromBytes(byte[] bytes)
         {
-            if (str[0] == '1')
+            BitArray bits = new BitArray(bytes);
+
+            if (bits[bits.Length-1] == true)
             {
-                // Ones complement done with str.replace()
-                StringBuilder onesComplement = new StringBuilder(str);
-                onesComplement = onesComplement.Replace('0', '2');
-                onesComplement = onesComplement.Replace('1', '0');
-                onesComplement = onesComplement.Replace('2', '1');
+                // Ones complement
+                for (int i = 0; i < bits.Length; i++)
+                {
+                    bits[i] = !bits[i];
+                }
 
                 // Twos complement
-                StringBuilder twosComplement = onesComplement;
-                for (int i = 0; i < twosComplement.Length; i++)
+                for (int i = 0; i < bits.Length; i++)
                 {
-                    int index = twosComplement.Length - i - 1;
-                    if (twosComplement[index] == '1')
+                    if (bits[i] == true)
                     {
-                        twosComplement.Remove(index, 1).Insert(index, "0");
-                        //twosComplement[index] = '0';
+                        bits[i] = false;
                     }
                     else
                     {
-                        twosComplement.Remove(index, 1).Insert(index, "1");
-                        //twosComplement[index] = '1';
+                        bits[i] = true;
                         break;
                     }
                 }
-                return -Bin2Num(twosComplement.ToString());
+                return -BitArray2Int(bits);
             }
             else
             {
-                return Bin2Num(str);
+                return BitArray2Int(bits);
             }
+
         }
 
-        // CONVERTER FUNCTIONS
+        // A2 Complement function from BitArray (bytes have to be already reversed)
+        public static int TwosComplement2Int_fromBitArray(BitArray bits)
+        {
+            if (bits[bits.Length - 1] == true)
+            {
+                // Ones complement
+                for (int i = 0; i < bits.Length; i++)
+                {
+                    bits[i] = !bits[i];
+                }
+
+                // Twos complement
+                for (int i = 0; i < bits.Length; i++)
+                {
+                    if (bits[i] == true)
+                    {
+                        bits[i] = false;
+                    }
+                    else
+                    {
+                        bits[i] = true;
+                        break;
+                    }
+                }
+                return -BitArray2Int(bits);
+            }
+            else
+            {
+                return BitArray2Int(bits);
+            }
+
+        }
+
+        // BitArray to a number
+        // Si hay mas de 8 bits (mas de 1 byte), el array de bytes ya tien que estar Reversed() para que esta funcion funcione
+        public static int BitArray2Int(BitArray bits)
+        {
+            int value = 0;
+
+            for (int i = 0; i < bits.Count; i++)
+            {
+                if (bits[i])
+                    value += Convert.ToInt32(Math.Pow(2, i));
+            }
+
+            return value;
+        }
+
+
+
+
+
+
+
+        /// TO REMOVE IN A FUTURE ???
         public static int Bin2Num(string bin)
         {
             return Convert.ToInt32(bin, 2);
@@ -99,35 +128,6 @@ namespace ClassLibrary
             string binary = Convert.ToString(Convert.ToInt32(hex, 16), 2).PadLeft(hex.Length * 4, '0');
             return binary;
         }
-
-        // READ FILE CONVERTING HEX TO BIN
-        public static string[] readFile_Hex2Bin(string[] fileHex)
-        {
-            
-            string[] fileBin = new string[] {};
-            //string[] fileBin = new string[100];
-            for (int i = 0; i <= fileHex.Length; i++)
-            {
-                fileBin[i] = Hex2Bin(fileHex[i]);
-            }
-            return fileBin;
-        }
-
-        // CAT & LENGTH
-        public static int cat(string cat)
-        {
-            int category = Bin2Num(cat);
-            return category;
-        }
-
-        public static int length(string octet1, string octet2)
-        {
-            string octet12 = octet1 + octet2;
-            int length = Bin2Num(octet12);
-            return length;
-        }
-
-        // FSPEC
 
     }
 }

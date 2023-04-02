@@ -8,11 +8,11 @@ namespace ClassLibrary
 {
     public class CAT21
     {
-        string[] data;
+        byte[] CAT21_message;
 
-        public CAT21(string[] message)
+        public CAT21(byte[] message)
         {
-            this.data = message;
+            this.CAT21_message = message;
         }
     }
 }
