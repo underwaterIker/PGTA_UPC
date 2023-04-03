@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
-    public class CAT10_dict
+    public class CAT10_Dict
     {
         // NEEDED STRINGS
         // 2 bits

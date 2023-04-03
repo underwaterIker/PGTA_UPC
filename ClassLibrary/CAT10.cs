@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,157 +12,299 @@ namespace ClassLibrary
     public class CAT10
     {
         // Content of the CAT10 message
-        byte[] CAT10_message; // Maybe its useless
-        
+        byte[] message { get; set; } // Maybe its useless
+
+        // Bytes of the FSPEC
+        public byte[] FSPEC { get; set; }
+
         // Where the decodificated data will be stored
-        public Data data = new Data();
+        public CAT10_Data data = new CAT10_Data();
+
 
         // CONSTRUCTOR
         public CAT10(byte[] message)
         {
-            this.CAT10_message = message; // Maybe its useless
+            this.message = message; // Maybe its useless
 
+            FSPEC_Decodification(message);
 
-            // Aqui dentro vamos a ir decodificando el mensaje usando las funciones que vamos
-            // a crear en esta misma clase. De esta manera, cuando llamemos a esta funcion ya
-            // va a quedar todo decodificado
         }
-
-        public CAT10() { }
 
         
         // METHODS
-        // CAT10 Decodification function
-        private void Decodification(string Type, string[] dataitems, int numoctet)
+        // CAT10 Decodification function (with FSPEC)
+        private void FSPEC_Decodification(byte[] message)
         {
-
-            switch (Type)
+            // Calculate the number of bytes that the FSPEC has
+            int FSPEC_numberOfBytes = 1;
+            for (int i = 0; i < 4; i++)
             {
-                case "MessageType":
-                    //MessageType(dataitems[numoctet]);
-
+                BitArray FSPEC_1byte_bits = new BitArray(new byte[1] { message[i] });
+                if (FSPEC_1byte_bits[0] == true)
+                {
+                    FSPEC_numberOfBytes += 1;
+                }
+                else
+                {
                     break;
+                }
+            }
 
-                case "DataSourceIdentifier":
-                    //DataSourceIdentifier(dataitems);
+            // Makes the byte array of FSPEC
+            byte[] FSPEC_bytes = new byte[FSPEC_numberOfBytes];
+            for (int i = 0; i < FSPEC_numberOfBytes; i++)
+            {
+                FSPEC_bytes[i] = message[i];
+            }
+            this.FSPEC = FSPEC_bytes;
 
-                    break;
+            // We can start decoding
+            int byteSum_index = FSPEC_numberOfBytes; // Index inside the byte[] message
 
-                case "Position in Cartesian Co-ordinates":
-                    //PositionCartesianCoordinates()
-                    numoctet = numoctet + 3;
-                    break;
+            for (int i = 0; i < FSPEC_numberOfBytes; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        BitArray FSPEC_byte1_bits = new BitArray(new byte[1] { FSPEC_bytes[i] });
 
-                case " TargetReportDescriptor":
-                    //TargetReportDescriptor();
-                    numoctet = numoctet + 4;
-                    break;
+                        if (FSPEC_byte1_bits[7] == true)
+                        {
+                            byte[] bytes = new byte[2] { message[byteSum_index], message[byteSum_index + 1] };
+                            DataSourceIdentifier(bytes);
+                            byteSum_index += 2;
+                        }
+                        if (FSPEC_byte1_bits[6] == true)
+                        {
+                            byte byte1 = message[byteSum_index];
+                            MessageType(byte1);
+                            byteSum_index += 1;
+                        }
+                        if (FSPEC_byte1_bits[5] == true)
+                        {
+                            byte[] bytes;
 
-                case "MeasuredPositioninPolarCoordinates":
-                    //MeasuredPositioninPolarCoordinates();
-                    numoctet = numoctet + 5;
-                    break;
+                            int bytesAvailable = message.Length - byteSum_index;
+                            if (bytesAvailable < 3)
+                            {
+                                bytes = new byte[bytesAvailable];
+                                for (int j = 0; j < bytesAvailable; j++)
+                                {
+                                    bytes[j] = message[byteSum_index + j];
+                                }
+                            }
+                            else
+                            {
+                                bytes = new byte[3] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2] };
+                            }
 
-                case "Position in WGS - 84 Co - ordinates":
-                    //PositionWGS84Coordinates()
-                    numoctet = numoctet + 6;
-                    break;
+                            int numBytes = TargetReportDescriptor(bytes);
+                            byteSum_index += numBytes;
+                        }
+                        if (FSPEC_byte1_bits[4] == true)
+                        {
+                            byte[] bytes = new byte[3] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2] };
+                            TimeofDay(bytes);
+                            byteSum_index += 3;
+                        }
+                        if (FSPEC_byte1_bits[3] == true)
+                        {
+                            byte[] bytes = new byte[8] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2], message[byteSum_index + 3], message[byteSum_index + 4], message[byteSum_index + 5], message[byteSum_index + 6], message[byteSum_index + 7] };
+                            PositionWGS84Coordinates(bytes);
+                            byteSum_index += 8;
+                        }
+                        if (FSPEC_byte1_bits[2] == true)
+                        {
+                            byte[] bytes = new byte[4] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2], message[byteSum_index + 3] };
+                            MeasuredPositionPolarCoordinates(bytes);
+                            byteSum_index += 4;
+                        }
+                        if (FSPEC_byte1_bits[1] == true)
+                        {
+                            byte[] bytes = new byte[4] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2], message[byteSum_index + 3] };
+                            PositionCartesianCoordinates(bytes);
+                            byteSum_index += 4;
+                        }
 
-                case "SystemStatusMessageType":
-                    numoctet = numoctet + 7;
-                    break;
+                        break;
 
-                case "StandardDeviationPosition":
-                    numoctet = numoctet + 8;
-                    break;
+                    case 1:
+                        BitArray FSPEC_byte2_bits = new BitArray(new byte[1] { FSPEC_bytes[i] });
 
-                case "Mode - 3 / A Code in Octal Representation":
-                    //Mode3ACodeOctalRepresentation
-                    numoctet = numoctet + 9;
-                    break;
+                        if (FSPEC_byte2_bits[7] == true)
+                        {
+                            byte[] bytes = new byte[4] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2], message[byteSum_index + 3] };
+                            CalculatedTrackVelocityPolarCoordinates(bytes);
+                            byteSum_index += 4;
+                        }
+                        if (FSPEC_byte2_bits[6] == true)
+                        {
+                            byte[] bytes = new byte[4] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2], message[byteSum_index + 3] };
+                            CalculatedTrackVelocityCartesianCoordinates(bytes);
+                            byteSum_index += 4;
+                        }
+                        if (FSPEC_byte2_bits[5] == true)
+                        {
+                            byte[] bytes = new byte[2] { message[byteSum_index], message[byteSum_index + 1] };
+                            TrackNumber(bytes);
+                            byteSum_index += 2;
+                        }
+                        if (FSPEC_byte2_bits[4] == true)
+                        {
+                            byte[] bytes;
 
-                case "Flight Level in Binary Representation ":
-                    //FlightLevelBinaryRepresentation
-                    numoctet = numoctet + 10;
-                    break;
+                            int bytesAvailable = message.Length - byteSum_index;
+                            if (bytesAvailable < 3)
+                            {
+                                bytes = new byte[bytesAvailable];
+                                for (int j = 0; j < bytesAvailable; j++)
+                                {
+                                    bytes[j] = message[byteSum_index+j];
+                                }
+                            }
+                            else
+                            {
+                                bytes = new byte[3] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2] };
+                            }
+                            
+                            int numBytes = TrackStatus(bytes);
+                            byteSum_index += numBytes;
+                        }
+                        if (FSPEC_byte2_bits[3] == true)
+                        {
+                            byte[] bytes = new byte[2] { message[byteSum_index], message[byteSum_index + 1] };
+                            Mode3ACodeOctalRepresentation(bytes);
+                            byteSum_index += 2;
+                        }
+                        if (FSPEC_byte2_bits[2] == true)
+                        {
+                            byte[] bytes = new byte[3] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2] };
+                            TargetAddress(bytes);
+                            byteSum_index += 3;
+                        }
+                        if (FSPEC_byte2_bits[1] == true)
+                        {
+                            byte[] bytes = new byte[7] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2], message[byteSum_index + 3], message[byteSum_index + 4], message[byteSum_index + 5], message[byteSum_index + 6] };
+                            TargetIdentification(bytes);
+                            byteSum_index += 7;
+                        }
 
-                case "Measured Height":
-                    numoctet = numoctet + 11;
-                    break;
+                        break;
 
-                case "AmplitudPrimayPlot":
-                    numoctet = numoctet + 12;
-                    break;
+                    case 2:
+                        BitArray FSPEC_byte3_bits = new BitArray(new byte[1] { FSPEC_bytes[i] });
 
-                case "TimeofDay":
-                    numoctet = numoctet + 13;
-                    break;
+                        if (FSPEC_byte3_bits[7] == true)
+                        {
+                            int REP = message[byteSum_index];
+                            byteSum_index += 1;
+                            int numberOfBytes = REP * 8;
+                            byte[] bytes = new byte[numberOfBytes];
+                            for (i = 0; i < numberOfBytes; i++)
+                            {
+                                bytes[i] = message[byteSum_index + i];
+                            }
+                            ModeSMBData(bytes, REP);
+                            byteSum_index += numberOfBytes;
+                        }
+                        if (FSPEC_byte3_bits[6] == true)
+                        {
+                            byte byte1 = message[byteSum_index];
+                            VehicleFleetIdentification(byte1);
+                            byteSum_index += 1;
+                        }
+                        if (FSPEC_byte3_bits[5] == true)
+                        {
+                            byte[] bytes = new byte[2] { message[byteSum_index], message[byteSum_index + 1] };
+                            FlightLevelBinaryRepresentation(bytes);
+                            byteSum_index += 2;
+                        }
+                        if (FSPEC_byte3_bits[4] == true)
+                        {
+                            byte[] bytes = new byte[2] { message[byteSum_index], message[byteSum_index + 1] };
+                            MeasuredHeight(bytes);
+                            byteSum_index += 2;
+                        }
+                        if (FSPEC_byte3_bits[3] == true)
+                        {
+                            byte[] bytes;
 
-                case "TrackNumber":
+                            int bytesAvailable = message.Length - byteSum_index;
+                            if (bytesAvailable < 3)
+                            {
+                                bytes = new byte[bytesAvailable];
+                                for (int j = 0; j < bytesAvailable; j++)
+                                {
+                                    bytes[j] = message[byteSum_index + j];
+                                }
+                            }
+                            else
+                            {
+                                bytes = new byte[3] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2] };
+                            }
 
-                    break;
+                            int numBytes = TargetSizeAndOrientation(bytes);
+                            byteSum_index += numBytes;
+                        }
+                        if (FSPEC_byte3_bits[2] == true)
+                        {
+                            byte byte1 = message[byteSum_index];
+                            SystemStatus(byte1);
+                            byteSum_index += 1;
+                        }
+                        if (FSPEC_byte3_bits[1] == true)
+                        {
+                            byte byte1 = message[byteSum_index];
+                            PreprogrammedMessage(byte1);
+                            byteSum_index += 1;
+                        }
 
-                case "Track Status":
+                        break;
 
-                    break;
+                    case 3:
+                        BitArray FSPEC_byte4_bits = new BitArray(new byte[1] { FSPEC_bytes[i] });
 
-                case "Calculated Track Velocity in Polar Co-ordinates":
+                        if (FSPEC_byte4_bits[7] == true)
+                        {
+                            byte[] bytes = new byte[4] { message[byteSum_index], message[byteSum_index + 1], message[byteSum_index + 2], message[byteSum_index + 3] };
+                            StandardDeviationPosition(bytes);
+                            byteSum_index += 4;
+                        }
+                        if (FSPEC_byte4_bits[6] == true)
+                        {
+                            int REP = message[byteSum_index];
+                            byteSum_index += 1;
+                            int numberOfBytes = REP * 2;
+                            byte[] bytes = new byte[numberOfBytes];
+                            for (i = 0; i < numberOfBytes; i++)
+                            {
+                                bytes[i] = message[byteSum_index + i];
+                            }
+                            Presence(bytes, REP);
+                            byteSum_index += numberOfBytes;
+                        }
+                        if (FSPEC_byte4_bits[5] == true)
+                        {
+                            byte byte1 = message[byteSum_index];
+                            AmplitudePrimayPlot(byte1);
+                            byteSum_index += 1;
+                        }
+                        if (FSPEC_byte4_bits[4] == true)
+                        {
+                            byte[] bytes = new byte[2] { message[byteSum_index], message[byteSum_index + 1] };
+                            CalculatedAcceleration(bytes);
+                            byteSum_index += 2;
+                        }
 
-                    break;
-
-                case "Calculated Track Velocity in Cartesian Co-ordinates":
-
-                    break;
-
-                case "Calculated Acceleration":
-
-                    break;
-
-                case "TargetAdress":
-
-                    break;
-
-                case "Target Identification":
-
-                    break;
-
-                case " Mode S MB Data":
-
-                    break;
-
-                case "Target Size & Orientation":
-
-                    break;
-
-
-                case "Presence":
-
-                    break;
-
-                case "VehicleFleetIdentification":
-
-                    break;
-
-                case "PreprogrammeMessage":
-
-                    break;
-
-                case "Standard Deviation of Position":
-
-
-                    break;
-
-                case " System Status":
-
-                    break;
-
+                        break;
+                }
             }
         }
 
         // Data Item I010/000, Message Type
         private void MessageType(byte octet1)
         {
-            data.MessageType = CAT10_dict.MessageType_dict[octet1];
+            data.MessageType = CAT10_Dict.MessageType_dict[octet1];
         }
 
         // Data Item I010/010, Data Source Identifier
@@ -174,36 +317,43 @@ namespace ClassLibrary
         }
 
         // Data Item I010/020, Target Report Descriptor
-        private void TargetReportDescriptor(byte[] octets)
+        private int TargetReportDescriptor(byte[] octets)
         {
             BitArray bits = new BitArray(octets);
             
             string TYP_boolString = bits[7].ToString() + bits[6] + bits[5];
-            data.TargetReportDescriptor_TYP = CAT10_dict.TargetReportDescriptor_TYP_dict[TYP_boolString];
-            data.TargetReportDescriptor_DCR = CAT10_dict.TargetReportDescriptor_DCR_dict[bits[4]];
-            data.TargetReportDescriptor_CHN = CAT10_dict.TargetReportDescriptor_CHN_dict[bits[3]];
-            data.TargetReportDescriptor_GBS = CAT10_dict.TargetReportDescriptor_GBS_dict[bits[2]];
-            data.TargetReportDescriptor_CRT = CAT10_dict.TargetReportDescriptor_CRT_dict[bits[1]];
+            data.TargetReportDescriptor_TYP = CAT10_Dict.TargetReportDescriptor_TYP_dict[TYP_boolString];
+            data.TargetReportDescriptor_DCR = CAT10_Dict.TargetReportDescriptor_DCR_dict[bits[4]];
+            data.TargetReportDescriptor_CHN = CAT10_Dict.TargetReportDescriptor_CHN_dict[bits[3]];
+            data.TargetReportDescriptor_GBS = CAT10_Dict.TargetReportDescriptor_GBS_dict[bits[2]];
+            data.TargetReportDescriptor_CRT = CAT10_Dict.TargetReportDescriptor_CRT_dict[bits[1]];
 
             if (bits[0] == true)
             {
-                data.TargetReportDescriptor_SIM = CAT10_dict.TargetReportDescriptor_SIM_dict[bits[15]];
-                data.TargetReportDescriptor_TST = CAT10_dict.TargetReportDescriptor_TST_dict[bits[14]];
-                data.TargetReportDescriptor_RAB = CAT10_dict.TargetReportDescriptor_RAB_dict[bits[13]];
+                data.TargetReportDescriptor_FirstExtent_flag = true;
+
+                data.TargetReportDescriptor_SIM = CAT10_Dict.TargetReportDescriptor_SIM_dict[bits[15]];
+                data.TargetReportDescriptor_TST = CAT10_Dict.TargetReportDescriptor_TST_dict[bits[14]];
+                data.TargetReportDescriptor_RAB = CAT10_Dict.TargetReportDescriptor_RAB_dict[bits[13]];
                 string LOP_boolString = bits[12].ToString() + bits[11];
-                data.TargetReportDescriptor_LOP = CAT10_dict.TargetReportDescriptor_LOP_dict[LOP_boolString];
+                data.TargetReportDescriptor_LOP = CAT10_Dict.TargetReportDescriptor_LOP_dict[LOP_boolString];
                 string TOT_boolString = bits[10].ToString() + bits[9];
-                data.TargetReportDescriptor_TOT = CAT10_dict.TargetReportDescriptor_TOT_dict[TOT_boolString];
+                data.TargetReportDescriptor_TOT = CAT10_Dict.TargetReportDescriptor_TOT_dict[TOT_boolString];
 
                 if(bits[8] == true)
                 {
-                    data.TargetReportDescriptor_SPI = CAT10_dict.TargetReportDescriptor_SPI_dict[bits[23]];
+                    data.TargetReportDescriptor_SecondExtent_flag = true;
+
+                    data.TargetReportDescriptor_SPI = CAT10_Dict.TargetReportDescriptor_SPI_dict[bits[23]];
+                    return 3;
                 }
+                return 2;
             }
+            return 1;
         }
 
         //Data Item I010/040, Measured Position in Polar Co-ordinates
-        private void MeasuredPositioninPolarCoordinates(byte[] octets)
+        private void MeasuredPositionPolarCoordinates(byte[] octets)
         {
             double LSB_RHO = 1; // m
             double LSB_theta = 360 / Math.Pow(2, 16); // degrees
@@ -229,8 +379,8 @@ namespace ClassLibrary
             double latitude  = LSB * Functions.TwosComplement2Int_fromBytes(latitude_bytes);
             double longitude = LSB * Functions.TwosComplement2Int_fromBytes(longitude_bytes);
 
-            data.PositionWGS84Coordinates[0] = latitude;
-            data.PositionWGS84Coordinates[1] = longitude;
+            data.PositionWGS84Coordinates_latitude = latitude;
+            data.PositionWGS84Coordinates_longitude = longitude;
         }
 
         // Data Item I010/042, Position in Cartesian Co-ordinates
@@ -244,20 +394,20 @@ namespace ClassLibrary
             double x = LSB * Functions.TwosComplement2Int_fromBytes(x_bytes);
             double y = LSB * Functions.TwosComplement2Int_fromBytes(y_bytes);
 
-            data.PositionCartesianCoordinates[0] = x;
-            data.PositionCartesianCoordinates[1] = y;
+            data.PositionCartesianCoordinates_x = x;
+            data.PositionCartesianCoordinates_y = y;
         }
 
         // Data Item I010/060, Mode-3/A Code in Octal Representation
         private void Mode3ACodeOctalRepresentation(byte[] octets)
         {
-            octets.Reverse();
+            Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
             // BE CAREFUL WITH BITS AND BYTES ORDER !!!!!!!!!
-            data.Mode3ACode_V = CAT10_dict.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
-            data.Mode3ACode_G = CAT10_dict.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
-            data.Mode3ACode_L = CAT10_dict.Mode3ACodeL_dict[bits[13]];
+            data.Mode3ACode_V = CAT10_Dict.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
+            data.Mode3ACode_G = CAT10_Dict.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
+            data.Mode3ACode_L = CAT10_Dict.Mode3ACodeL_dict[bits[13]];
 
             // We create BitArrays for A, B, C & D and fill them with the corresponding bits
             BitArray bits_A = new BitArray(3);
@@ -284,11 +434,11 @@ namespace ClassLibrary
         // Data Item I010/090, Flight Level in Binary Representation
         private void FlightLevelBinaryRepresentation(byte[] octets)
         {
-            octets.Reverse();
+            Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
-            data.FlightLevel_V = CAT10_dict.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
-            data.FlightLevel_G = CAT10_dict.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
+            data.FlightLevel_V = CAT10_Dict.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
+            data.FlightLevel_G = CAT10_Dict.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
 
             bits.Length = bits.Length - 2;
 
@@ -317,48 +467,56 @@ namespace ClassLibrary
         // Data Item I010/140: Time of Day
         private void TimeofDay(byte[] octets)
         {
-            octets.Reverse();
+            Array.Reverse(octets);
 
-            double LSB = 1 / 128; // s
+            double LSB = (double)1 / 128; // s
             double timeOfDay = LSB * Functions.CombineBytes2Int(octets);
-            data.TimeofDay = timeOfDay;
+
+            data.TimeOfDay = timeOfDay;
         }
 
         // Data Item I010/161: Track Number
         private void TrackNumber(byte[] octets)
         {
-            octets.Reverse();
+            Array.Reverse(octets);
 
             data.TrackNumber = Functions.CombineBytes2Int(octets);
         }
 
         // Data Item I010/170, Track Status
-        private void TrackStatus(byte[] octets)
+        private int TrackStatus(byte[] octets)
         {
             BitArray bits = new BitArray(octets);
 
-            data.TrackStatus_CNF = CAT10_dict.TrackStatus_CNF_dict[bits[7]];
-            data.TrackStatus_TRE = CAT10_dict.TrackStatus_TRE_dict[bits[6]];
+            data.TrackStatus_CNF = CAT10_Dict.TrackStatus_CNF_dict[bits[7]];
+            data.TrackStatus_TRE = CAT10_Dict.TrackStatus_TRE_dict[bits[6]];
             string CST_boolString = bits[5].ToString() + bits[4];
-            data.TrackStatus_CST = CAT10_dict.TrackStatus_CST_dict[CST_boolString];
-            data.TrackStatus_MAH = CAT10_dict.TrackStatus_MAH_dict[bits[3]];
-            data.TrackStatus_TCC = CAT10_dict.TrackStatus_TCC_dict[bits[2]];
-            data.TrackStatus_STH = CAT10_dict.TrackStatus_STH_dict[bits[1]];
+            data.TrackStatus_CST = CAT10_Dict.TrackStatus_CST_dict[CST_boolString];
+            data.TrackStatus_MAH = CAT10_Dict.TrackStatus_MAH_dict[bits[3]];
+            data.TrackStatus_TCC = CAT10_Dict.TrackStatus_TCC_dict[bits[2]];
+            data.TrackStatus_STH = CAT10_Dict.TrackStatus_STH_dict[bits[1]];
 
             if (bits[0] == true)
             {
+                data.TrackStatus_FirstExtent_flag = true;
+
                 string TOM_boolString = bits[15].ToString() + bits[14];
-                data.TrackStatus_TOM = CAT10_dict.TrackStatus_TOM_dict[TOM_boolString];
+                data.TrackStatus_TOM = CAT10_Dict.TrackStatus_TOM_dict[TOM_boolString];
                 string DOU_boolString = bits[13].ToString() + bits[12] + bits[11];
-                data.TrackStatus_DOU = CAT10_dict.TrackStatus_DOU_dict[DOU_boolString];
+                data.TrackStatus_DOU = CAT10_Dict.TrackStatus_DOU_dict[DOU_boolString];
                 string MRS_boolString = bits[10].ToString() + bits[9];
-                data.TrackStatus_MRS = CAT10_dict.TrackStatus_MRS_dict[MRS_boolString];
+                data.TrackStatus_MRS = CAT10_Dict.TrackStatus_MRS_dict[MRS_boolString];
 
                 if (bits[8] == true)
                 {
-                    data.TrackStatus_GHO = CAT10_dict.TrackStatus_GHO_dict[bits[23]];
+                    data.TrackStatus_SecondExtent_flag = true;
+
+                    data.TrackStatus_GHO = CAT10_Dict.TrackStatus_GHO_dict[bits[23]];
+                    return 3;
                 }
+                return 2;
             }
+            return 1;
         }
 
         // Data Item I010/200, Calculated Track Velocity in Polar Co-ordinates
@@ -373,8 +531,8 @@ namespace ClassLibrary
             double GroundSpeed = LSB_GroundSpeed * Functions.TwosComplement2Int_fromBytes(GroundSpeed_bytes);
             double TrackAngle = LSB_TrackAngle * Functions.TwosComplement2Int_fromBytes(TrackAngle_bytes);
 
-            data.CalculatedTrackVelocityPolarCoordinates[0] = GroundSpeed;
-            data.CalculatedTrackVelocityPolarCoordinates[1] = TrackAngle;
+            data.CalculatedTrackVelocityPolarCoordinates_GroundSpeed = GroundSpeed;
+            data.CalculatedTrackVelocityPolarCoordinates_TrackAngle = TrackAngle;
         }
 
         // Data Item I010/202, Calculated Track Velocity in Cartesian Co-ordinates
@@ -388,8 +546,8 @@ namespace ClassLibrary
             double Vx = LSB * Functions.TwosComplement2Int_fromBytes(Vx_bytes);
             double Vy = LSB * Functions.TwosComplement2Int_fromBytes(Vy_bytes);
 
-            data.CalculatedTrackVelocityCartesianCoordinates[0] = Vx;
-            data.CalculatedTrackVelocityCartesianCoordinates[1] = Vy;
+            data.CalculatedTrackVelocityCartesianCoordinates_Vx = Vx;
+            data.CalculatedTrackVelocityCartesianCoordinates_Vy = Vy;
         }
 
         // Data Item I010/210, Calculated Acceleration
@@ -403,8 +561,8 @@ namespace ClassLibrary
             double Ax = LSB * Functions.TwosComplement2Int_fromBytes(Ax_bytes);
             double Ay = LSB * Functions.TwosComplement2Int_fromBytes(Ay_bytes);
 
-            data.CalculatedAcceleration[0] = Ax;
-            data.CalculatedAcceleration[1] = Ay;
+            data.CalculatedAcceleration_Ax = Ax;
+            data.CalculatedAcceleration_Ay = Ay;
         }
 
         // Data Item I010/220, Target Address
@@ -421,7 +579,7 @@ namespace ClassLibrary
         // Data Item I010/245, Target Identification
         private void TargetIdentification(byte[] octets)
         {
-            octets.Reverse();
+            Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
             // Characters
@@ -436,6 +594,7 @@ namespace ClassLibrary
 
             for (int i=0; i<bits.Length-8; i++)
             {
+                // Maybe it's better to use Switch Case ????
                 if (i < 6)
                 {
                     char8_bits[i] = bits[i];
@@ -479,36 +638,35 @@ namespace ClassLibrary
             int char2_int = Functions.BitArray2Int(char2_bits);
             int char1_int = Functions.BitArray2Int(char1_bits);
 
-            string char8 = CAT10_dict.TargetIdentificationCharacters_dict[char8_int];
-            string char7 = CAT10_dict.TargetIdentificationCharacters_dict[char7_int];
-            string char6 = CAT10_dict.TargetIdentificationCharacters_dict[char6_int];
-            string char5 = CAT10_dict.TargetIdentificationCharacters_dict[char5_int];
-            string char4 = CAT10_dict.TargetIdentificationCharacters_dict[char4_int];
-            string char3 = CAT10_dict.TargetIdentificationCharacters_dict[char3_int];
-            string char2 = CAT10_dict.TargetIdentificationCharacters_dict[char2_int];
-            string char1 = CAT10_dict.TargetIdentificationCharacters_dict[char1_int];
+            string char8 = CAT10_Dict.TargetIdentificationCharacters_dict[char8_int];
+            string char7 = CAT10_Dict.TargetIdentificationCharacters_dict[char7_int];
+            string char6 = CAT10_Dict.TargetIdentificationCharacters_dict[char6_int];
+            string char5 = CAT10_Dict.TargetIdentificationCharacters_dict[char5_int];
+            string char4 = CAT10_Dict.TargetIdentificationCharacters_dict[char4_int];
+            string char3 = CAT10_Dict.TargetIdentificationCharacters_dict[char3_int];
+            string char2 = CAT10_Dict.TargetIdentificationCharacters_dict[char2_int];
+            string char1 = CAT10_Dict.TargetIdentificationCharacters_dict[char1_int];
 
             data.TargetIdentification_Characters = char1 + char2 + char3 + char4 + char5 + char6 + char7 + char8;
 
             // STI
-            BitArray STI_bits = new BitArray(octets[6]);
+            BitArray STI_bits = new BitArray(new byte[1] { octets[6] });
 
             string STI_boolString = STI_bits[7].ToString() + STI_bits[6];
 
-            data.TargetIdentification_STI = CAT10_dict.TartgetIdentificationSTI_dict[STI_boolString];
+            data.TargetIdentification_STI = CAT10_Dict.TartgetIdentificationSTI_dict[STI_boolString];
         }
 
         // Data Item I010/250, Mode S MB Data
-        private void ModeSMBData(byte[] octets)
+        private void ModeSMBData(byte[] octets, int REP)
         {
-            int REP = octets[0];
             data.ModeSMBData_REP = REP; // maybe it is not necessary to save REP in Data
 
-            for(int i = 0; i < 1+REP; i++)
+            for(int i = 0; i < REP; i++)
             {
-                byte[] MBData_bytes = new byte[7] { octets[8*i + 7], octets[8*i + 6], octets[8*i + 5], octets[8*i + 4], octets[8*i + 3], octets[8*i + 2], octets[8*i + 1] }; // Reversed
+                byte[] MBData_bytes = new byte[7] { octets[8*i + 6], octets[8*i + 5], octets[8*i + 4], octets[8*i + 3], octets[8*i + 2], octets[8*i + 1], octets[8*i + 0] }; // Reversed
 
-                BitArray BDS_bits = new BitArray(octets[8*i + 8]);
+                BitArray BDS_bits = new BitArray(new byte[1] { octets[8*i + 7] });
 
                 BitArray BDS1_bits = new BitArray(4);
                 BDS1_bits[0] = BDS_bits[4];
@@ -533,7 +691,7 @@ namespace ClassLibrary
         }
 
         // Data Item I010/270, Target Size & Orientation
-        private void TargetSizeAndOrientation(byte[] octets)
+        private int TargetSizeAndOrientation(byte[] octets)
         {
             BitArray bits = new BitArray(octets);
 
@@ -561,34 +719,40 @@ namespace ClassLibrary
 
             if (bits[0] == true)
             {
+                data.TargetSizeAndOrientation_FirstExtent_flag = true;
+
                 // Orientation
-                double LSB_Orientation = 360 / 128; // degrees
+                double LSB_Orientation = (double)360 / 128; // degrees
                 double orientation = LSB_Orientation * Functions.BitArray2Int(Orientation_bits);
                 data.TargetSizeAndOrientation_Orientation = orientation;
 
                 if (bits[8] == true)
                 {
+                    data.TargetSizeAndOrientation_SecondExtent_flag = true;
+
                     // Width
                     int LSB_Width = 1; // m
                     int width = LSB_Width * Functions.BitArray2Int(Width_bits);
                     data.TargetSizeAndOrientation_Width = width;
+                    return 3;
                 }
+                return 2;
             }
+            return 1;
         }
 
         // Data Item I010/280, Presence
-        private void Presence(byte[] octets)
+        private void Presence(byte[] octets, int REP)
         {
-            int REP = octets[0];
             data.Presence_REP = REP; // maybe it is not necessary to save REP in Data
 
             int LSB_DRHO = 1; // m
             double LSB_DTHETA = 0.15; //degrees
 
-            for (int i = 0; i < 1 + REP; i++)
+            for (int i = 0; i < REP; i++)
             {
-                int DRHO = LSB_DRHO * octets[2*i + 1];
-                double DTHETA = LSB_DTHETA * octets[2*i +2];
+                int DRHO = LSB_DRHO * octets[2*i];
+                double DTHETA = LSB_DTHETA * octets[2*i + 1];
 
                 data.Presence_DRHO[i] = DRHO;
                 data.Presence_DTHETA[i] = DTHETA;
@@ -598,20 +762,20 @@ namespace ClassLibrary
         // Data Item I010/300, Vehicle Fleet Identification
         private void VehicleFleetIdentification(byte octet1)
         {
-            data.VehicleFleetIdentification = CAT10_dict.VehicleFleetIdentification_VFI_dict[octet1];
+            data.VehicleFleetIdentification = CAT10_Dict.VehicleFleetIdentification_VFI_dict[octet1];
         }
 
         // Data Item I010/310, Pre-programmed Message
         private void PreprogrammedMessage(byte octet1)
         {
-            BitArray bits = new BitArray(octet1);
+            BitArray bits = new BitArray(new byte[1] { octet1 });
 
-            data.PreprogrammedMessage_TRB = CAT10_dict.PreprogrammedMessage_TRB_dict[bits[7]];
+            data.PreprogrammedMessage_TRB = CAT10_Dict.PreprogrammedMessage_TRB_dict[bits[7]];
 
             //bits.Length = bits.Length - 1;
             bits[7] = false;
 
-            data.PreprogrammedMessage_MSG = CAT10_dict.PreprogrammedMessage_MSG_dict[Functions.BitArray2Int(bits)];
+            data.PreprogrammedMessage_MSG = CAT10_Dict.PreprogrammedMessage_MSG_dict[Functions.BitArray2Int(bits)];
         }
 
         // Data Item I010/500, Standard Deviation of Position
@@ -631,16 +795,16 @@ namespace ClassLibrary
         }
 
         // Data Item I010/550, System Status
-        private void SystemStatusMessageType(byte octet1)
+        private void SystemStatus(byte octet1)
         {
-            BitArray bits = new BitArray(octet1);
+            BitArray bits = new BitArray(new byte[1] { octet1 });
 
             string NOGO_boolString = bits[7].ToString() + bits[6];
-            data.SystemStatusMessageType_NOGO = CAT10_dict.SystemStatus_NOGO_dict[NOGO_boolString];
-            data.SystemStatusMessageType_OVL = CAT10_dict.SystemStatus_OVL_dict[bits[5]];
-            data.SystemStatusMessageType_TSV = CAT10_dict.SystemStatus_TSV_dict[bits[4]];
-            data.SystemStatusMessageType_DIV = CAT10_dict.SystemStatus_DIV_dict[bits[3]];
-            data.SystemStatusMessageType_TTF = CAT10_dict.SystemStatus_TTF_dict[bits[2]];
+            data.SystemStatus_NOGO = CAT10_Dict.SystemStatus_NOGO_dict[NOGO_boolString];
+            data.SystemStatus_OVL = CAT10_Dict.SystemStatus_OVL_dict[bits[5]];
+            data.SystemStatus_TSV = CAT10_Dict.SystemStatus_TSV_dict[bits[4]];
+            data.SystemStatus_DIV = CAT10_Dict.SystemStatus_DIV_dict[bits[3]];
+            data.SystemStatus_TTF = CAT10_Dict.SystemStatus_TTF_dict[bits[2]];
         }
         
     }

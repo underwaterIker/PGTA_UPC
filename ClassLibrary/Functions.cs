@@ -14,8 +14,8 @@ namespace ClassLibrary
         // Combine n bytes to a number (bytes have to be already reversed)
         public static int CombineBytes2Int(byte[] bytes)
         {
-            double combinedBytes = bytes[0];
-            for (int i = 1; i < bytes.Length; i++)
+            double combinedBytes = 0;
+            for (int i = 0; i < bytes.Length; i++)
             {
                 combinedBytes += Math.Pow(2, 8 * i) * bytes[i];
             }
@@ -104,7 +104,6 @@ namespace ClassLibrary
 
             return value;
         }
-
 
 
 

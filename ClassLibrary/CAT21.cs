@@ -8,11 +8,20 @@ namespace ClassLibrary
 {
     public class CAT21
     {
-        byte[] CAT21_message;
+        // Content of the CAT21 message
+        byte[] message { get; set; } // Maybe its useless
 
+        // Bytes of the FSPEC
+        public byte[] FSPEC { get; set; }
+
+        // Where the decodificated data will be stored
+        public CAT21_Data data = new CAT21_Data();
+
+
+        // CONSTRUCTOR
         public CAT21(byte[] message)
         {
-            this.CAT21_message = message;
+            this.message = message;
         }
     }
 }

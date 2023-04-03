@@ -55,6 +55,7 @@ namespace ClassLibrary
                     Console.WriteLine("Error");
                 }
                 i = i + length;
+                //i = file_byte.Length;
             }
         }
 

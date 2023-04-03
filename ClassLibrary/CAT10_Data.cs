@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
-    public class Data
+    public class CAT10_Data
     {
         // Data Item I010/000, Message Type
         public string MessageType { get; set; }
@@ -16,6 +16,8 @@ namespace ClassLibrary
         public int DataSourceIdentifier_SIC { get; set; }
 
         // Data Item I010/020, Target Report Descriptor
+        public bool TargetReportDescriptor_FirstExtent_flag { get; set; }
+        public bool TargetReportDescriptor_SecondExtent_flag { get; set; }
         public string TargetReportDescriptor_TYP { get; set; }
         public string TargetReportDescriptor_DCR { get; set; }
         public string TargetReportDescriptor_CHN { get; set; }
@@ -34,10 +36,12 @@ namespace ClassLibrary
         public double MeasuredPositioninPolarCoordinates_THETA { get; set; }
 
         // Data Item I010/041, Position in WGS-84 Co-ordinates
-        public double[] PositionWGS84Coordinates { get; set; }
+        public double PositionWGS84Coordinates_latitude { get; set; }
+        public double PositionWGS84Coordinates_longitude { get; set; }
 
         // Data Item I010/042, Position in Cartesian Co-ordinates
-        public double[] PositionCartesianCoordinates { get; set; }
+        public double PositionCartesianCoordinates_x { get; set; }
+        public double PositionCartesianCoordinates_y { get; set; }
 
         // Data Item I010/060, Mode-3/A Code in Octal Representation
         public string Mode3ACode_V { get; set; }
@@ -57,12 +61,14 @@ namespace ClassLibrary
         public int AmplitudePrimayPlot { get; set; }
 
         // Data Item I010/140: Time of Day
-        public double TimeofDay { get; set; }
+        public double TimeOfDay { get; set; }
 
         // Data Item I010/161: Track Number
         public int TrackNumber { get; set; }
 
         // Data Item I010/170, Track Status
+        public bool TrackStatus_FirstExtent_flag { get; set; }
+        public bool TrackStatus_SecondExtent_flag { get; set; }
         public string TrackStatus_CNF { get; set; }
         public string TrackStatus_TRE { get; set; }
         public string TrackStatus_CST { get; set; }
@@ -75,13 +81,16 @@ namespace ClassLibrary
         public string TrackStatus_GHO { get; set; }
 
         // Data Item I010/200, Calculated Track Velocity in Polar Co-ordinates
-        public double[] CalculatedTrackVelocityPolarCoordinates { get; set; }
+        public double CalculatedTrackVelocityPolarCoordinates_GroundSpeed { get; set; }
+        public double CalculatedTrackVelocityPolarCoordinates_TrackAngle { get; set; }
 
         // Data Item I010/202, Calculated Track Velocity in Cartesian Co-ordinates
-        public double[] CalculatedTrackVelocityCartesianCoordinates { get; set; }
+        public double CalculatedTrackVelocityCartesianCoordinates_Vx { get; set; }
+        public double CalculatedTrackVelocityCartesianCoordinates_Vy { get; set; }
 
         // Data Item I010/210, Calculated Acceleration
-        public double[] CalculatedAcceleration { get; set; }
+        public double CalculatedAcceleration_Ax { get; set; }
+        public double CalculatedAcceleration_Ay { get; set; }
 
         // Data Item I010/220, Target Address
         public string TargetAddress { get; set; }
@@ -97,6 +106,8 @@ namespace ClassLibrary
         public int[] ModeSMBData_BDS2 { get; set; }
 
         // Data Item I010/270, Target Size & Orientation
+        public bool TargetSizeAndOrientation_FirstExtent_flag { get; set; }
+        public bool TargetSizeAndOrientation_SecondExtent_flag { get; set; }
         public int TargetSizeAndOrientation_Length { get; set; }
         public double TargetSizeAndOrientation_Orientation { get; set; }
         public int TargetSizeAndOrientation_Width { get; set; }
@@ -119,10 +130,10 @@ namespace ClassLibrary
         public double StandardDeviationPosition_Coveriance { get; set; }
 
         // Data Item I010/550, System Status
-        public string SystemStatusMessageType_OVL { get; set; }
-        public string SystemStatusMessageType_TSV { get; set; }
-        public string SystemStatusMessageType_DIV { get; set; }
-        public string SystemStatusMessageType_TTF { get; set; }
-        public string SystemStatusMessageType_NOGO { get; set; }
+        public string SystemStatus_OVL { get; set; }
+        public string SystemStatus_TSV { get; set; }
+        public string SystemStatus_DIV { get; set; }
+        public string SystemStatus_TTF { get; set; }
+        public string SystemStatus_NOGO { get; set; }
     }
 }
