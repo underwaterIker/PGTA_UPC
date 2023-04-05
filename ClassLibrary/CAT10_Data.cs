@@ -36,8 +36,8 @@ namespace ClassLibrary
         public double MeasuredPositioninPolarCoordinates_THETA { get; set; }
 
         // Data Item I010/041, Position in WGS-84 Co-ordinates
-        public double PositionWGS84Coordinates_latitude { get; set; }
-        public double PositionWGS84Coordinates_longitude { get; set; }
+        public double PositionWGS84Coordinates_Latitude { get; set; }
+        public double PositionWGS84Coordinates_Longitude { get; set; }
 
         // Data Item I010/042, Position in Cartesian Co-ordinates
         public double PositionCartesianCoordinates_x { get; set; }

@@ -154,10 +154,10 @@ namespace Testing
                             }
                             if (FSPEC_byte1_bits[3] == true)
                             {
-                                double WGS84_latitude = data.PositionWGS84Coordinates_latitude;
+                                double WGS84_latitude = data.PositionWGS84Coordinates_Latitude;
                                 Console.WriteLine(WGS84_latitude);
 
-                                double WGS84_longitude = data.PositionWGS84Coordinates_longitude;
+                                double WGS84_longitude = data.PositionWGS84Coordinates_Longitude;
                                 Console.WriteLine(WGS84_longitude);
                             }
                             if (FSPEC_byte1_bits[2] == true)

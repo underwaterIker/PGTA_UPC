@@ -379,8 +379,8 @@ namespace ClassLibrary
             double latitude  = LSB * Functions.TwosComplement2Int_fromBytes(latitude_bytes);
             double longitude = LSB * Functions.TwosComplement2Int_fromBytes(longitude_bytes);
 
-            data.PositionWGS84Coordinates_latitude = latitude;
-            data.PositionWGS84Coordinates_longitude = longitude;
+            data.PositionWGS84Coordinates_Latitude = latitude;
+            data.PositionWGS84Coordinates_Longitude = longitude;
         }
 
         // Data Item I010/042, Position in Cartesian Co-ordinates
@@ -601,31 +601,31 @@ namespace ClassLibrary
                 }
                 if (i >= 6 && i < 12)
                 {
-                    char7_bits[i] = bits[i];
+                    char7_bits[i - 6] = bits[i];
                 }
                 if (i >= 12 && i < 18)
                 {
-                    char6_bits[i] = bits[i];
+                    char6_bits[i - 12] = bits[i];
                 }
                 if (i >= 18 && i < 24)
                 {
-                    char5_bits[i] = bits[i];
+                    char5_bits[i - 18] = bits[i];
                 }
                 if (i >= 24 && i < 30)
                 {
-                    char4_bits[i] = bits[i];
+                    char4_bits[i - 24] = bits[i];
                 }
                 if (i >= 30 && i < 36)
                 {
-                    char3_bits[i] = bits[i];
+                    char3_bits[i - 30] = bits[i];
                 }
                 if (i >= 36 && i < 42)
                 {
-                    char2_bits[i] = bits[i];
+                    char2_bits[i - 36] = bits[i];
                 }
                 if (i >= 42 && i < 48)
                 {
-                    char1_bits[i] = bits[i];
+                    char1_bits[i - 42] = bits[i];
                 }
             }
 
