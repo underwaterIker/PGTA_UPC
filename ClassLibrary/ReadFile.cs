@@ -19,7 +19,7 @@ namespace ClassLibrary
         {
             byte[] file_byte = File.ReadAllBytes(path);
 
-            for (int i = 0; i < file_byte.Length;)
+            for (int i = 0; i < 40000;)
             {
                 // CAT
                 int cat = file_byte[i];
@@ -51,8 +51,9 @@ namespace ClassLibrary
                 }
                 else
                 {
-                    //Console.WriteLine(cat);
-                    Console.WriteLine("Error");
+                    Console.WriteLine("--------------------------------------------");
+                    Console.WriteLine("ERROR. Not expected category. --> CAT {0}", cat);
+                    Console.WriteLine("--------------------------------------------");
                 }
                 i = i + length;
                 //i = file_byte.Length;

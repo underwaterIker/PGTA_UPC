@@ -27,7 +27,6 @@ namespace ClassLibrary
             this.message = message; // Maybe its useless
 
             FSPEC_Decodification(message);
-
         }
 
         
@@ -200,9 +199,9 @@ namespace ClassLibrary
                             byteSum_index += 1;
                             int numberOfBytes = REP * 8;
                             byte[] bytes = new byte[numberOfBytes];
-                            for (i = 0; i < numberOfBytes; i++)
+                            for (int j = 0; j < numberOfBytes; j++)
                             {
-                                bytes[i] = message[byteSum_index + i];
+                                bytes[j] = message[byteSum_index + j];
                             }
                             ModeSMBData(bytes, REP);
                             byteSum_index += numberOfBytes;
@@ -320,9 +319,14 @@ namespace ClassLibrary
         private int TargetReportDescriptor(byte[] octets)
         {
             BitArray bits = new BitArray(octets);
-            
-            string TYP_boolString = bits[7].ToString() + bits[6] + bits[5];
-            data.TargetReportDescriptor_TYP = CAT10_Dict.TargetReportDescriptor_TYP_dict[TYP_boolString];
+
+            BitArray TYP_bits = new BitArray(3);
+            TYP_bits[0] = bits[5];
+            TYP_bits[1] = bits[6];
+            TYP_bits[2] = bits[7];
+            int TYP_int = Functions.BitArray2Int(TYP_bits);
+
+            data.TargetReportDescriptor_TYP = CAT10_Dict.TargetReportDescriptor_TYP_dict[TYP_int];
             data.TargetReportDescriptor_DCR = CAT10_Dict.TargetReportDescriptor_DCR_dict[bits[4]];
             data.TargetReportDescriptor_CHN = CAT10_Dict.TargetReportDescriptor_CHN_dict[bits[3]];
             data.TargetReportDescriptor_GBS = CAT10_Dict.TargetReportDescriptor_GBS_dict[bits[2]];
@@ -332,13 +336,21 @@ namespace ClassLibrary
             {
                 data.TargetReportDescriptor_FirstExtent_flag = true;
 
+                BitArray LOP_bits = new BitArray(2);
+                LOP_bits[0] = bits[11];
+                LOP_bits[1] = bits[12];
+                int LOP_int = Functions.BitArray2Int(LOP_bits);
+
+                BitArray TOT_bits = new BitArray(2);
+                TOT_bits[0] = bits[9];
+                TOT_bits[1] = bits[10];
+                int TOT_int = Functions.BitArray2Int(TOT_bits);
+
                 data.TargetReportDescriptor_SIM = CAT10_Dict.TargetReportDescriptor_SIM_dict[bits[15]];
                 data.TargetReportDescriptor_TST = CAT10_Dict.TargetReportDescriptor_TST_dict[bits[14]];
                 data.TargetReportDescriptor_RAB = CAT10_Dict.TargetReportDescriptor_RAB_dict[bits[13]];
-                string LOP_boolString = bits[12].ToString() + bits[11];
-                data.TargetReportDescriptor_LOP = CAT10_Dict.TargetReportDescriptor_LOP_dict[LOP_boolString];
-                string TOT_boolString = bits[10].ToString() + bits[9];
-                data.TargetReportDescriptor_TOT = CAT10_Dict.TargetReportDescriptor_TOT_dict[TOT_boolString];
+                data.TargetReportDescriptor_LOP = CAT10_Dict.TargetReportDescriptor_LOP_dict[LOP_int];
+                data.TargetReportDescriptor_TOT = CAT10_Dict.TargetReportDescriptor_TOT_dict[TOT_int];
 
                 if(bits[8] == true)
                 {
@@ -488,10 +500,14 @@ namespace ClassLibrary
         {
             BitArray bits = new BitArray(octets);
 
+            BitArray CST_bits = new BitArray(2);
+            CST_bits[0] = bits[4];
+            CST_bits[1] = bits[5];
+            int CST_int = Functions.BitArray2Int(CST_bits);
+
             data.TrackStatus_CNF = CAT10_Dict.TrackStatus_CNF_dict[bits[7]];
             data.TrackStatus_TRE = CAT10_Dict.TrackStatus_TRE_dict[bits[6]];
-            string CST_boolString = bits[5].ToString() + bits[4];
-            data.TrackStatus_CST = CAT10_Dict.TrackStatus_CST_dict[CST_boolString];
+            data.TrackStatus_CST = CAT10_Dict.TrackStatus_CST_dict[CST_int];
             data.TrackStatus_MAH = CAT10_Dict.TrackStatus_MAH_dict[bits[3]];
             data.TrackStatus_TCC = CAT10_Dict.TrackStatus_TCC_dict[bits[2]];
             data.TrackStatus_STH = CAT10_Dict.TrackStatus_STH_dict[bits[1]];
@@ -500,12 +516,25 @@ namespace ClassLibrary
             {
                 data.TrackStatus_FirstExtent_flag = true;
 
-                string TOM_boolString = bits[15].ToString() + bits[14];
-                data.TrackStatus_TOM = CAT10_Dict.TrackStatus_TOM_dict[TOM_boolString];
-                string DOU_boolString = bits[13].ToString() + bits[12] + bits[11];
-                data.TrackStatus_DOU = CAT10_Dict.TrackStatus_DOU_dict[DOU_boolString];
-                string MRS_boolString = bits[10].ToString() + bits[9];
-                data.TrackStatus_MRS = CAT10_Dict.TrackStatus_MRS_dict[MRS_boolString];
+                BitArray TOM_bits = new BitArray(2);
+                TOM_bits[0] = bits[14];
+                TOM_bits[1] = bits[15];
+                int TOM_int = Functions.BitArray2Int(TOM_bits);
+
+                BitArray DOU_bits = new BitArray(3);
+                DOU_bits[0] = bits[11];
+                DOU_bits[1] = bits[12];
+                DOU_bits[2] = bits[13];
+                int DOU_int = Functions.BitArray2Int(DOU_bits);
+
+                BitArray MRS_bits = new BitArray(2);
+                MRS_bits[0] = bits[9];
+                MRS_bits[1] = bits[10];
+                int MRS_int = Functions.BitArray2Int(MRS_bits);
+
+                data.TrackStatus_TOM = CAT10_Dict.TrackStatus_TOM_dict[TOM_int];
+                data.TrackStatus_DOU = CAT10_Dict.TrackStatus_DOU_dict[DOU_int];
+                data.TrackStatus_MRS = CAT10_Dict.TrackStatus_MRS_dict[MRS_int];
 
                 if (bits[8] == true)
                 {
@@ -582,6 +611,14 @@ namespace ClassLibrary
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
+            // STI
+            BitArray STI_bits = new BitArray(2);
+            STI_bits[0] = bits[54];
+            STI_bits[1] = bits[55];
+            int STI_int = Functions.BitArray2Int(STI_bits);
+
+            data.TargetIdentification_STI = CAT10_Dict.TartgetIdentificationSTI_dict[STI_int];
+
             // Characters
             BitArray char8_bits = new BitArray(6);
             BitArray char7_bits = new BitArray(6);
@@ -648,13 +685,6 @@ namespace ClassLibrary
             string char1 = CAT10_Dict.TargetIdentificationCharacters_dict[char1_int];
 
             data.TargetIdentification_Characters = char1 + char2 + char3 + char4 + char5 + char6 + char7 + char8;
-
-            // STI
-            BitArray STI_bits = new BitArray(new byte[1] { octets[6] });
-
-            string STI_boolString = STI_bits[7].ToString() + STI_bits[6];
-
-            data.TargetIdentification_STI = CAT10_Dict.TartgetIdentificationSTI_dict[STI_boolString];
         }
 
         // Data Item I010/250, Mode S MB Data
@@ -799,8 +829,12 @@ namespace ClassLibrary
         {
             BitArray bits = new BitArray(new byte[1] { octet1 });
 
-            string NOGO_boolString = bits[7].ToString() + bits[6];
-            data.SystemStatus_NOGO = CAT10_Dict.SystemStatus_NOGO_dict[NOGO_boolString];
+            BitArray NOGO_bits = new BitArray(2);
+            NOGO_bits[0] = bits[6];
+            NOGO_bits[1] = bits[7];
+            int NOGO_int = Functions.BitArray2Int(NOGO_bits);
+
+            data.SystemStatus_NOGO = CAT10_Dict.SystemStatus_NOGO_dict[NOGO_int];
             data.SystemStatus_OVL = CAT10_Dict.SystemStatus_OVL_dict[bits[5]];
             data.SystemStatus_TSV = CAT10_Dict.SystemStatus_TSV_dict[bits[4]];
             data.SystemStatus_DIV = CAT10_Dict.SystemStatus_DIV_dict[bits[3]];

@@ -76,10 +76,10 @@ namespace Testing
         // Testing readFile function
         private static void test_readFile()
         {
-            string path = @"D:\Proyectos\PGTA_UPC\Archivos AST\201002-lebl-080001_smr.ast";
+            string path = @"D:\Proyectos\PGTA_UPC\Archivos AST\201002-lebl-080001_adsb.ast";
             ReadFile readFile = new ReadFile(path);
 
-            ShowCAT10Data(readFile.CAT10_list);
+            //ShowCAT10Data(readFile.CAT10_list);
         }
 
         // For testing CAT10
