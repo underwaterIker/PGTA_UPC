@@ -101,9 +101,9 @@ namespace ClassLibrary
 
         // Data Item I010/250, Mode S MB Data
         public int ModeSMBData_REP { get; set; }
-        public int[] ModeSMBData_MBData { get; set; }
-        public int[] ModeSMBData_BDS1 { get; set; }
-        public int[] ModeSMBData_BDS2 { get; set; }
+        public int[] ModeSMBData_MBData { get; set; } // Array size defined in the method
+        public int[] ModeSMBData_BDS1 { get; set; } // Array size defined in the method
+        public int[] ModeSMBData_BDS2 { get; set; } // Array size defined in the method
 
         // Data Item I010/270, Target Size & Orientation
         public bool TargetSizeAndOrientation_FirstExtent_flag { get; set; }
@@ -114,8 +114,8 @@ namespace ClassLibrary
 
         // Data Item I010/280, Presence
         public int Presence_REP { get; set; }
-        public int[] Presence_DRHO { get; set; }
-        public double[] Presence_DTHETA { get; set; }
+        public int[] Presence_DRHO { get; set; } // Array size defined in the method
+        public double[] Presence_DTHETA { get; set; } // Array size defined in the method
 
         // Data Item I010/300, Vehicle Fleet Identification
         public string VehicleFleetIdentification { get; set; }

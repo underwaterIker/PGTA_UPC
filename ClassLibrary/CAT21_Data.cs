@@ -100,18 +100,18 @@ namespace ClassLibrary
         public bool TrajectoryIntent_TID_subfield2 { get; set; } // absence or presence of Subfield #2
         public string TrajectoryIntent_NAV { get; set; }
         public string TrajectoryIntent_NVB { get; set; }
-        public string[] TrajectoryIntent_TCA { get; set; }
-        public string[] TrajectoryIntent_NC { get; set; }
-        public int[] TrajectoryIntent_TCP { get; set; }
-        public double[] TrajectoryIntent_Altitude { get; set; }
-        public double[] TrajectoryIntent_Latitude { get; set; }
-        public double[] TrajectoryIntent_Longitude { get; set; }
-        public string[] TrajectoryIntent_PointType { get; set; }
-        public string[] TrajectoryIntent_TD { get; set; }
-        public string[] TrajectoryIntent_TRA { get; set; }
-        public string[] TrajectoryIntent_TOA { get; set; }
-        public double[] TrajectoryIntent_TOV { get; set; }
-        public double[] TrajectoryIntent_TTR { get; set; }
+        public string[] TrajectoryIntent_TCA { get; set; } // Array size defined in the method
+        public string[] TrajectoryIntent_NC { get; set; } // Array size defined in the method
+        public int[] TrajectoryIntent_TCP { get; set; } // Array size defined in the method
+        public double[] TrajectoryIntent_Altitude { get; set; } // Array size defined in the method
+        public double[] TrajectoryIntent_Latitude { get; set; } // Array size defined in the method
+        public double[] TrajectoryIntent_Longitude { get; set; } // Array size defined in the method
+        public string[] TrajectoryIntent_PointType { get; set; } // Array size defined in the method
+        public string[] TrajectoryIntent_TD { get; set; } // Array size defined in the method
+        public string[] TrajectoryIntent_TRA { get; set; } // Array size defined in the method
+        public string[] TrajectoryIntent_TOA { get; set; } // Array size defined in the method
+        public double[] TrajectoryIntent_TOV { get; set; } // Array size defined in the method
+        public double[] TrajectoryIntent_TTR { get; set; } // Array size defined in the method
 
         // Data Item I021/130, Position in WGS-84 Co-ordinates
         public double PositionWGS84Coordinates_Latitude { get; set; }
@@ -200,9 +200,9 @@ namespace ClassLibrary
 
         // Data Item I021/250, Mode S MB Data 
         public int ModeSMBdata_REP { get; set; }
-        public int[] ModeSMBData_MBData { get; set; }
-        public int[] ModeSMBData_BDS1 { get; set; }
-        public int[] ModeSMBData_BDS2 { get; set; }
+        public int[] ModeSMBData_MBData { get; set; } // Array size defined in the method
+        public int[] ModeSMBData_BDS1 { get; set; } // Array size defined in the method
+        public int[] ModeSMBData_BDS2 { get; set; } // Array size defined in the method
 
         // Data Item I021/260, ACAS Resolution Advisory Report
         public int ACASResolutionAdvisoryReport_TYP { get; set; }

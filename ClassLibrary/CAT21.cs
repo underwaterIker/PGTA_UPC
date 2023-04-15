@@ -874,6 +874,19 @@ namespace ClassLibrary
                 {
                     data.TrajectoryIntent_SecondExtent_flag = true; // maybe unnecessary
 
+                    data.TrajectoryIntent_TCA = new string[REP];
+                    data.TrajectoryIntent_NC = new string[REP];
+                    data.TrajectoryIntent_TCP = new int[REP];
+                    data.TrajectoryIntent_Altitude = new double[REP];
+                    data.TrajectoryIntent_Latitude = new double[REP];
+                    data.TrajectoryIntent_Longitude = new double[REP];
+                    data.TrajectoryIntent_PointType = new string[REP];
+                    data.TrajectoryIntent_TD = new string[REP];
+                    data.TrajectoryIntent_TRA = new string[REP];
+                    data.TrajectoryIntent_TOA = new string[REP];
+                    data.TrajectoryIntent_TOV = new double[REP];
+                    data.TrajectoryIntent_TTR = new double[REP];
+
                     index += 1; // for the REP byte
 
                     for (int i = 0; i < REP; i++)
@@ -1350,6 +1363,11 @@ namespace ClassLibrary
         private void ModeSMBdata(byte[] octets, int REP)
         {
             data.ModeSMBdata_REP = REP;
+
+            data.ModeSMBData_MBData = new int[REP];
+            data.ModeSMBData_BDS1 = new int[REP];
+            data.ModeSMBData_BDS2 = new int[REP];
+
             for (int i = 0; i < REP; i++)
             {
                 byte[] MBData_bytes = new byte[7] { octets[8 * i + 6], octets[8 * i + 5], octets[8 * i + 4], octets[8 * i + 3], octets[8 * i + 2], octets[8 * i + 1], octets[8 * i + 0] }; // Reversed

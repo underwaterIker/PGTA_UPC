@@ -692,7 +692,11 @@ namespace ClassLibrary
         {
             data.ModeSMBData_REP = REP; // maybe it is not necessary to save REP in Data
 
-            for(int i = 0; i < REP; i++)
+            data.ModeSMBData_MBData = new int[REP];
+            data.ModeSMBData_BDS1 = new int[REP];
+            data.ModeSMBData_BDS2 = new int[REP];
+
+            for (int i = 0; i < REP; i++)
             {
                 byte[] MBData_bytes = new byte[7] { octets[8*i + 6], octets[8*i + 5], octets[8*i + 4], octets[8*i + 3], octets[8*i + 2], octets[8*i + 1], octets[8*i + 0] }; // Reversed
 
@@ -775,6 +779,9 @@ namespace ClassLibrary
         private void Presence(byte[] octets, int REP)
         {
             data.Presence_REP = REP; // maybe it is not necessary to save REP in Data
+
+            data.Presence_DRHO = new int[REP];
+            data.Presence_DTHETA = new double[REP];
 
             int LSB_DRHO = 1; // m
             double LSB_DTHETA = 0.15; //degrees
