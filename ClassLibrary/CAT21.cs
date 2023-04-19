@@ -11,7 +11,7 @@ namespace ClassLibrary
         byte[] message { get; set; } // Maybe its useless
 
         // Bytes of the FSPEC
-        public byte[] FSPEC { get; set; }
+        public byte[] FSPEC_bytes { get; set; }
 
         // Where the decodificated data will be stored
         public CAT21_Data data = new CAT21_Data();
@@ -22,41 +22,21 @@ namespace ClassLibrary
         {
             this.message = message; // Maybe its useless
 
-            FSPEC_Decodification(message);
+            Decodification(message);
         }
 
 
         // METHODS
-        // CAT21 Decodification function (with FSPEC)
-        private void FSPEC_Decodification(byte[] message)
+        // CAT21 Decodification function
+        private void Decodification(byte[] message)
         {
-            // Calculate the number of bytes that the FSPEC has
-            int FSPEC_numberOfBytes = 1;
-            for (int i = 0; i < 7; i++)
-            {
-                BitArray FSPEC_1byte_bits = new BitArray(new byte[1] { message[i] });
-                if (FSPEC_1byte_bits[0] == true)
-                {
-                    FSPEC_numberOfBytes += 1;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            // Makes the byte array of FSPEC
-            byte[] FSPEC_bytes = new byte[FSPEC_numberOfBytes];
-            for (int i = 0; i < FSPEC_numberOfBytes; i++)
-            {
-                FSPEC_bytes[i] = message[i];
-            }
-            this.FSPEC = FSPEC_bytes;
+            byte[] uncertain_FSPEC_bytes = new byte[7] { message[0], message[1], message[2], message[3], message[4], message[5], message[6] };
+            byte[] FSPEC_bytes = FSPEC(uncertain_FSPEC_bytes);
 
             // We can start decoding
-            int byteSum_index = FSPEC_numberOfBytes; // Index inside the byte[] message
+            int byteSum_index = FSPEC_bytes.Length; // Index inside the byte[] message
 
-            for (int i = 0; i < FSPEC_numberOfBytes; i++)
+            for (int i = 0; i < FSPEC_bytes.Length; i++)
             {
                 switch (i)
                 {
@@ -488,6 +468,35 @@ namespace ClassLibrary
             }
         }
 
+        // FSPEC, returns a byte array with the bytes of the FSPEC
+        private byte[] FSPEC(byte[] octets)
+        {
+            // Calculate the number of bytes that the FSPEC has
+            int FSPEC_numberOfBytes = 1;
+            for (int i = 0; i < 7; i++)
+            {
+                BitArray FSPEC_1byte_bits = new BitArray(new byte[1] { octets[i] });
+                if (FSPEC_1byte_bits[0] == true)
+                {
+                    FSPEC_numberOfBytes += 1;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // Makes the byte array of FSPEC
+            byte[] FSPEC_bytes = new byte[FSPEC_numberOfBytes];
+            for (int i = 0; i < FSPEC_numberOfBytes; i++)
+            {
+                FSPEC_bytes[i] = octets[i];
+            }
+            this.FSPEC_bytes = FSPEC_bytes;
+
+            return FSPEC_bytes;
+        }
+
         // Data Item I021/008, Aircraft Operational Status
         private void AircraftOperationalStatus(byte octet1)
         {
@@ -499,8 +508,8 @@ namespace ClassLibrary
             int TC_int = Functions.BitArray2Int(TC_bits);
 
             data.AircraftOperationalStatus_RA = CAT21_Dict.AircrafOperationalStatus_RA_dict[bits[7]];
-            data.AicraftOperationalStatus_TC = CAT21_Dict.AircraftOperationalStatus_TC_dict[TC_int];
-            data.AircraftOpertionalStatus_TS = CAT21_Dict.AircraftOperationalStatus_TS_dict[bits[4]];
+            data.AircraftOperationalStatus_TC = CAT21_Dict.AircraftOperationalStatus_TC_dict[TC_int];
+            data.AircraftOperationalStatus_TS = CAT21_Dict.AircraftOperationalStatus_TS_dict[bits[4]];
             data.AircraftOperationalStatus_ARV = CAT21_Dict.AircraftOperationalStatus_ARV_dict[bits[3]];
             data.AircraftOperationalStatus_CDTI_A = CAT21_Dict.AircraftOperationalStatus_CDTI_dict[bits[2]];
             data.AircraftOperationalStatus_TCAS = CAT21_Dict.AircraftOperationalStatus_TCAS_dict[bits[1]];
@@ -523,7 +532,7 @@ namespace ClassLibrary
         // Data Item I021/016, Service Management
         private void ServiceManagement(byte octet1)
         {
-            double LSB = 0.5; // s
+            double LSB = (double)0.5; // s
             double ServiceManagement = LSB * octet1;
             data.ServiceManagement = ServiceManagement;
         }
@@ -712,9 +721,9 @@ namespace ClassLibrary
         {
             Array.Reverse(octets);
 
-            double LSB = 1 / 128; // s
+            double LSB = (double)1/128; // s
             double timeOfAsterixReportTransmission = LSB * Functions.CombineBytes2Int(octets);
-
+            
             data.TimeOfASTERIXReportTransmission = timeOfAsterixReportTransmission;
         }
 
@@ -908,7 +917,7 @@ namespace ClassLibrary
                         data.TrajectoryIntent_Altitude[i] = Altitude;
 
                         // Octet no. 5 & 6 & 7
-                        double LatAndLongWGS84_LSB = 180 / Math.Pow(2, 23); // ft
+                        double LatAndLongWGS84_LSB = (double)(180 / Math.Pow(2, 23)); // ft
                         byte[] LatitudeWGS84_bytes = new byte[3] { subfield2_bytes[5], subfield2_bytes[4], subfield2_bytes[3] }; // Reversed
                         double LatitudeWGS84 = LatAndLongWGS84_LSB * Functions.TwosComplement2Int_fromBytes(LatitudeWGS84_bytes);
                         data.TrajectoryIntent_Latitude[i] = LatitudeWGS84;
@@ -942,7 +951,7 @@ namespace ClassLibrary
                         data.TrajectoryIntent_TOV[i] = TOV;
 
                         // Octet no. 15 & 16
-                        double TTR_LSB = 0.01; // Nm
+                        double TTR_LSB = (double)0.01; // Nm
                         byte[] TTR_bytes = new byte[2] { subfield2_bytes[14], subfield2_bytes[13] }; // Reversed
                         double TTR = TTR_LSB * Functions.CombineBytes2Int(TTR_bytes);
                         data.TrajectoryIntent_TTR[i] = TTR;
@@ -957,7 +966,7 @@ namespace ClassLibrary
         // Data Item I021/130, Position in WGS-84 Co-ordinates
         private void PositionWGS84Coordinates(byte[] octets)
         {
-            double LSB = 180 / Math.Pow(2, 23); // degrees
+            double LSB = (double)(180 / Math.Pow(2, 23)); // degrees
 
             byte[] latitude_bytes = new byte[3] { octets[2], octets[1], octets[0] }; // Reversed
             byte[] longitude_bytes = new byte[3] { octets[5], octets[4], octets[3] }; // Reversed
@@ -972,7 +981,7 @@ namespace ClassLibrary
         // Data Item I021/131, High-Resolution Position in WGS-84 Co-ordinates
         private void PositionWGS84Coordinates_HighResolution(byte[] octets)
         {
-            double LSB = 180 / Math.Pow(2, 30); // degrees
+            double LSB = (double)(180 / Math.Pow(2, 30)); // degrees
 
             byte[] latitudeWGS84_bytes = new byte[4] { octets[3], octets[2], octets[1], octets[0] }; // Reversed
             byte[] longitudeWGS84_bytes = new byte[4] { octets[7], octets[6], octets[5], octets[4] }; // Reversed
@@ -997,7 +1006,7 @@ namespace ClassLibrary
         {
             Array.Reverse(octets);
 
-            double LSB = 6.25; // ft
+            double LSB = (double)6.25; // ft
             double GeometricHeight = LSB * Functions.TwosComplement2Int_fromBytes(octets);
 
             data.GeometricHeight = GeometricHeight;
@@ -1008,7 +1017,7 @@ namespace ClassLibrary
         {
             Array.Reverse(octets);
 
-            double LSB = 1 / 4; // FL
+            double LSB = (double)1 / 4; // FL
             double FlightLevel = LSB * Functions.TwosComplement2Int_fromBytes(octets);
 
             data.FlightLevel = FlightLevel;
@@ -1064,14 +1073,14 @@ namespace ClassLibrary
 
             if (bits[15] == true)
             {
-                double Mach_LSB = 0.001;
+                double Mach_LSB = (double)0.001;
                 double Mach = Mach_LSB * Functions.BitArray2Int(bits);
                 data.AirSpeed = Mach;
 
             }
             else
             {
-                double IAS_LSB = Math.Pow(2, -14); // NM/s
+                double IAS_LSB = (double)Math.Pow(2, -14); // NM/s
                 double IAS = IAS_LSB * Functions.BitArray2Int(bits);
                 data.AirSpeed = IAS;
             }
@@ -1097,7 +1106,7 @@ namespace ClassLibrary
         {
             Array.Reverse(octets);
 
-            double LSB = 360 / Math.Pow(2, 16); // degrees
+            double LSB = (double)(360 / Math.Pow(2, 16)); // degrees
             double MagneticHeading = LSB * Functions.CombineBytes2Int(octets);
             data.MagneticHeading = MagneticHeading;
         }
@@ -1112,7 +1121,7 @@ namespace ClassLibrary
 
             bits.Length = bits.Length - 1;
 
-            double LSB = 6.25; // ft/min
+            double LSB = (double)6.25; // ft/min
             double BarometricVerticalRate = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
             data.BarometricVerticalRate = BarometricVerticalRate;
         }
@@ -1127,7 +1136,7 @@ namespace ClassLibrary
 
             bits.Length = bits.Length - 1;
 
-            double LSB = 6.25; // ft/min
+            double LSB = (double)6.25; // ft/min
             double GeometricVerticalRate = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
             data.GeometricVerticalRate = GeometricVerticalRate;
         }
@@ -1144,12 +1153,12 @@ namespace ClassLibrary
             data.AirborneGroundVector_RE = CAT21_Dict.RE_dict[GroundSpeed_and_RE_bits[15]];
             GroundSpeed_and_RE_bits.Length = GroundSpeed_and_RE_bits.Length - 1;
 
-            double LSB_GroundSpeed = 0.22; // kt
+            double LSB_GroundSpeed = (double)Math.Pow(2, -14); // NM/s
             double GroundSpeed = LSB_GroundSpeed * Functions.BitArray2Int(GroundSpeed_and_RE_bits);
             data.AirborneGroundVector_GroundSpeed = GroundSpeed;
 
             // Track Angle
-            double LSB_TrackAngle = 360 / Math.Pow(2, 16); // degrees
+            double LSB_TrackAngle = (double)(360 / Math.Pow(2, 16)); // degrees
             byte[] TrackAngle_bytes = new byte[2] { octets[0], octets[1] }; // Previously reversed
             double TrackAngle = LSB_TrackAngle * Functions.CombineBytes2Int(TrackAngle_bytes);
             data.AirborneGroundVector_TrackAngle = TrackAngle;
@@ -1168,7 +1177,7 @@ namespace ClassLibrary
         {
             Array.Reverse(octets);
 
-            double LSB = 1 / 32; // degrees/s
+            double LSB = (double)1 / 32; // degrees/s
             double TrackAngleRate = LSB * Functions.TwosComplement2Int_fromBytes(octets);
             data.TrackAngleRate = TrackAngleRate;
         }
@@ -1333,7 +1342,7 @@ namespace ClassLibrary
                 }
                 if (TMP_bool == true)
                 {
-                    double Temperature_LSB = 0.25; // 'C
+                    double Temperature_LSB = (double)0.25; // 'C
                     byte[] Temperature_bytes = new byte[2] { octets[index + 1], octets[index] }; // Reversed
                     double Temperature = Temperature_LSB * Functions.CombineBytes2Int(Temperature_bytes);
                     data.MetInformation_Temperature = Temperature;
@@ -1354,7 +1363,7 @@ namespace ClassLibrary
         {
             Array.Reverse(octets);
 
-            double LSB = 0.01; // degrees
+            double LSB = (double)0.01; // degrees
             double RollAngle = LSB * Functions.TwosComplement2Int_fromBytes(octets);
             data.RollAngle = RollAngle;
         }
@@ -1573,7 +1582,7 @@ namespace ClassLibrary
         // Data Item I021/295, Data Ages
         private void DataAges_subfields(byte[] octets)
         {
-            double LSB = 0.1; // s
+            double LSB = (double)0.1; // s
 
             for (int i = 0, j = 0; i < data.DataAges_subfields.Length; i++)
             {

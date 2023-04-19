@@ -23,7 +23,7 @@ namespace ClassLibrary
 
         // Data Item I021/040, Target Report Descriptor
         public static readonly IDictionary<int, string> TargetReportDescriptor_ATP_dict = new Dictionary<int, string>() { { 0, "24-Bit ICAO address" }, { 1, "Duplicate address" }, { 2, "Surface vehicle address" }, { 3, "Anonymous address" }, { 4, "Reserved for future use" }, { 5, "Reserved for future use" }, { 6, "Reserved for future use" }, { 7, "Reserved for future use" } };
-        public static readonly IDictionary<int, string> TargetReportDescriptor_ARC_dict = new Dictionary<int, string>() { { 0, "24 ft" }, { 1, "100 ft" }, { 2, "Unknown" }, { 3, "Invalid" } };
+        public static readonly IDictionary<int, string> TargetReportDescriptor_ARC_dict = new Dictionary<int, string>() { { 0, "25 ft" }, { 1, "100 ft" }, { 2, "Unknown" }, { 3, "Invalid" } };
         public static readonly IDictionary<bool, string> TargetReportDescriptor_RC_dict = new Dictionary<bool, string>() { { false, "Default" }, { true, "Range Check passed, CPR Validation pending" } };
         public static readonly IDictionary<bool, string> TargetReportDescriptor_RAB_dict = new Dictionary<bool, string>() { { false, "Report from target transponder" }, { true, "Report from field monitor (fixed transponder)" } };
         public static readonly IDictionary<bool, string> TargetReportDescriptor_DCR_dict = new Dictionary<bool, string>() { { false, "No differential correction (ADS-B)" }, { true, "Differential correction (ADS-B)" } };

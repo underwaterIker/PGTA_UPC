@@ -80,6 +80,7 @@ namespace Testing
             ReadFile readFile = new ReadFile(path);
 
             //ShowCAT10Data(readFile.CAT10_list);
+            ShowCAT21Data(readFile.CAT21_list);
         }
 
         // For testing CAT10
@@ -91,7 +92,7 @@ namespace Testing
                 Console.WriteLine("CAT10: message {0}", i);
 
                 CAT10 cat10 = CAT10_list[i];
-                byte[] FSPEC_bytes = cat10.FSPEC;
+                byte[] FSPEC_bytes = cat10.FSPEC_bytes;
                 CAT10_Data data = cat10.data;
 
                 for (int j = 0; j < FSPEC_bytes.Length; j++)
@@ -374,6 +375,514 @@ namespace Testing
                     }
                 }
             } 
+        }
+
+        // For testing CAT21
+        private static void ShowCAT21Data(List<CAT21> CAT21_list)
+        {
+            for (int i = 0; i < CAT21_list.Count; i++)
+            {
+                Console.WriteLine("--------------------------------------------");
+                Console.WriteLine("CAT21: message {0}", i);
+
+                CAT21 cat21 = CAT21_list[i];
+                byte[] FSPEC_bytes = cat21.FSPEC_bytes;
+                CAT21_Data data = cat21.data;
+
+                for (int j = 0; j < FSPEC_bytes.Length; j++)
+                {
+                    switch (j)
+                    {
+                        case 0:
+                            BitArray FSPEC_byte1_bits = new BitArray(new byte[1] { FSPEC_bytes[j] });
+
+                            if (FSPEC_byte1_bits[7] == true)
+                            {
+                                int DataSourceIdentifier_SAC = data.DataSourceIdentification_SAC;
+                                Console.WriteLine(DataSourceIdentifier_SAC);
+
+                                int DataSourceIdentifier_SIC = data.DataSourceIdentification_SIC;
+                                Console.WriteLine(DataSourceIdentifier_SIC);
+                            }
+                            if (FSPEC_byte1_bits[6] == true)
+                            {
+                                string ATP = data.TargetReportDescriptor_ATP;
+                                Console.WriteLine(ATP);
+                                string ARC = data.TargetReportDescriptor_ARC;
+                                Console.WriteLine(ARC);
+                                string RC = data.TargetReportDescriptor_RC;
+                                Console.WriteLine(RC);
+                                string RAB = data.TargetReportDescriptor_RAB;
+                                Console.WriteLine(RAB);
+
+                                if (data.TargetReportDescriptor_FirstExtent_flag == true)
+                                {
+                                    string DCR = data.TargetReportDescriptor_DCR;
+                                    Console.WriteLine(DCR);
+                                    string GBS = data.TargetReportDescriptor_GBS;
+                                    Console.WriteLine(GBS);
+                                    string SIM = data.TargetReportDescriptor_SIM;
+                                    Console.WriteLine(SIM);
+                                    string TST = data.TargetReportDescriptor_TST;
+                                    Console.WriteLine(TST);
+                                    string SAA = data.TargetReportDescriptor_SAA;
+                                    Console.WriteLine(SAA);
+                                    string CL = data.TargetReportDescriptor_CL;
+                                    Console.WriteLine(CL);
+
+                                    if (data.TargetReportDescriptor_SecondExtent_flag == true)
+                                    {
+                                        string IPC = data.TargetReportDescriptor_IPC;
+                                        Console.WriteLine(IPC);
+                                        string NOGO = data.TargetReportDescriptor_NOGO;
+                                        Console.WriteLine(NOGO);
+                                        string CPR = data.TargetReportDescriptor_CPR;
+                                        Console.WriteLine(CPR);
+                                        string LDPJ = data.TargetReportDescriptor_LDPJ;
+                                        Console.WriteLine(LDPJ);
+                                        string RCF = data.TargetReportDescriptor_RCF;
+                                        Console.WriteLine(RCF);
+                                    }
+                                }
+                            }
+                            if (FSPEC_byte1_bits[5] == true)
+                            {
+                                int a = data.TrackNumber;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte1_bits[4] == true)
+                            {
+                                int a = data.ServiceIdentification;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte1_bits[3] == true)
+                            {
+                                double a = data.TimeOfApplicabilityForPosition;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte1_bits[2] == true)
+                            {
+                                double WGS84_latitude = data.PositionWGS84Coordinates_Latitude;
+                                Console.WriteLine(WGS84_latitude);
+
+                                double WGS84_longitude = data.PositionWGS84Coordinates_Longitude;
+                                Console.WriteLine(WGS84_longitude);
+                            }
+                            if (FSPEC_byte1_bits[1] == true)
+                            {
+                                double WGS84_HP_latitude = data.PositionWGS84Coordinates_HighResolution_Latitude;
+                                Console.WriteLine(WGS84_HP_latitude);
+
+                                double WGS84_HP_longitude = data.PositionWGS84Coordinates_HighResolution_Longitude;
+                                Console.WriteLine(WGS84_HP_longitude);
+                            }
+
+                            break;
+
+                        case 1:
+                            BitArray FSPEC_byte2_bits = new BitArray(new byte[1] { FSPEC_bytes[j] });
+
+                            if (FSPEC_byte2_bits[7] == true)
+                            {
+                                double a = data.TimeOfApplicabilityForVelocity;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte2_bits[6] == true)
+                            {
+                                string a = data.AirSpeed_IM;
+                                Console.WriteLine(a);
+
+                                double b = data.AirSpeed;
+                                Console.WriteLine(b);
+                            }
+                            if (FSPEC_byte2_bits[5] == true)
+                            {
+                                string a = data.TrueAirSpeed_RE;
+                                Console.WriteLine(a);
+
+                                double b = data.TrueAirSpeed;
+                                Console.WriteLine(b);
+                            }
+                            if (FSPEC_byte2_bits[4] == true)
+                            {
+                                string a = data.TargetAddress;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte2_bits[3] == true)
+                            {
+                                double a = data.TimeOfMessageReceptionForPosition;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte2_bits[2] == true)
+                            {
+                                string a = data.TimeOfMessageReceptionOfPosition_HighPrecision_FSI;
+                                Console.WriteLine(a);
+
+                                decimal b = data.TimeOfMessageReceptionOfPosition_HighPrecision;
+                                Console.WriteLine(b);
+                            }
+                            if (FSPEC_byte2_bits[1] == true)
+                            {
+                                double a = data.TimeOfMessageReceptionForVelocity;
+                                Console.WriteLine(a);
+                            }
+
+                            break;
+
+                        case 2:
+                            BitArray FSPEC_byte3_bits = new BitArray(new byte[1] { FSPEC_bytes[j] });
+
+                            if (FSPEC_byte3_bits[7] == true)
+                            {
+                                string a = data.TimeOfMessageReceptionOfVelocity_HighPrecision_FSI;
+                                Console.WriteLine(a);
+
+                                decimal b = data.TimeOfMessageReceptionOfVelocity_HighPrecision;
+                                Console.WriteLine(b);
+                            }
+                            if (FSPEC_byte3_bits[6] == true)
+                            {
+                                double a = data.GeometricHeight;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte3_bits[5] == true)
+                            {
+                                int a = data.QualityIndicators_NUCr_or_NACv;
+                                Console.WriteLine(a);
+                                int b = data.QualityIndicators_NUCp_or_NIC;
+                                Console.WriteLine(b);
+
+                                if (data.QualityIndicators_FirstExtent_flag == true)
+                                {
+                                    int c = data.QualityIndicators_NICbaro;
+                                    Console.WriteLine(c);
+                                    int d = data.QualityIndicators_SIL;
+                                    Console.WriteLine(d);
+                                    int e = data.QualityIndicators_NACp;
+                                    Console.WriteLine(e);
+
+                                    if (data.QualityIndicators_SecondExtent_flag == true)
+                                    {
+                                        string f = data.QualityIndicators_SILsupplement;
+                                        Console.WriteLine(f);
+                                        int g = data.QualityIndicators_SDA;
+                                        Console.WriteLine(g);
+                                        int h = data.QualityIndicators_GVA;
+                                        Console.WriteLine(h);
+
+                                        if (data.QualityIndicators_ThirdExtent_flag == true)
+                                        {
+                                            int k = data.QualityIndicators_PIC;
+                                            Console.WriteLine(k);
+                                        }
+                                    }
+                                }
+                            }
+                            if (FSPEC_byte3_bits[4] == true)
+                            {
+                                string a = data.MOPSVersion_VNS;
+                                Console.WriteLine(a);
+                                string b = data.MOPSVersion_VN;
+                                Console.WriteLine(b);
+                                string c = data.MOPSVersion_LTT;
+                                Console.WriteLine(c);
+                            }
+                            if (FSPEC_byte3_bits[3] == true)
+                            {
+                                string a = data.Mode3ACode_Reply;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte3_bits[2] == true)
+                            {
+                                double a = data.RollAngle;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte3_bits[1] == true)
+                            {
+                                double a = data.FlightLevel;
+                                Console.WriteLine(a);
+                            }
+
+                            break;
+
+                        case 3:
+                            BitArray FSPEC_byte4_bits = new BitArray(new byte[1] { FSPEC_bytes[j] });
+
+                            if (FSPEC_byte4_bits[7] == true)
+                            {
+                                double a = data.MagneticHeading;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte4_bits[6] == true)
+                            {
+                                string a = data.TargetStatus_ICF;
+                                Console.WriteLine(a);
+                                string b = data.TargetStatus_LNAV;
+                                Console.WriteLine(b);
+                                string c = data.TargetStatus_PS;
+                                Console.WriteLine(c);
+                                string d = data.TargetStatus_SS;
+                                Console.WriteLine(d);
+                            }
+                            if (FSPEC_byte4_bits[5] == true)
+                            {
+                                string a = data.BarometricVerticalRate_RE;
+                                Console.WriteLine(a);
+                                double b = data.BarometricVerticalRate;
+                                Console.WriteLine(b);
+                            }
+                            if (FSPEC_byte4_bits[4] == true)
+                            {
+                                string a = data.GeometricVerticalRate_RE;
+                                Console.WriteLine(a);
+                                double b = data.GeometricVerticalRate;
+                                Console.WriteLine(b);
+                            }
+                            if (FSPEC_byte4_bits[3] == true)
+                            {
+                                string a = data.AirborneGroundVector_RE;
+                                Console.WriteLine(a);
+                                double b = data.AirborneGroundVector_GroundSpeed;
+                                Console.WriteLine(b);
+                                double c = data.AirborneGroundVector_TrackAngle;
+                                Console.WriteLine(c);
+                            }
+                            if (FSPEC_byte4_bits[2] == true)
+                            {
+                                double a = data.TrackAngleRate;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte4_bits[1] == true)
+                            {
+                                double a = data.TimeOfASTERIXReportTransmission;
+                                Console.WriteLine(a);
+                            }
+
+                            break;
+
+                        case 4:
+                            BitArray FSPEC_byte5_bits = new BitArray(new byte[1] { FSPEC_bytes[j] });
+
+                            if (FSPEC_byte5_bits[7] == true)
+                            {
+                                string a = data.TargetIdentification;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte5_bits[6] == true)
+                            {
+                                string a = data.EmitterCategory;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte5_bits[5] == true)
+                            {
+                                bool subfield1 = data.MetInformation_WS_subfield1;
+                                Console.WriteLine(subfield1);
+                                bool subfield2 = data.MetInformation_WD_subfield2;
+                                Console.WriteLine(subfield2);
+                                bool subfield3 = data.MetInformation_TMP_subfield3;
+                                Console.WriteLine(subfield3);
+                                bool subfield4 = data.MetInformation_TRB_subfield4;
+                                Console.WriteLine(subfield4);
+
+                                if (subfield1 == true)
+                                {
+                                    double a = data.MetInformation_WindSpeed;
+                                    Console.WriteLine(a);
+                                }
+                                if (subfield2 == true)
+                                {
+                                    double b = data.MetInformation_WindDirection;
+                                    Console.WriteLine(b);
+                                }
+                                if (subfield3 == true)
+                                {
+                                    double c = data.MetInformation_Temperature;
+                                    Console.WriteLine(c);
+                                }
+                                if (subfield4 == true)
+                                {
+                                    double d = data.MetInformation_Turbulence;
+                                    Console.WriteLine(d);
+                                }
+                            }
+                            if (FSPEC_byte5_bits[4] == true)
+                            {
+                                string a = data.SelectedAltitude_SAS;
+                                Console.WriteLine(a);
+                                string b = data.SelectedAltitude_Source;
+                                Console.WriteLine(b);
+                                double c = data.SelectedAltitude_Altitude;
+                                Console.WriteLine(c);
+                            }
+                            if (FSPEC_byte5_bits[3] == true)
+                            {
+                                string a = data.FinalStateSelectedAltitude_MV;
+                                Console.WriteLine(a);
+                                string b = data.FinalStateSelectedAltitude_AH;
+                                Console.WriteLine(b);
+                                string c = data.FinalStateSelectedAltitude_AM;
+                                Console.WriteLine(c);
+                                double d = data.FinalStateSelectedAltitude_Altitude;
+                                Console.WriteLine(d);
+                            }
+                            if (FSPEC_byte5_bits[2] == true)
+                            {
+                                bool subfield1 = data.TrajectoryIntent_TIS_subfield1;
+                                Console.WriteLine(subfield1);
+                                bool subfield2 = data.TrajectoryIntent_TID_subfield2;
+                                Console.WriteLine(subfield2);
+
+                                if (subfield1 == true)
+                                {
+                                    string a = data.TrajectoryIntent_NAV;
+                                    Console.WriteLine(a);
+                                    string b = data.TrajectoryIntent_NVB;
+                                    Console.WriteLine(b);
+                                }
+                                if (subfield2 == true)
+                                {
+                                    int REP = data.TrajectoryIntent_TCA.Length;
+                                    for (int k = 0;  k < REP; k++)
+                                    {
+                                        string c = data.TrajectoryIntent_TCA[k];
+                                        Console.WriteLine(c);
+                                        string d = data.TrajectoryIntent_NC[k];
+                                        Console.WriteLine(d);
+                                        int e = data.TrajectoryIntent_TCP[k];
+                                        Console.WriteLine(e);
+                                        double f = data.TrajectoryIntent_Altitude[k];
+                                        Console.WriteLine(f);
+                                        double g = data.TrajectoryIntent_Latitude[k];
+                                        Console.WriteLine(g);
+                                        double h = data.TrajectoryIntent_Longitude[k];
+                                        Console.WriteLine(h);
+                                        string l = data.TrajectoryIntent_PointType[k];
+                                        Console.WriteLine(l);
+                                        string m = data.TrajectoryIntent_TD[k];
+                                        Console.WriteLine(m);
+                                        string n = data.TrajectoryIntent_TRA[k];
+                                        Console.WriteLine(n);
+                                        string o = data.TrajectoryIntent_TOA[k];
+                                        Console.WriteLine(o);
+                                        double p = data.TrajectoryIntent_TOV[k];
+                                        Console.WriteLine(p);
+                                        double q = data.TrajectoryIntent_TTR[k];
+                                        Console.WriteLine(q);
+                                    }
+                                }
+                            }
+                            if (FSPEC_byte5_bits[1] == true)
+                            {
+                                double a = data.ServiceManagement;
+                                Console.WriteLine(a);
+                            }
+
+                            break;
+
+                        case 5:
+                            BitArray FSPEC_byte6_bits = new BitArray(new byte[1] { FSPEC_bytes[j] });
+
+                            if (FSPEC_byte6_bits[7] == true)
+                            {
+                                string a = data.AircraftOperationalStatus_RA;
+                                Console.WriteLine(a);
+                                string b = data.AircraftOperationalStatus_TC;
+                                Console.WriteLine(b);
+                                string c = data.AircraftOperationalStatus_TS;
+                                Console.WriteLine(c);
+                                string d = data.AircraftOperationalStatus_ARV;
+                                Console.WriteLine(d);
+                                string e = data.AircraftOperationalStatus_CDTI_A;
+                                Console.WriteLine(e);
+                                string f = data.AircraftOperationalStatus_TCAS;
+                                Console.WriteLine(f);
+                                string g = data.AircraftOperationalStatus_SA;
+                                Console.WriteLine(g);
+                            }
+                            if (FSPEC_byte6_bits[6] == true)
+                            {
+                                string a = data.SurfaceCapabilitiesandCharacteristics_POA;
+                                Console.WriteLine(a);
+                                string b = data.SurfaceCapabilitiesandCharacteristics_CDTI_S;
+                                Console.WriteLine(b);
+                                string c = data.SurfaceCapabilitiesandCharacteristics_B2low;
+                                Console.WriteLine(c);
+                                string d = data.SurfaceCapabilitiesandCharacteristics_RAS;
+                                Console.WriteLine(d);
+                                string e = data.SurfaceCapabilitiesandCharacteristics_IDENT;
+                                Console.WriteLine(e);
+
+                                if (data.SurfaceCapabilitiesandCharacteristics_FirstExtent_flag == true)
+                                {
+                                    int f = data.SurfaceCapabilitiesandCharacteristics_LW;
+                                    Console.WriteLine(f);
+                                }
+                            }
+                            if (FSPEC_byte6_bits[5] == true)
+                            {
+                                double a = data.MessageAmplitude;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte6_bits[4] == true)
+                            {
+                                int[] a = data.ModeSMBData_MBData;
+                                int[] b = data.ModeSMBData_BDS1;
+                                int[] c = data.ModeSMBData_BDS2;
+
+                                for (int k = 0; k < a.Length; k++)
+                                {
+                                    Console.WriteLine(a[k]);
+                                    Console.WriteLine(b[k]);
+                                    Console.WriteLine(c[k]);
+                                }
+                            }
+                            if (FSPEC_byte6_bits[3] == true)
+                            {
+                                int a = data.ACASResolutionAdvisoryReport_TYP;
+                                Console.WriteLine(a);
+                                int b = data.ACASResolutionAdvisoryReport_STYP;
+                                Console.WriteLine(b);
+                                int c = data.ACASResolutionAdvisoryReport_ARA;
+                                Console.WriteLine(c);
+                                int d = data.ACASResolutionAdvisoryReport_RAC;
+                                Console.WriteLine(d);
+                                int e = data.ACASResolutionAdvisoryReport_RAT;
+                                Console.WriteLine(e);
+                                int f = data.ACASResolutionAdvisoryReport_MTE;
+                                Console.WriteLine(f);
+                                int g = data.ACASResolutionAdvisoryReport_TTI;
+                                Console.WriteLine(g);
+                                int h = data.ACASResolutionAdvisoryReport_TID;
+                                Console.WriteLine(h);
+                            }
+                            if (FSPEC_byte6_bits[2] == true)
+                            {
+                                int a = data.ReceiverID;
+                                Console.WriteLine(a);
+                            }
+                            if (FSPEC_byte6_bits[1] == true)
+                            {
+                                bool[] subfields = data.DataAges_subfields;
+                                for (int k = 0; k < subfields.Length; k++)
+                                {
+                                    Console.WriteLine(subfields[k]);
+                                }
+
+                                double[] DataAges = data.DataAges;
+                                for (int l = 0; l < DataAges.Length; l++)
+                                {
+                                    if (subfields[l] == true)
+                                    {
+                                        Console.WriteLine(DataAges[l]);
+                                    }
+                                }
+                            }
+
+                            break;
+
+                    }
+                }
+            }
         }
 
     }

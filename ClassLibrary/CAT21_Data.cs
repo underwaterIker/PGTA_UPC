@@ -11,14 +11,14 @@ namespace ClassLibrary
     {
         // Data Item I021/008, Aircraft Operational Status
         public string AircraftOperationalStatus_RA { get; set; }
-        public string AicraftOperationalStatus_TC { get; set; }
-        public string AircraftOpertionalStatus_TS { get; set; }
+        public string AircraftOperationalStatus_TC { get; set; }
+        public string AircraftOperationalStatus_TS { get; set; }
         public string AircraftOperationalStatus_ARV { get; set; }
         public string AircraftOperationalStatus_CDTI_A { get; set; }
         public string AircraftOperationalStatus_TCAS { get; set; }
         public string AircraftOperationalStatus_SA { get; set; }
 
-        // Data Item I010/010, Data Source Identification
+        // Data Item I021/010, Data Source Identification
         public int DataSourceIdentification_SAC { get; set; }
         public int DataSourceIdentification_SIC { get; set; }
 

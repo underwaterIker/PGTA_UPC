@@ -15,7 +15,7 @@ namespace ClassLibrary
         byte[] message { get; set; } // Maybe its useless
 
         // Bytes of the FSPEC
-        public byte[] FSPEC { get; set; }
+        public byte[] FSPEC_bytes { get; set; }
 
         // Where the decodificated data will be stored
         public CAT10_Data data = new CAT10_Data();
@@ -26,41 +26,21 @@ namespace ClassLibrary
         {
             this.message = message; // Maybe its useless
 
-            FSPEC_Decodification(message);
+            Decodification(message);
         }
 
         
         // METHODS
-        // CAT10 Decodification function (with FSPEC)
-        private void FSPEC_Decodification(byte[] message)
+        // CAT10 Decodification function
+        private void Decodification(byte[] message)
         {
-            // Calculate the number of bytes that the FSPEC has
-            int FSPEC_numberOfBytes = 1;
-            for (int i = 0; i < 4; i++)
-            {
-                BitArray FSPEC_1byte_bits = new BitArray(new byte[1] { message[i] });
-                if (FSPEC_1byte_bits[0] == true)
-                {
-                    FSPEC_numberOfBytes += 1;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            // Makes the byte array of FSPEC
-            byte[] FSPEC_bytes = new byte[FSPEC_numberOfBytes];
-            for (int i = 0; i < FSPEC_numberOfBytes; i++)
-            {
-                FSPEC_bytes[i] = message[i];
-            }
-            this.FSPEC = FSPEC_bytes;
+            byte[] uncertain_FSPEC_bytes = new byte[4] { message[0], message[1], message[2], message[3] };
+            byte[] FSPEC_bytes = FSPEC(uncertain_FSPEC_bytes);
 
             // We can start decoding
-            int byteSum_index = FSPEC_numberOfBytes; // Index inside the byte[] message
+            int byteSum_index = FSPEC_bytes.Length; // Index inside the byte[] message
 
-            for (int i = 0; i < FSPEC_numberOfBytes; i++)
+            for (int i = 0; i < FSPEC_bytes.Length; i++)
             {
                 switch (i)
                 {
@@ -300,6 +280,35 @@ namespace ClassLibrary
             }
         }
 
+        // FSPEC, returns a byte array with the bytes of the FSPEC
+        private byte[] FSPEC(byte[] octets)
+        {
+            // Calculate the number of bytes that the FSPEC has
+            int FSPEC_numberOfBytes = 1;
+            for (int i = 0; i < 4; i++)
+            {
+                BitArray FSPEC_1byte_bits = new BitArray(new byte[1] { octets[i] });
+                if (FSPEC_1byte_bits[0] == true)
+                {
+                    FSPEC_numberOfBytes += 1;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // Makes the byte array of FSPEC
+            byte[] FSPEC_bytes = new byte[FSPEC_numberOfBytes];
+            for (int i = 0; i < FSPEC_numberOfBytes; i++)
+            {
+                FSPEC_bytes[i] = octets[i];
+            }
+            this.FSPEC_bytes = FSPEC_bytes;
+
+            return FSPEC_bytes;
+        }
+
         // Data Item I010/000, Message Type
         private void MessageType(byte octet1)
         {
@@ -368,7 +377,7 @@ namespace ClassLibrary
         private void MeasuredPositionPolarCoordinates(byte[] octets)
         {
             double LSB_RHO = 1; // m
-            double LSB_theta = 360 / Math.Pow(2, 16); // degrees
+            double LSB_theta = (double)(360 / Math.Pow(2, 16)); // degrees
 
             byte[] RHO_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
             byte[] THETA_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
@@ -383,7 +392,7 @@ namespace ClassLibrary
         // Data Item I010/041, Position in WGS-84 Co-ordinates
         private void PositionWGS84Coordinates(byte[] octets)
         {
-            double LSB = 180 / Math.Pow(2, 31); // degrees
+            double LSB = (double)(180 / Math.Pow(2, 31)); // degrees
 
             byte[] latitude_bytes = new byte[4] { octets[3], octets[2], octets[1], octets[0] }; // Reversed
             byte[] longitude_bytes = new byte[4] { octets[7], octets[6], octets[5], octets[4] }; // Reversed
@@ -454,7 +463,7 @@ namespace ClassLibrary
 
             bits.Length = bits.Length - 2;
 
-            double LSB = 1 / 4; // FL
+            double LSB = (double)1 / 4; // FL
             double FL = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
             data.FlightLevel_FL = FL;
         }
@@ -462,7 +471,7 @@ namespace ClassLibrary
         // Data Item I010/091, Measured Height
         private void MeasuredHeight(byte[] octets)
         {
-            double LSB = 6.25; // ft
+            double LSB = (double)6.25; // ft
 
             byte[] measuredHeight_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
 
@@ -551,8 +560,8 @@ namespace ClassLibrary
         // Data Item I010/200, Calculated Track Velocity in Polar Co-ordinates
         private void CalculatedTrackVelocityPolarCoordinates(byte[] octets)
         {
-            double LSB_GroundSpeed = 0.22; // kt
-            double LSB_TrackAngle = 360 / Math.Pow(2, 16); // degrees
+            double LSB_GroundSpeed = (double)0.22; // kt
+            double LSB_TrackAngle = (double)(360 / Math.Pow(2, 16)); // degrees
 
             byte[] GroundSpeed_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
             byte[] TrackAngle_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
@@ -567,7 +576,7 @@ namespace ClassLibrary
         // Data Item I010/202, Calculated Track Velocity in Cartesian Co-ordinates
         private void CalculatedTrackVelocityCartesianCoordinates(byte[] octets)
         {
-            double LSB = 0.25; // m/s
+            double LSB = (double)0.25; // m/s
 
             byte[] Vx_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
             byte[] Vy_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
@@ -582,7 +591,7 @@ namespace ClassLibrary
         // Data Item I010/210, Calculated Acceleration
         private void CalculatedAcceleration(byte[] octets)
         {
-            double LSB = 0.25; // m/(s^2)
+            double LSB = (double)0.25; // m/(s^2)
 
             byte[] Ax_bytes = new byte[1] { octets[0] }; // Reversed (no need to reverse, array of length 1)
             byte[] Ay_bytes = new byte[1] { octets[1] }; // Reversed (no need to reverse, array of length 1)
@@ -784,7 +793,7 @@ namespace ClassLibrary
             data.Presence_DTHETA = new double[REP];
 
             int LSB_DRHO = 1; // m
-            double LSB_DTHETA = 0.15; //degrees
+            double LSB_DTHETA = (double)0.15; //degrees
 
             for (int i = 0; i < REP; i++)
             {
@@ -818,7 +827,7 @@ namespace ClassLibrary
         // Data Item I010/500, Standard Deviation of Position
         private void StandardDeviationPosition(byte[] octets)
         {
-            double LSB = 0.25; // m and (m^2)
+            double LSB = (double)0.25; // m and (m^2)
 
             byte[] Covariance_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
 
