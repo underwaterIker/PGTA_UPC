@@ -10,16 +10,15 @@ namespace ClassLibrary
 {
     public class ReadFile
     {
-        // Two Lists containing all CAT10 & CAT21 messages
-        public List<CAT10> CAT10_list = new List<CAT10>();
-        public List<CAT21> CAT21_list = new List<CAT21>();
+        // List containing all CAT10 & CAT21 messages in order
+        public List<Data> data_list = new List<Data>();
 
         // CONSTRUCTOR: reads the file and fills the lists with the messages
         public ReadFile(string path)
         {
             byte[] file_byte = File.ReadAllBytes(path);
 
-            for (int i = 0; i < 40000;)
+            for (int i = 0; i < file_byte.Length;)
             {
                 // CAT
                 int cat = file_byte[i];
@@ -36,8 +35,8 @@ namespace ClassLibrary
                     {
                         CAT10_message[j] = file_byte[k + 3];
                     }
-                    CAT10 CAT10_data = new CAT10(CAT10_message);
-                    this.CAT10_list.Add(CAT10_data);
+                    CAT10 cat10 = new CAT10(CAT10_message);
+                    this.data_list.Add(cat10.data);
                 }
                 else if (cat == 21)
                 {
@@ -46,8 +45,8 @@ namespace ClassLibrary
                     {
                         CAT21_message[j] = file_byte[k + 3];
                     }
-                    CAT21 CAT21_data = new CAT21(CAT21_message);
-                    this.CAT21_list.Add(CAT21_data);
+                    CAT21 cat21 = new CAT21(CAT21_message);
+                    this.data_list.Add(cat21.data);
                 }
                 else
                 {
@@ -60,16 +59,5 @@ namespace ClassLibrary
             }
         }
 
-        // Return CAT10_list
-        public List<CAT10> return_CAT10_list()
-        {
-            return this.CAT10_list;
-        }
-
-        // Return CAT21_list
-        public List<CAT21> return_CAT21_list()
-        {
-            return this.CAT21_list;
-        }
     }
 }

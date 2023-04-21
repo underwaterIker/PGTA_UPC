@@ -12,19 +12,16 @@ namespace ClassLibrary
     public class CAT10
     {
         // Content of the CAT10 message
-        byte[] message { get; set; } // Maybe its useless
-
-        // Bytes of the FSPEC
-        public byte[] FSPEC_bytes { get; set; }
+        //byte[] message { get; set; } // Maybe its useless
 
         // Where the decodificated data will be stored
-        public CAT10_Data data = new CAT10_Data();
+        public Data data = new Data();
 
 
         // CONSTRUCTOR
         public CAT10(byte[] message)
         {
-            this.message = message; // Maybe its useless
+            //this.message = message; // Maybe its useless
 
             Decodification(message);
         }
@@ -34,10 +31,14 @@ namespace ClassLibrary
         // CAT10 Decodification function
         private void Decodification(byte[] message)
         {
+            // First, we set the CAT number in Data
+            this.data.CAT =10;
+
+            // Now we need to get the FSPEC bytes
             byte[] uncertain_FSPEC_bytes = new byte[4] { message[0], message[1], message[2], message[3] };
             byte[] FSPEC_bytes = FSPEC(uncertain_FSPEC_bytes);
 
-            // We can start decoding
+            // Once we have the FSPEC bytes, we can start decoding
             int byteSum_index = FSPEC_bytes.Length; // Index inside the byte[] message
 
             for (int i = 0; i < FSPEC_bytes.Length; i++)
@@ -304,7 +305,7 @@ namespace ClassLibrary
             {
                 FSPEC_bytes[i] = octets[i];
             }
-            this.FSPEC_bytes = FSPEC_bytes;
+            this.data.FSPEC_bytes = FSPEC_bytes;
 
             return FSPEC_bytes;
         }
@@ -312,7 +313,8 @@ namespace ClassLibrary
         // Data Item I010/000, Message Type
         private void MessageType(byte octet1)
         {
-            data.MessageType = CAT10_Dict.MessageType_dict[octet1];
+            string messageType = CAT10_Dict.MessageType_dict[octet1];
+            data.MessageType = messageType;
         }
 
         // Data Item I010/010, Data Source Identifier
@@ -328,6 +330,7 @@ namespace ClassLibrary
         private int TargetReportDescriptor(byte[] octets)
         {
             BitArray bits = new BitArray(octets);
+            int numberOfBytes = 1;
 
             BitArray TYP_bits = new BitArray(3);
             TYP_bits[0] = bits[5];
@@ -366,11 +369,11 @@ namespace ClassLibrary
                     data.TargetReportDescriptor_SecondExtent_flag = true;
 
                     data.TargetReportDescriptor_SPI = CAT10_Dict.TargetReportDescriptor_SPI_dict[bits[23]];
-                    return 3;
+                    numberOfBytes = 3;
                 }
-                return 2;
+                numberOfBytes = 2;
             }
-            return 1;
+            return numberOfBytes;
         }
 
         //Data Item I010/040, Measured Position in Polar Co-ordinates

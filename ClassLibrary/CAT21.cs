@@ -8,19 +8,16 @@ namespace ClassLibrary
     public class CAT21
     {
         // Content of the CAT21 message
-        byte[] message { get; set; } // Maybe its useless
-
-        // Bytes of the FSPEC
-        public byte[] FSPEC_bytes { get; set; }
+        //byte[] message { get; set; } // Maybe its useless
 
         // Where the decodificated data will be stored
-        public CAT21_Data data = new CAT21_Data();
+        public Data data = new Data();
 
 
         // CONSTRUCTOR
         public CAT21(byte[] message)
         {
-            this.message = message; // Maybe its useless
+            //this.message = message; // Maybe its useless
 
             Decodification(message);
         }
@@ -30,10 +27,14 @@ namespace ClassLibrary
         // CAT21 Decodification function
         private void Decodification(byte[] message)
         {
+            // First, we set the CAT number in Data
+            this.data.CAT = 21;
+
+            // Now we need to get the FSPEC bytes
             byte[] uncertain_FSPEC_bytes = new byte[7] { message[0], message[1], message[2], message[3], message[4], message[5], message[6] };
             byte[] FSPEC_bytes = FSPEC(uncertain_FSPEC_bytes);
 
-            // We can start decoding
+            // Once we have the FSPEC bytes, we can start decoding
             int byteSum_index = FSPEC_bytes.Length; // Index inside the byte[] message
 
             for (int i = 0; i < FSPEC_bytes.Length; i++)
@@ -410,7 +411,7 @@ namespace ClassLibrary
                             {
                                 bytes[j] = message[byteSum_index + j];
                             }
-                            ModeSMBdata(bytes, REP);
+                            ModeSMBData(bytes, REP);
                             byteSum_index += numberOfBytes;
                         }
                         if (FSPEC_byte6_bits[3] == true)
@@ -492,7 +493,7 @@ namespace ClassLibrary
             {
                 FSPEC_bytes[i] = octets[i];
             }
-            this.FSPEC_bytes = FSPEC_bytes;
+            this.data.FSPEC_bytes = FSPEC_bytes;
 
             return FSPEC_bytes;
         }
@@ -1369,9 +1370,9 @@ namespace ClassLibrary
         }
 
         // Data Item I021/250, Mode S MB Data 
-        private void ModeSMBdata(byte[] octets, int REP)
+        private void ModeSMBData(byte[] octets, int REP)
         {
-            data.ModeSMBdata_REP = REP;
+            data.ModeSMBData_REP = REP;
 
             data.ModeSMBData_MBData = new int[REP];
             data.ModeSMBData_BDS1 = new int[REP];

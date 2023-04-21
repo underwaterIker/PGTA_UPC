@@ -44,8 +44,7 @@
     <Compile Include="CAT10.cs" />
     <Compile Include="CAT10_Dict.cs" />
     <Compile Include="CAT21.cs" />
-    <Compile Include="CAT10_Data.cs" />
-    <Compile Include="CAT21_Data.cs" />
+    <Compile Include="Data.cs" />
     <Compile Include="CAT21_Dict.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

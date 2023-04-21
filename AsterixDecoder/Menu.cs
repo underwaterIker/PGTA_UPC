@@ -18,12 +18,14 @@ namespace AsterixDecoder
 {
     public partial class Menu : Form
     {
+        // List containing all CAT10 & CAT21 messages in order
+        public List<Data> data_list = new List<Data>();
+
+        bool fileload = false;
+        bool filecompleted = false;
+
         double LAT = 41.29839;
         double LON = 2.08331;
-
-        List<CAT10_Data> data10 = new List<CAT10_Data>();
-        List<CAT21_Data> data21 = new List<CAT21_Data>();
-
 
 
 
@@ -43,8 +45,7 @@ namespace AsterixDecoder
 
         }
 
-        bool fileload = false;
-        bool filecompleted = false;
+        
 
         private void LoadFile_Click(object sender, EventArgs e)
         {
@@ -56,19 +57,7 @@ namespace AsterixDecoder
                     string FileName = LoadFile.FileName;
                     ReadFile readFile = new ReadFile(FileName);
 
-                    for (int i = 0; i < readFile.CAT10_list.Count; i++)
-                    {
-                        CAT10 cat10 = readFile.CAT10_list[i];
-
-                        data10.Add(cat10.data);
-                    }
-
-                    for (int i = 0; i < readFile.CAT21_list.Count; i++)
-                    {
-                        CAT21 cat21 = readFile.CAT21_list[i];
-                        data21.Add(cat21.data);
-
-                    }
+                    this.data_list = readFile.data_list;
 
                     fileload = true;
                 }
@@ -95,22 +84,8 @@ namespace AsterixDecoder
             
             else
             {
-                if (data21==null)
-                {
-                    DataTable ViewDataCat10 = new DataTable(null, data10);
-                    ViewDataCat10.Show();
-                }
-                else if (data10==null )
-                {
-                    DataTable ViewDataCat21 = new DataTable(data21, null);
-                    ViewDataCat21.Show();
-                }
-                else
-                {
-                    DataTable ViewData = new DataTable(data21, data10);
-                    ViewData.Show();
-
-                }
+                DataTable dataTable = new DataTable(this.data_list);
+                dataTable.Show();
             
             }
            
