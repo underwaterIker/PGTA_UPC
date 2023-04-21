@@ -508,13 +508,13 @@ namespace ClassLibrary
             TC_bits[1] = bits[6];
             int TC_int = Functions.BitArray2Int(TC_bits);
 
-            data.AircraftOperationalStatus_RA = CAT21_Dict.AircrafOperationalStatus_RA_dict[bits[7]];
-            data.AircraftOperationalStatus_TC = CAT21_Dict.AircraftOperationalStatus_TC_dict[TC_int];
-            data.AircraftOperationalStatus_TS = CAT21_Dict.AircraftOperationalStatus_TS_dict[bits[4]];
-            data.AircraftOperationalStatus_ARV = CAT21_Dict.AircraftOperationalStatus_ARV_dict[bits[3]];
-            data.AircraftOperationalStatus_CDTI_A = CAT21_Dict.AircraftOperationalStatus_CDTI_dict[bits[2]];
-            data.AircraftOperationalStatus_TCAS = CAT21_Dict.AircraftOperationalStatus_TCAS_dict[bits[1]];
-            data.AircraftOperationalStatus_SA = CAT21_Dict.AircraftOperationalStatus_SA_dict[bits[0]];
+            data.AircraftOperationalStatus_RA = Dictionaries.AircrafOperationalStatus_RA_dict[bits[7]];
+            data.AircraftOperationalStatus_TC = Dictionaries.AircraftOperationalStatus_TC_dict[TC_int];
+            data.AircraftOperationalStatus_TS = Dictionaries.AircraftOperationalStatus_TS_dict[bits[4]];
+            data.AircraftOperationalStatus_ARV = Dictionaries.AircraftOperationalStatus_ARV_dict[bits[3]];
+            data.AircraftOperationalStatus_CDTI_A = Dictionaries.AircraftOperationalStatus_CDTI_dict[bits[2]];
+            data.AircraftOperationalStatus_TCAS = Dictionaries.AircraftOperationalStatus_TCAS_dict[bits[1]];
+            data.AircraftOperationalStatus_SA = Dictionaries.AircraftOperationalStatus_SA_dict[bits[0]];
         }
 
         // Data Item I021/010, Data Source Identification 
@@ -542,7 +542,7 @@ namespace ClassLibrary
         private void EmitterCategory(byte octet1)
         {
             int ECAT = octet1;
-            data.EmitterCategory = CAT21_Dict.EmitterCategory_dict[ECAT];
+            data.EmitterCategory = Dictionaries.EmitterCategory_dict[ECAT];
         }
 
         // Data Item I021/040, Target Report Descriptor
@@ -561,10 +561,10 @@ namespace ClassLibrary
             ARC_bits[1] = bits[4];
             int ARC_int = Functions.BitArray2Int(ARC_bits);
 
-            data.TargetReportDescriptor_ATP = CAT21_Dict.TargetReportDescriptor_ATP_dict[ATP_int];
-            data.TargetReportDescriptor_ARC = CAT21_Dict.TargetReportDescriptor_ARC_dict[ARC_int];
-            data.TargetReportDescriptor_RC = CAT21_Dict.TargetReportDescriptor_RC_dict[bits[2]];
-            data.TargetReportDescriptor_RAB = CAT21_Dict.TargetReportDescriptor_RAB_dict[bits[1]];
+            data.TargetReportDescriptor_ATP = Dictionaries.TargetReportDescriptor_ATP_dict[ATP_int];
+            data.TargetReportDescriptor_ARC = Dictionaries.TargetReportDescriptor_ARC_dict[ARC_int];
+            data.TargetReportDescriptor_RC = Dictionaries.TargetReportDescriptor_RC_dict[bits[2]];
+            data.TargetReportDescriptor_RAB = Dictionaries.TargetReportDescriptor_RAB_dict[bits[1]];
 
             if (bits[0] == true)
             {
@@ -575,22 +575,22 @@ namespace ClassLibrary
                 CL_bits[1] = bits[10];
                 int CL_int = Functions.BitArray2Int(CL_bits);
 
-                data.TargetReportDescriptor_DCR = CAT21_Dict.TargetReportDescriptor_DCR_dict[bits[15]];
-                data.TargetReportDescriptor_GBS = CAT21_Dict.TargetReportDescriptor_GBS_dict[bits[14]];
-                data.TargetReportDescriptor_SIM = CAT21_Dict.TargetReportDescriptor_SIM_dict[bits[13]];
-                data.TargetReportDescriptor_TST = CAT21_Dict.TargetReportDescriptor_TST_dict[bits[12]];
-                data.TargetReportDescriptor_SAA = CAT21_Dict.TargetReportDescriptor_SAA_dict[bits[11]];
-                data.TargetReportDescriptor_CL = CAT21_Dict.TargetReportDescriptor_CL_dict[CL_int];
+                data.TargetReportDescriptor_DCR = Dictionaries.TargetReportDescriptor_DCR_dict[bits[15]];
+                data.TargetReportDescriptor_GBS = Dictionaries.TargetReportDescriptor_GBS_cat21_dict[bits[14]];
+                data.TargetReportDescriptor_SIM = Dictionaries.TargetReportDescriptor_SIM_dict[bits[13]];
+                data.TargetReportDescriptor_TST = Dictionaries.TargetReportDescriptor_TST_dict[bits[12]];
+                data.TargetReportDescriptor_SAA = Dictionaries.TargetReportDescriptor_SAA_dict[bits[11]];
+                data.TargetReportDescriptor_CL = Dictionaries.TargetReportDescriptor_CL_dict[CL_int];
 
                 if (bits[8] == true)
                 {
                     data.TargetReportDescriptor_SecondExtent_flag = true;
 
-                    data.TargetReportDescriptor_IPC = CAT21_Dict.TargetReportDescriptor_IPC_dict[bits[21]];
-                    data.TargetReportDescriptor_NOGO = CAT21_Dict.TargetReportDescriptor_NOGO_dict[bits[20]];
-                    data.TargetReportDescriptor_CPR = CAT21_Dict.TargetReportDescriptor_CPR_dict[bits[19]];
-                    data.TargetReportDescriptor_LDPJ = CAT21_Dict.TargetReportDescriptor_LDPJ_dict[bits[18]];
-                    data.TargetReportDescriptor_RCF = CAT21_Dict.TargetReportDescriptor_RCF_dict[bits[17]];
+                    data.TargetReportDescriptor_IPC = Dictionaries.TargetReportDescriptor_IPC_dict[bits[21]];
+                    data.TargetReportDescriptor_NOGO = Dictionaries.TargetReportDescriptor_NOGO_dict[bits[20]];
+                    data.TargetReportDescriptor_CPR = Dictionaries.TargetReportDescriptor_CPR_dict[bits[19]];
+                    data.TargetReportDescriptor_LDPJ = Dictionaries.TargetReportDescriptor_LDPJ_dict[bits[18]];
+                    data.TargetReportDescriptor_RCF = Dictionaries.TargetReportDescriptor_RCF_dict[bits[17]];
 
                     return 3;
                 }
@@ -672,7 +672,7 @@ namespace ClassLibrary
             FSI_bits[1] = bits[31];
             int FSI_int = Functions.BitArray2Int(FSI_bits);
 
-            data.TimeOfMessageReceptionOfPosition_HighPrecision_FSI = CAT21_Dict.TimeOfMessageReceptionOfPosition_HighPrecision_FSI_dict[FSI_int];
+            data.TimeOfMessageReceptionOfPosition_HighPrecision_FSI = Dictionaries.TimeOfMessageReceptionOfPosition_HighPrecision_FSI_dict[FSI_int];
 
             // Fractional part of the time of message reception for position in the ground station.
             bits.Length = bits.Length - 2;
@@ -706,7 +706,7 @@ namespace ClassLibrary
             FSI_bits[1] = bits[31];
             int FSI_int = Functions.BitArray2Int(FSI_bits);
 
-            data.TimeOfMessageReceptionOfVelocity_HighPrecision_FSI = CAT21_Dict.TimeOfMessageReceptionOfVelocity_HighPrecision_FSI_dict[FSI_int];
+            data.TimeOfMessageReceptionOfVelocity_HighPrecision_FSI = Dictionaries.TimeOfMessageReceptionOfVelocity_HighPrecision_FSI_dict[FSI_int];
 
             // Fractional part of the time of message reception for position in the ground station.
             bits.Length = bits.Length - 2;
@@ -796,7 +796,7 @@ namespace ClassLibrary
                     GVA_bits[1] = bits[18];
                     int GVA_int = Functions.BitArray2Int(GVA_bits);
 
-                    data.QualityIndicators_SILsupplement = CAT21_Dict.QualityIndicators_SILsupplement_dict[bits[21]];
+                    data.QualityIndicators_SILsupplement = Dictionaries.QualityIndicators_SILsupplement_dict[bits[21]];
                     data.QualityIndicators_SDA = SDA_int;
                     data.QualityIndicators_GVA = GVA_int;
 
@@ -859,8 +859,8 @@ namespace ClassLibrary
             // maybe this is not necessary (changed)
             bool TIS_bool = primary_bits[7];
             bool TID_bool = primary_bits[6];
-            //data.TrajectoryIntent_TIS = CAT21_Dict.TrajectoryIntent_TIS_dict[TID_bool];
-            //data.TrajectoryIntent_TID = CAT21_Dict.TrajectoryIntent_TID_dict[TIS_bool];
+            //data.TrajectoryIntent_TIS = Dictionaries.TrajectoryIntent_TIS_dict[TID_bool];
+            //data.TrajectoryIntent_TID = Dictionaries.TrajectoryIntent_TID_dict[TIS_bool];
             data.TrajectoryIntent_TIS_subfield1 = TIS_bool;
             data.TrajectoryIntent_TID_subfield2 = TID_bool;
 
@@ -875,8 +875,8 @@ namespace ClassLibrary
 
                     BitArray subfield1_bits = new BitArray(new byte[1] { octets[index] });
 
-                    data.TrajectoryIntent_NAV = CAT21_Dict.TrajectoryIntent_NAV_dict[subfield1_bits[7]];
-                    data.TrajectoryIntent_NVB = CAT21_Dict.TrajectoryIntent_NVB_dict[subfield1_bits[6]];
+                    data.TrajectoryIntent_NAV = Dictionaries.TrajectoryIntent_NAV_dict[subfield1_bits[7]];
+                    data.TrajectoryIntent_NVB = Dictionaries.TrajectoryIntent_NVB_dict[subfield1_bits[6]];
 
                     index += 1;
                 }
@@ -906,8 +906,8 @@ namespace ClassLibrary
 
                         // Octet no. 2
                         BitArray subfield2_byte0_bits = new BitArray(new byte[1] { subfield2_bytes[0] });
-                        data.TrajectoryIntent_TCA[i] = CAT21_Dict.TrajectoryIntent_TCA_dict[subfield2_byte0_bits[7]];
-                        data.TrajectoryIntent_NC[i] = CAT21_Dict.TrajectoryIntent_NC_dict[subfield2_byte0_bits[6]];
+                        data.TrajectoryIntent_TCA[i] = Dictionaries.TrajectoryIntent_TCA_dict[subfield2_byte0_bits[7]];
+                        data.TrajectoryIntent_NC[i] = Dictionaries.TrajectoryIntent_NC_dict[subfield2_byte0_bits[6]];
                         subfield2_byte0_bits.Length = subfield2_byte0_bits.Length - 2;
                         data.TrajectoryIntent_TCP[i] = Functions.BitArray2Int(subfield2_byte0_bits);
 
@@ -936,14 +936,14 @@ namespace ClassLibrary
                         PointType_bits[2] = subfield2_byte9_bits[6];
                         PointType_bits[3] = subfield2_byte9_bits[7];
                         int PointType_int = Functions.BitArray2Int(PointType_bits);
-                        data.TrajectoryIntent_PointType[i] = CAT21_Dict.TrajectoryIntent_PointType_dict[PointType_int];
+                        data.TrajectoryIntent_PointType[i] = Dictionaries.TrajectoryIntent_PointType_dict[PointType_int];
                         BitArray TD_bits = new BitArray(2);
                         TD_bits[0] = subfield2_byte9_bits[2];
                         TD_bits[1] = subfield2_byte9_bits[3];
                         int TD_int = Functions.BitArray2Int(TD_bits);
-                        data.TrajectoryIntent_TD[i] = CAT21_Dict.TrajectoryIntent_TD_dict[TD_int];
-                        data.TrajectoryIntent_TRA[i] = CAT21_Dict.TrajectoryIntent_TRA_dict[subfield2_byte9_bits[1]];
-                        data.TrajectoryIntent_TOA[i] = CAT21_Dict.TrajectoryIntent_TOA_dict[subfield2_byte9_bits[0]];
+                        data.TrajectoryIntent_TD[i] = Dictionaries.TrajectoryIntent_TD_dict[TD_int];
+                        data.TrajectoryIntent_TRA[i] = Dictionaries.TrajectoryIntent_TRA_dict[subfield2_byte9_bits[1]];
+                        data.TrajectoryIntent_TOA[i] = Dictionaries.TrajectoryIntent_TOA_dict[subfield2_byte9_bits[0]];
 
                         // Octet no. 12 & 13 & 14
                         //double TOV_LSB = 1; // s
@@ -1035,8 +1035,8 @@ namespace ClassLibrary
             Source_bits[1] = bits[14];
             int Source_int = Functions.BitArray2Int(Source_bits);
 
-            data.SelectedAltitude_SAS = CAT21_Dict.SelectedAltitude_SAS_dict[bits[15]];
-            data.SelectedAltitude_Source = CAT21_Dict.SelectedAltitude_Source_dict[Source_int];
+            data.SelectedAltitude_SAS = Dictionaries.SelectedAltitude_SAS_dict[bits[15]];
+            data.SelectedAltitude_Source = Dictionaries.SelectedAltitude_Source_dict[Source_int];
 
             bits.Length = bits.Length - 3;
 
@@ -1051,9 +1051,9 @@ namespace ClassLibrary
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
-            data.FinalStateSelectedAltitude_MV = CAT21_Dict.FinalStateSelectedAltitude_dict[bits[15]];
-            data.FinalStateSelectedAltitude_AH = CAT21_Dict.FinalStateSelectedAltitude_dict[bits[14]];
-            data.FinalStateSelectedAltitude_AM = CAT21_Dict.FinalStateSelectedAltitude_dict[bits[13]];
+            data.FinalStateSelectedAltitude_MV = Dictionaries.FinalStateSelectedAltitude_dict[bits[15]];
+            data.FinalStateSelectedAltitude_AH = Dictionaries.FinalStateSelectedAltitude_dict[bits[14]];
+            data.FinalStateSelectedAltitude_AM = Dictionaries.FinalStateSelectedAltitude_dict[bits[13]];
 
             bits.Length = bits.Length - 3;
 
@@ -1068,7 +1068,7 @@ namespace ClassLibrary
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
-            data.AirSpeed_IM = CAT21_Dict.AirSpeed_IM[bits[15]];
+            data.AirSpeed_IM = Dictionaries.AirSpeed_IM[bits[15]];
             
             bits.Length = bits.Length - 1;
 
@@ -1093,7 +1093,7 @@ namespace ClassLibrary
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
-            data.TrueAirSpeed_RE = CAT21_Dict.RE_dict[bits[15]];
+            data.TrueAirSpeed_RE = Dictionaries.RE_dict[bits[15]];
 
             bits.Length = bits.Length - 1;
 
@@ -1118,7 +1118,7 @@ namespace ClassLibrary
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
-            data.BarometricVerticalRate_RE = CAT21_Dict.RE_dict[bits[15]];
+            data.BarometricVerticalRate_RE = Dictionaries.RE_dict[bits[15]];
 
             bits.Length = bits.Length - 1;
 
@@ -1133,7 +1133,7 @@ namespace ClassLibrary
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
-            data.GeometricVerticalRate_RE = CAT21_Dict.RE_dict[bits[15]];
+            data.GeometricVerticalRate_RE = Dictionaries.RE_dict[bits[15]];
 
             bits.Length = bits.Length - 1;
 
@@ -1151,7 +1151,7 @@ namespace ClassLibrary
             byte[] GroundSpeed_and_RE_bytes = new byte[2] { octets[2], octets[3] }; // Previously reversed
             BitArray GroundSpeed_and_RE_bits = new BitArray(GroundSpeed_and_RE_bytes);
 
-            data.AirborneGroundVector_RE = CAT21_Dict.RE_dict[GroundSpeed_and_RE_bits[15]];
+            data.AirborneGroundVector_RE = Dictionaries.RE_dict[GroundSpeed_and_RE_bits[15]];
             GroundSpeed_and_RE_bits.Length = GroundSpeed_and_RE_bits.Length - 1;
 
             double LSB_GroundSpeed = (double)Math.Pow(2, -14); // NM/s
@@ -1245,14 +1245,14 @@ namespace ClassLibrary
             int char2_int = Functions.BitArray2Int(char2_bits);
             int char1_int = Functions.BitArray2Int(char1_bits);
 
-            string char8 = CAT21_Dict.TargetIdentification_dict[char8_int];
-            string char7 = CAT21_Dict.TargetIdentification_dict[char7_int];
-            string char6 = CAT21_Dict.TargetIdentification_dict[char6_int];
-            string char5 = CAT21_Dict.TargetIdentification_dict[char5_int];
-            string char4 = CAT21_Dict.TargetIdentification_dict[char4_int];
-            string char3 = CAT21_Dict.TargetIdentification_dict[char3_int];
-            string char2 = CAT21_Dict.TargetIdentification_dict[char2_int];
-            string char1 = CAT21_Dict.TargetIdentification_dict[char1_int];
+            string char8 = Dictionaries.TargetIdentification_dict[char8_int];
+            string char7 = Dictionaries.TargetIdentification_dict[char7_int];
+            string char6 = Dictionaries.TargetIdentification_dict[char6_int];
+            string char5 = Dictionaries.TargetIdentification_dict[char5_int];
+            string char4 = Dictionaries.TargetIdentification_dict[char4_int];
+            string char3 = Dictionaries.TargetIdentification_dict[char3_int];
+            string char2 = Dictionaries.TargetIdentification_dict[char2_int];
+            string char1 = Dictionaries.TargetIdentification_dict[char1_int];
 
             data.TargetIdentification = char1 + char2 + char3 + char4 + char5 + char6 + char7 + char8;
         }
@@ -1273,10 +1273,10 @@ namespace ClassLibrary
             SS_bits[1] = bits[1];
             int SS_int = Functions.BitArray2Int(SS_bits);
 
-            data.TargetStatus_ICF = CAT21_Dict.TargetStatus_ICF_dict[bits[7]];
-            data.TargetStatus_LNAV = CAT21_Dict.TargetStatus_LNAV_dict[bits[6]];
-            data.TargetStatus_PS = CAT21_Dict.TargetStatus_PS_dict[PS_int];
-            data.TargetStatus_SS = CAT21_Dict.TargetStatus_SS_dict[SS_int];
+            data.TargetStatus_ICF = Dictionaries.TargetStatus_ICF_dict[bits[7]];
+            data.TargetStatus_LNAV = Dictionaries.TargetStatus_LNAV_dict[bits[6]];
+            data.TargetStatus_PS = Dictionaries.TargetStatus_PS_dict[PS_int];
+            data.TargetStatus_SS = Dictionaries.TargetStatus_SS_dict[SS_int];
         }
 
         // Data Item I021/210, MOPS Version
@@ -1296,9 +1296,9 @@ namespace ClassLibrary
             LTT_bits[2] = bits[2];
             int LTT_int = Functions.BitArray2Int(LTT_bits);
 
-            data.MOPSVersion_VNS = CAT21_Dict.MOPSVersion_VNS_dict[bits[6]];
-            data.MOPSVersion_VN = CAT21_Dict.MOPSVersion_VN_dict[VN_int];
-            data.MOPSVersion_LTT = CAT21_Dict.MOPSVersion_LTT_dict[LTT_int];
+            data.MOPSVersion_VNS = Dictionaries.MOPSVersion_VNS_dict[bits[6]];
+            data.MOPSVersion_VN = Dictionaries.MOPSVersion_VN_dict[VN_int];
+            data.MOPSVersion_LTT = Dictionaries.MOPSVersion_LTT_dict[LTT_int];
         }
 
         // Data Item I021/220, Met Information
@@ -1311,10 +1311,10 @@ namespace ClassLibrary
             bool WD_bool = primary_bits[6];
             bool TMP_bool = primary_bits[5];
             bool TRB_bool = primary_bits[4];
-            //data.MetInformation_WS = CAT21_Dict.MetInformation_WS_dict[WS_bool];
-            //data.MetInformation_WD = CAT21_Dict.MetInformation_WD_dict[WD_bool];
-            //data.MetInformation_TMP = CAT21_Dict.MetInformation_TMP_dict[TMP_bool];
-            //data.MetInformation_TRB = CAT21_Dict.MetInformation_TRB_dict[TRB_bool];
+            //data.MetInformation_WS = Dictionaries.MetInformation_WS_dict[WS_bool];
+            //data.MetInformation_WD = Dictionaries.MetInformation_WD_dict[WD_bool];
+            //data.MetInformation_TMP = Dictionaries.MetInformation_TMP_dict[TMP_bool];
+            //data.MetInformation_TRB = Dictionaries.MetInformation_TRB_dict[TRB_bool];
             data.MetInformation_WS_subfield1 = WS_bool;
             data.MetInformation_WD_subfield2 = WD_bool;
             data.MetInformation_TMP_subfield3 = TMP_bool;
@@ -1465,11 +1465,11 @@ namespace ClassLibrary
         private int SurfaceCapabilitiesAndCharacteristics(byte[] octets)
         {
             BitArray bits = new BitArray(octets);
-            data.SurfaceCapabilitiesandCharacteristics_POA = CAT21_Dict.SurfaceCapabilitiesandCharacteristics_POA_dict[bits[5]];
-            data.SurfaceCapabilitiesandCharacteristics_CDTI_S = CAT21_Dict.SurfaceCapabilitiesandCharacteristics_CDTI_S_dict[bits[4]];
-            data.SurfaceCapabilitiesandCharacteristics_B2low = CAT21_Dict.SurfaceCapabilitiesandCharacteristics_B2LOW_dict[bits[3]];
-            data.SurfaceCapabilitiesandCharacteristics_RAS = CAT21_Dict.SurfaceCapabilitiesandCharacteristics_RAS_dict[bits[2]];
-            data.SurfaceCapabilitiesandCharacteristics_IDENT = CAT21_Dict.SurfaceCapabilitiesandCharacteristics_IDENT_dict[bits[1]];
+            data.SurfaceCapabilitiesandCharacteristics_POA = Dictionaries.SurfaceCapabilitiesandCharacteristics_POA_dict[bits[5]];
+            data.SurfaceCapabilitiesandCharacteristics_CDTI_S = Dictionaries.SurfaceCapabilitiesandCharacteristics_CDTI_S_dict[bits[4]];
+            data.SurfaceCapabilitiesandCharacteristics_B2low = Dictionaries.SurfaceCapabilitiesandCharacteristics_B2LOW_dict[bits[3]];
+            data.SurfaceCapabilitiesandCharacteristics_RAS = Dictionaries.SurfaceCapabilitiesandCharacteristics_RAS_dict[bits[2]];
+            data.SurfaceCapabilitiesandCharacteristics_IDENT = Dictionaries.SurfaceCapabilitiesandCharacteristics_IDENT_dict[bits[1]];
 
             if (bits[0] == true)
             {

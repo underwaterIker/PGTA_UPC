@@ -49,7 +49,6 @@
             this.ClientSize = new System.Drawing.Size(1175, 624);
             this.Controls.Add(this.dataGridView1);
             this.Name = "DataTable";
-            this.Load += new System.EventHandler(this.DataTable_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 

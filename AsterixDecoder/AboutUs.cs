@@ -26,10 +26,5 @@ namespace AsterixDecoder
            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         }
-
-        private void AboutUs_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }

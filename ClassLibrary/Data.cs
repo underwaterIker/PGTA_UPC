@@ -144,6 +144,7 @@ namespace ClassLibrary
         public string SystemStatus_TTF { get; set; }
         public string SystemStatus_NOGO { get; set; }
 
+        // -----------------------------------------------------------------------------------
 
         // CAT21
         // Data Item I021/008, Aircraft Operational Status

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using ClassLibrary;
+using System.IO;
 
 namespace AsterixDecoder
 {
@@ -21,12 +22,10 @@ namespace AsterixDecoder
         // List containing all CAT10 & CAT21 messages in order
         public List<Data> data_list = new List<Data>();
 
-        bool fileload = false;
-        bool filecompleted = false;
+        bool fileLoaded = false;
 
         double LAT = 41.29839;
         double LON = 2.08331;
-
 
 
         public Menu()
@@ -34,38 +33,36 @@ namespace AsterixDecoder
             InitializeComponent();
         }
 
-        private void Menu_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        
-        public void ResetFile(string FileName)
-        {
-
-        }
-
-        
 
         private void LoadFile_Click(object sender, EventArgs e)
         {
-            if (fileload == false)
+            OpenFileDialog LoadFile = new OpenFileDialog();
+            if (LoadFile.ShowDialog() == DialogResult.OK && Path.GetExtension(LoadFile.FileName) == ".ast")
             {
-                OpenFileDialog LoadFile = new OpenFileDialog();
-                if (LoadFile.ShowDialog() == DialogResult.OK)
-                {
-                    string FileName = LoadFile.FileName;
-                    ReadFile readFile = new ReadFile(FileName);
+                fileLoaded = true;
+                this.data_list.Clear();
 
-                    this.data_list = readFile.data_list;
+                string FileName = LoadFile.FileName;
+                ReadFile readFile = new ReadFile(FileName);
 
-                    fileload = true;
-                }
-
+                this.data_list = readFile.data_list;
             }
-            else if (fileload == true)
+            else
             {
-                MessageBox.Show("The file has already been uploaded");
+                MessageBox.Show("Select a valid file format.", "Incorrect file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        private void ViewData_Click(object sender, EventArgs e)
+        {
+            if (fileLoaded==false)
+            {
+                MessageBox.Show("The file with the data has not been uploaded", "Missing file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+                DataTable dataTable = new DataTable(this.data_list);
+                dataTable.Show();
             }
         }
 
@@ -73,23 +70,6 @@ namespace AsterixDecoder
         {
             AboutUs AboutUs = new AboutUs();
             AboutUs.Show();
-        }
-
-        private void ViewData_Click(object sender, EventArgs e)
-        {
-            if (fileload==false)
-            {
-                MessageBox.Show("The file with the data has not been uploaded");
-            }
-            
-            else
-            {
-                DataTable dataTable = new DataTable(this.data_list);
-                dataTable.Show();
-            
-            }
-           
-
         }
 
         // MAP
@@ -122,5 +102,7 @@ namespace AsterixDecoder
             gMapControl1.Zoom = 13;
             gMapControl1.AutoScroll = true;
         }
+
+        
     }
 }

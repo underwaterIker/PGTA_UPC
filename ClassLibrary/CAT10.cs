@@ -313,7 +313,7 @@ namespace ClassLibrary
         // Data Item I010/000, Message Type
         private void MessageType(byte octet1)
         {
-            string messageType = CAT10_Dict.MessageType_dict[octet1];
+            string messageType = Dictionaries.MessageType_dict[octet1];
             data.MessageType = messageType;
         }
 
@@ -338,11 +338,11 @@ namespace ClassLibrary
             TYP_bits[2] = bits[7];
             int TYP_int = Functions.BitArray2Int(TYP_bits);
 
-            data.TargetReportDescriptor_TYP = CAT10_Dict.TargetReportDescriptor_TYP_dict[TYP_int];
-            data.TargetReportDescriptor_DCR = CAT10_Dict.TargetReportDescriptor_DCR_dict[bits[4]];
-            data.TargetReportDescriptor_CHN = CAT10_Dict.TargetReportDescriptor_CHN_dict[bits[3]];
-            data.TargetReportDescriptor_GBS = CAT10_Dict.TargetReportDescriptor_GBS_dict[bits[2]];
-            data.TargetReportDescriptor_CRT = CAT10_Dict.TargetReportDescriptor_CRT_dict[bits[1]];
+            data.TargetReportDescriptor_TYP = Dictionaries.TargetReportDescriptor_TYP_dict[TYP_int];
+            data.TargetReportDescriptor_DCR = Dictionaries.TargetReportDescriptor_DCR_dict[bits[4]];
+            data.TargetReportDescriptor_CHN = Dictionaries.TargetReportDescriptor_CHN_dict[bits[3]];
+            data.TargetReportDescriptor_GBS = Dictionaries.TargetReportDescriptor_GBS_dict[bits[2]];
+            data.TargetReportDescriptor_CRT = Dictionaries.TargetReportDescriptor_CRT_dict[bits[1]];
 
             if (bits[0] == true)
             {
@@ -358,17 +358,17 @@ namespace ClassLibrary
                 TOT_bits[1] = bits[10];
                 int TOT_int = Functions.BitArray2Int(TOT_bits);
 
-                data.TargetReportDescriptor_SIM = CAT10_Dict.TargetReportDescriptor_SIM_dict[bits[15]];
-                data.TargetReportDescriptor_TST = CAT10_Dict.TargetReportDescriptor_TST_dict[bits[14]];
-                data.TargetReportDescriptor_RAB = CAT10_Dict.TargetReportDescriptor_RAB_dict[bits[13]];
-                data.TargetReportDescriptor_LOP = CAT10_Dict.TargetReportDescriptor_LOP_dict[LOP_int];
-                data.TargetReportDescriptor_TOT = CAT10_Dict.TargetReportDescriptor_TOT_dict[TOT_int];
+                data.TargetReportDescriptor_SIM = Dictionaries.TargetReportDescriptor_SIM_dict[bits[15]];
+                data.TargetReportDescriptor_TST = Dictionaries.TargetReportDescriptor_TST_dict[bits[14]];
+                data.TargetReportDescriptor_RAB = Dictionaries.TargetReportDescriptor_RAB_dict[bits[13]];
+                data.TargetReportDescriptor_LOP = Dictionaries.TargetReportDescriptor_LOP_dict[LOP_int];
+                data.TargetReportDescriptor_TOT = Dictionaries.TargetReportDescriptor_TOT_dict[TOT_int];
 
                 if(bits[8] == true)
                 {
                     data.TargetReportDescriptor_SecondExtent_flag = true;
 
-                    data.TargetReportDescriptor_SPI = CAT10_Dict.TargetReportDescriptor_SPI_dict[bits[23]];
+                    data.TargetReportDescriptor_SPI = Dictionaries.TargetReportDescriptor_SPI_dict[bits[23]];
                     numberOfBytes = 3;
                 }
                 numberOfBytes = 2;
@@ -429,9 +429,9 @@ namespace ClassLibrary
             BitArray bits = new BitArray(octets);
 
             // BE CAREFUL WITH BITS AND BYTES ORDER !!!!!!!!!
-            data.Mode3ACode_V = CAT10_Dict.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
-            data.Mode3ACode_G = CAT10_Dict.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
-            data.Mode3ACode_L = CAT10_Dict.Mode3ACodeL_dict[bits[13]];
+            data.Mode3ACode_V = Dictionaries.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
+            data.Mode3ACode_G = Dictionaries.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
+            data.Mode3ACode_L = Dictionaries.Mode3ACodeL_dict[bits[13]];
 
             // We create BitArrays for A, B, C & D and fill them with the corresponding bits
             BitArray bits_A = new BitArray(3);
@@ -461,8 +461,8 @@ namespace ClassLibrary
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
 
-            data.FlightLevel_V = CAT10_Dict.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
-            data.FlightLevel_G = CAT10_Dict.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
+            data.FlightLevel_V = Dictionaries.Mode3ACodeV_and_FlightLevelV_dict[bits[15]];
+            data.FlightLevel_G = Dictionaries.Mode3ACodeG_and_FlightLevelG_dict[bits[14]];
 
             bits.Length = bits.Length - 2;
 
@@ -517,12 +517,12 @@ namespace ClassLibrary
             CST_bits[1] = bits[5];
             int CST_int = Functions.BitArray2Int(CST_bits);
 
-            data.TrackStatus_CNF = CAT10_Dict.TrackStatus_CNF_dict[bits[7]];
-            data.TrackStatus_TRE = CAT10_Dict.TrackStatus_TRE_dict[bits[6]];
-            data.TrackStatus_CST = CAT10_Dict.TrackStatus_CST_dict[CST_int];
-            data.TrackStatus_MAH = CAT10_Dict.TrackStatus_MAH_dict[bits[3]];
-            data.TrackStatus_TCC = CAT10_Dict.TrackStatus_TCC_dict[bits[2]];
-            data.TrackStatus_STH = CAT10_Dict.TrackStatus_STH_dict[bits[1]];
+            data.TrackStatus_CNF = Dictionaries.TrackStatus_CNF_dict[bits[7]];
+            data.TrackStatus_TRE = Dictionaries.TrackStatus_TRE_dict[bits[6]];
+            data.TrackStatus_CST = Dictionaries.TrackStatus_CST_dict[CST_int];
+            data.TrackStatus_MAH = Dictionaries.TrackStatus_MAH_dict[bits[3]];
+            data.TrackStatus_TCC = Dictionaries.TrackStatus_TCC_dict[bits[2]];
+            data.TrackStatus_STH = Dictionaries.TrackStatus_STH_dict[bits[1]];
 
             if (bits[0] == true)
             {
@@ -544,15 +544,15 @@ namespace ClassLibrary
                 MRS_bits[1] = bits[10];
                 int MRS_int = Functions.BitArray2Int(MRS_bits);
 
-                data.TrackStatus_TOM = CAT10_Dict.TrackStatus_TOM_dict[TOM_int];
-                data.TrackStatus_DOU = CAT10_Dict.TrackStatus_DOU_dict[DOU_int];
-                data.TrackStatus_MRS = CAT10_Dict.TrackStatus_MRS_dict[MRS_int];
+                data.TrackStatus_TOM = Dictionaries.TrackStatus_TOM_dict[TOM_int];
+                data.TrackStatus_DOU = Dictionaries.TrackStatus_DOU_dict[DOU_int];
+                data.TrackStatus_MRS = Dictionaries.TrackStatus_MRS_dict[MRS_int];
 
                 if (bits[8] == true)
                 {
                     data.TrackStatus_SecondExtent_flag = true;
 
-                    data.TrackStatus_GHO = CAT10_Dict.TrackStatus_GHO_dict[bits[23]];
+                    data.TrackStatus_GHO = Dictionaries.TrackStatus_GHO_dict[bits[23]];
                     return 3;
                 }
                 return 2;
@@ -629,7 +629,7 @@ namespace ClassLibrary
             STI_bits[1] = bits[55];
             int STI_int = Functions.BitArray2Int(STI_bits);
 
-            data.TargetIdentification_STI = CAT10_Dict.TartgetIdentificationSTI_dict[STI_int];
+            data.TargetIdentification_STI = Dictionaries.TartgetIdentificationSTI_dict[STI_int];
 
             // Characters
             BitArray char8_bits = new BitArray(6);
@@ -687,14 +687,14 @@ namespace ClassLibrary
             int char2_int = Functions.BitArray2Int(char2_bits);
             int char1_int = Functions.BitArray2Int(char1_bits);
 
-            string char8 = CAT10_Dict.TargetIdentificationCharacters_dict[char8_int];
-            string char7 = CAT10_Dict.TargetIdentificationCharacters_dict[char7_int];
-            string char6 = CAT10_Dict.TargetIdentificationCharacters_dict[char6_int];
-            string char5 = CAT10_Dict.TargetIdentificationCharacters_dict[char5_int];
-            string char4 = CAT10_Dict.TargetIdentificationCharacters_dict[char4_int];
-            string char3 = CAT10_Dict.TargetIdentificationCharacters_dict[char3_int];
-            string char2 = CAT10_Dict.TargetIdentificationCharacters_dict[char2_int];
-            string char1 = CAT10_Dict.TargetIdentificationCharacters_dict[char1_int];
+            string char8 = Dictionaries.TargetIdentificationCharacters_dict[char8_int];
+            string char7 = Dictionaries.TargetIdentificationCharacters_dict[char7_int];
+            string char6 = Dictionaries.TargetIdentificationCharacters_dict[char6_int];
+            string char5 = Dictionaries.TargetIdentificationCharacters_dict[char5_int];
+            string char4 = Dictionaries.TargetIdentificationCharacters_dict[char4_int];
+            string char3 = Dictionaries.TargetIdentificationCharacters_dict[char3_int];
+            string char2 = Dictionaries.TargetIdentificationCharacters_dict[char2_int];
+            string char1 = Dictionaries.TargetIdentificationCharacters_dict[char1_int];
 
             data.TargetIdentification_Characters = char1 + char2 + char3 + char4 + char5 + char6 + char7 + char8;
         }
@@ -811,7 +811,7 @@ namespace ClassLibrary
         // Data Item I010/300, Vehicle Fleet Identification
         private void VehicleFleetIdentification(byte octet1)
         {
-            data.VehicleFleetIdentification = CAT10_Dict.VehicleFleetIdentification_VFI_dict[octet1];
+            data.VehicleFleetIdentification = Dictionaries.VehicleFleetIdentification_VFI_dict[octet1];
         }
 
         // Data Item I010/310, Pre-programmed Message
@@ -819,12 +819,12 @@ namespace ClassLibrary
         {
             BitArray bits = new BitArray(new byte[1] { octet1 });
 
-            data.PreprogrammedMessage_TRB = CAT10_Dict.PreprogrammedMessage_TRB_dict[bits[7]];
+            data.PreprogrammedMessage_TRB = Dictionaries.PreprogrammedMessage_TRB_dict[bits[7]];
 
             //bits.Length = bits.Length - 1;
             bits[7] = false;
 
-            data.PreprogrammedMessage_MSG = CAT10_Dict.PreprogrammedMessage_MSG_dict[Functions.BitArray2Int(bits)];
+            data.PreprogrammedMessage_MSG = Dictionaries.PreprogrammedMessage_MSG_dict[Functions.BitArray2Int(bits)];
         }
 
         // Data Item I010/500, Standard Deviation of Position
@@ -853,11 +853,11 @@ namespace ClassLibrary
             NOGO_bits[1] = bits[7];
             int NOGO_int = Functions.BitArray2Int(NOGO_bits);
 
-            data.SystemStatus_NOGO = CAT10_Dict.SystemStatus_NOGO_dict[NOGO_int];
-            data.SystemStatus_OVL = CAT10_Dict.SystemStatus_OVL_dict[bits[5]];
-            data.SystemStatus_TSV = CAT10_Dict.SystemStatus_TSV_dict[bits[4]];
-            data.SystemStatus_DIV = CAT10_Dict.SystemStatus_DIV_dict[bits[3]];
-            data.SystemStatus_TTF = CAT10_Dict.SystemStatus_TTF_dict[bits[2]];
+            data.SystemStatus_NOGO = Dictionaries.SystemStatus_NOGO_dict[NOGO_int];
+            data.SystemStatus_OVL = Dictionaries.SystemStatus_OVL_dict[bits[5]];
+            data.SystemStatus_TSV = Dictionaries.SystemStatus_TSV_dict[bits[4]];
+            data.SystemStatus_DIV = Dictionaries.SystemStatus_DIV_dict[bits[3]];
+            data.SystemStatus_TTF = Dictionaries.SystemStatus_TTF_dict[bits[2]];
         }
         
     }

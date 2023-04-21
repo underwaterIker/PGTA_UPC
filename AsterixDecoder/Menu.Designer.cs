@@ -137,8 +137,6 @@ namespace AsterixDecoder
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button LoadFile;
         private System.Windows.Forms.Button AboutUs;
         private System.Windows.Forms.Button ViewData;
