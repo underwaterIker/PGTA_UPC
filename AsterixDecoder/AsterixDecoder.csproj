@@ -73,12 +73,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTable.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DataTable.Designer.cs">
-      <DependentUpon>DataTable.cs</DependentUpon>
-    </Compile>
     <Compile Include="AboutUs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,9 +87,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="DataTable.resx">
-      <DependentUpon>DataTable.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="AboutUs.resx">
       <DependentUpon>AboutUs.cs</DependentUpon>
     </EmbeddedResource>

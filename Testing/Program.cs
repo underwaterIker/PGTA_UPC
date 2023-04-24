@@ -20,7 +20,27 @@ namespace Testing
             /// Here goes the function to be tested
 
             /// TEST OF READFILE() FUNCTION FROM FUNCTIONS CLASS
-            test_readFile();
+            //test_readFile();
+
+            /// TEST OF LIST WITH OBJECTS
+            /*
+            string str = "abc";
+            int num = 2;
+            string[] strarray = new string[3] { "a", "b", "c" };
+            int[] numarray = new int[3] {1,2,3};
+            
+            List<Object> list = new List<Object>();
+            list.Add(str);
+            list.Add(num);
+            list.Add(strarray);
+            list.Add(numarray);
+
+            //int[] numarray2 = (int[])list[3];
+            if (list[3] is int[])
+            {
+                Console.WriteLine(list[3]);
+            }
+            */
 
             /// TEST OF MESSAGETYPE() FUNCTION DECODER FROM CAT10 CLASS
             /*
@@ -50,7 +70,7 @@ namespace Testing
             //Console.WriteLine(bits.Length);
             //Console.WriteLine(bits[bits.Length - 1]);
             //Console.WriteLine(Convert.ToInt32(bits[bits.Length-1]));
-            
+
 
             /// TEST OF TargetReportDescriptor() FUNCTION DECODER FROM CAT10 CLASS
             /*
@@ -79,7 +99,7 @@ namespace Testing
             string path = @"D:\Proyectos\PGTA_UPC\Archivos AST\201002-lebl-080001_adsb.ast";
             ReadFile readFile = new ReadFile(path);
 
-            ShowData(readFile.data_list);
+            //ShowData(readFile.data_list);
         }
 
         // For testing
@@ -875,6 +895,12 @@ namespace Testing
 
                         }
                     }
+                }
+                else
+                {
+                    Console.WriteLine("--------------------------------------------");
+                    Console.WriteLine("ERROR. Not expected category. --> CAT {0}", cat);
+                    Console.WriteLine("--------------------------------------------");
                 }
             } 
         }

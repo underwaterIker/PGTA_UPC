@@ -11,7 +11,7 @@ namespace ClassLibrary
     public class ReadFile
     {
         // List containing all CAT10 & CAT21 messages in order
-        public List<Data> data_list = new List<Data>();
+        public List<Decodification> data_list = new List<Decodification>();
 
         // CONSTRUCTOR: reads the file and fills the lists with the messages
         public ReadFile(string path)
@@ -35,8 +35,8 @@ namespace ClassLibrary
                     {
                         CAT10_message[j] = file_byte[k + 3];
                     }
-                    CAT10 cat10 = new CAT10(CAT10_message);
-                    this.data_list.Add(cat10.data);
+                    Decodification cat10 = new Decodification(cat, length, CAT10_message);
+                    this.data_list.Add(cat10);
                 }
                 else if (cat == 21)
                 {
@@ -45,14 +45,15 @@ namespace ClassLibrary
                     {
                         CAT21_message[j] = file_byte[k + 3];
                     }
-                    CAT21 cat21 = new CAT21(CAT21_message);
-                    this.data_list.Add(cat21.data);
+                    Decodification cat21 = new Decodification(cat, length, CAT21_message);
+                    this.data_list.Add(cat21);
                 }
                 else
                 {
-                    Console.WriteLine("--------------------------------------------");
-                    Console.WriteLine("ERROR. Not expected category. --> CAT {0}", cat);
-                    Console.WriteLine("--------------------------------------------");
+                    Decodification unknownCat = new Decodification(cat, length);
+                    unknownCat.CAT = cat;
+                    unknownCat.LENGTH = length;
+                    this.data_list.Add(unknownCat);
                 }
                 i = i + length;
                 //i = file_byte.Length;

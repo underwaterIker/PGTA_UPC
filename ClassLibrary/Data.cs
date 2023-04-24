@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,20 @@ namespace ClassLibrary
         // CAT number
         public int CAT { get; set; }
 
+        // LENGTH of the message (number of bytes of the message)
+        public int LENGTH { get; set; }
+
+        // Number of Data Items
+        public int numberOfDataItems { get; set; }
+
+        // Array with the Field Type numbers that the message includes
+        public List<int> fieldTypes { get; set; } = new List<int>();
+
         // FSPEC bytes
         public byte[] FSPEC_bytes { get; set; }
+
+        // Data List
+        public List<IList> data_list { get; set; }
 
 
         // CAT10
