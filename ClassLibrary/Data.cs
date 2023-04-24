@@ -25,9 +25,21 @@ namespace ClassLibrary
         public byte[] FSPEC_bytes { get; set; }
 
         // Data List
-        public List<IList> data_list { get; set; }
+        public List<IList> data_list { get; set; } = new List<IList>();
 
 
+        // Clear Data() method
+        public void clearData()
+        {
+            this.CAT = 0;
+            this.LENGTH = 0;
+            this.numberOfDataItems = 0;
+            this.fieldTypes = new List<int>();
+            Array.Clear(this.FSPEC_bytes, 0, this.FSPEC_bytes.Length);
+            this.data_list = new List<IList>();
+        }
+
+        /*
         // CAT10
         // Data Item I010/000, Message Type
         public string MessageType { get; set; }
@@ -433,5 +445,7 @@ namespace ClassLibrary
 
         // Data Item I021 / 400, Receiver ID
         public int ReceiverID { get; set; }
+        */
+
     }
 }

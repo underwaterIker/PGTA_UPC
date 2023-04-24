@@ -10,12 +10,15 @@ using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
+using System.IO;
 
 namespace ClassLibrary
 {
     public class Decodification
     {
+        public List<Data> messagesData_list = new List<Data>();
+        private Data messageData;
+        /*
         // CAT number
         public int CAT { get; set; }
 
@@ -34,29 +37,56 @@ namespace ClassLibrary
         // Data List
         public List<IList> data_list { get; set; } = new List<IList>();
         //public List<int[]> index_list = new List<int[]>();
+        */
 
 
         // CONSTRUCTOR
-        public Decodification(int cat, int length, byte[] message)
+        public Decodification(string path)
         {
-            this.CAT = cat;
-            this.LENGTH = length;
+            byte[] file_byte = File.ReadAllBytes(path);
 
-            if (cat == 10)
+            for (int i = 0; i < file_byte.Length;)
             {
-                CAT10_Decodification(message);
-            }
-            else if (cat == 21)
-            {
-                CAT21_Decodification(message);
+                this.messageData = new Data();
+
+                // CAT
+                int cat = file_byte[i];
+                this.messageData.CAT = cat;
+
+                // LENGTH
+                byte[] length_bytes = new byte[2] { file_byte[i + 2], file_byte[i + 1] }; // Reversed
+                int length = Functions.CombineBytes2Int(length_bytes);
+                this.messageData.LENGTH = length;
+
+                // Save message in corresponding list
+                if (cat == 10)
+                {
+                    byte[] CAT10_message = new byte[length - 3];
+                    for (int j = 0, k = i; j < length - 3; j++, k++)
+                    {
+                        CAT10_message[j] = file_byte[k + 3];
+                    }
+                    CAT10_Decodification(CAT10_message);
+                    this.messagesData_list.Add(this.messageData);
+                }
+                else if (cat == 21)
+                {
+                    byte[] CAT21_message = new byte[length - 3];
+                    for (int j = 0, k = i; j < length - 3; j++, k++)
+                    {
+                        CAT21_message[j] = file_byte[k + 3];
+                    }
+                    CAT21_Decodification(CAT21_message);
+                    this.messagesData_list.Add(this.messageData);
+                }
+                else
+                {
+                    this.messagesData_list.Add(this.messageData);
+                }
+                i = i + length;
+                //i = file_byte.Length;
             }
             
-        }
-
-        public Decodification(int cat, int length)
-        {
-            this.CAT = cat;
-            this.LENGTH = length;
         }
 
 
@@ -309,7 +339,7 @@ namespace ClassLibrary
                         break;
                 }
             }
-            this.numberOfDataItems = this.fieldTypes.Count;
+            this.messageData.numberOfDataItems = this.messageData.fieldTypes.Count;
         }
 
         // CAT21 Decodification function
@@ -730,7 +760,7 @@ namespace ClassLibrary
 
                 }
             }
-            this.numberOfDataItems = this.fieldTypes.Count;
+            this.messageData.numberOfDataItems = this.messageData.fieldTypes.Count;
         }
 
         // FSPEC, returns a byte array with the bytes of the FSPEC
@@ -757,7 +787,7 @@ namespace ClassLibrary
             {
                 FSPEC_bytes[i] = octets[i];
             }
-            this.FSPEC_bytes = FSPEC_bytes;
+            this.messageData.FSPEC_bytes = FSPEC_bytes;
 
             return FSPEC_bytes;
         }
@@ -769,28 +799,28 @@ namespace ClassLibrary
         // Data Item I010/000, Message Type
         private void MessageType(byte octet1)
         {
-            this.fieldTypes.Add(0);
+            this.messageData.fieldTypes.Add(0);
 
             string messageType = Dictionaries.MessageType_dict[octet1];
 
-            data_list.Add(new string[1] { messageType });
+            this.messageData.data_list.Add(new string[1] { messageType });
         }
 
         // Data Item I010/010, Data Source Identifier
         private void DataSourceIdentifier(byte[] octets)
         {
-            this.fieldTypes.Add(10);
+            this.messageData.fieldTypes.Add(10);
 
             int SAC = octets[0];
             int SIC = octets[1];
-            
-            data_list.Add(new int[2] { SAC, SIC });
+
+            this.messageData.data_list.Add(new int[2] { SAC, SIC });
         }
 
         // Data Item I010/020, Target Report Descriptor
         private int TargetReportDescriptor(byte[] octets)
         {
-            this.fieldTypes.Add(20);
+            this.messageData.fieldTypes.Add(20);
 
             BitArray bits = new BitArray(octets);
 
@@ -828,20 +858,20 @@ namespace ClassLibrary
                 {
                     string SPI = Dictionaries.TargetReportDescriptor_SPI_dict[bits[23]];
 
-                    data_list.Add(new string[11] { TYP, DCR, CHN, GBS, CRT, SIM, TST, RAB, LOP, TOT, SPI });
+                    this.messageData.data_list.Add(new string[11] { TYP, DCR, CHN, GBS, CRT, SIM, TST, RAB, LOP, TOT, SPI });
                     return 3;
                 }
-                data_list.Add(new string[10] { TYP, DCR, CHN, GBS, CRT, SIM, TST, RAB, LOP, TOT });
+                this.messageData.data_list.Add(new string[10] { TYP, DCR, CHN, GBS, CRT, SIM, TST, RAB, LOP, TOT });
                 return 2;
             }
-            data_list.Add(new string[5] { TYP, DCR, CHN, GBS, CRT });
+            this.messageData.data_list.Add(new string[5] { TYP, DCR, CHN, GBS, CRT });
             return 1;
         }
 
         //Data Item I010/040, Measured Position in Polar Co-ordinates
         private void MeasuredPositionPolarCoordinates(byte[] octets)
         {
-            this.fieldTypes.Add(40);
+            this.messageData.fieldTypes.Add(40);
 
             double LSB_RHO = 1; // m
             double LSB_theta = (double)(360 / Math.Pow(2, 16)); // degrees
@@ -852,13 +882,13 @@ namespace ClassLibrary
             double RHO = LSB_RHO * Functions.CombineBytes2Int(RHO_bytes);
             double THETA = LSB_theta * Functions.CombineBytes2Int(THETA_bytes);
 
-            data_list.Add(new double[2] {RHO, THETA});
+            this.messageData.data_list.Add(new double[2] {RHO, THETA});
         }
 
         // Data Item I010/041, Position in WGS-84 Co-ordinates
         private void PositionWGS84Coordinates(byte[] octets)
         {
-            this.fieldTypes.Add(41);
+            this.messageData.fieldTypes.Add(41);
 
             double LSB = (double)(180 / Math.Pow(2, 31)); // degrees
 
@@ -868,13 +898,13 @@ namespace ClassLibrary
             double latitude  = LSB * Functions.TwosComplement2Int_fromBytes(latitude_bytes);
             double longitude = LSB * Functions.TwosComplement2Int_fromBytes(longitude_bytes);
 
-            data_list.Add(new double[2] { latitude, longitude });
+            this.messageData.data_list.Add(new double[2] { latitude, longitude });
         }
 
         // Data Item I010/042, Position in Cartesian Co-ordinates
         private void PositionCartesianCoordinates(byte[] octets)
         {
-            this.fieldTypes.Add(42);
+            this.messageData.fieldTypes.Add(42);
 
             double LSB = 1; // m
 
@@ -884,13 +914,13 @@ namespace ClassLibrary
             double x = LSB * Functions.TwosComplement2Int_fromBytes(x_bytes);
             double y = LSB * Functions.TwosComplement2Int_fromBytes(y_bytes);
 
-            data_list.Add(new double[2] { x, y });
+            this.messageData.data_list.Add(new double[2] { x, y });
         }
 
         // Data Item I010/060, Mode-3/A Code in Octal Representation
         private void Mode3ACodeOctalRepresentation(byte[] octets)
         {
-            this.fieldTypes.Add(60);
+            this.messageData.fieldTypes.Add(60);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -920,13 +950,13 @@ namespace ClassLibrary
             string D = Functions.BitArray2Int(bits_D).ToString();
             string Reply = A + B + C + D;
 
-            data_list.Add(new string[4] { V, G, L, Reply });
+            this.messageData.data_list.Add(new string[4] { V, G, L, Reply });
         }
 
         // Data Item I010/090, Flight Level in Binary Representation
         private void FlightLevelBinaryRepresentation(byte[] octets)
         {
-            this.fieldTypes.Add(90);
+            this.messageData.fieldTypes.Add(90);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -939,58 +969,58 @@ namespace ClassLibrary
             double LSB = (double)1 / 4; // FL
             double FL = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
 
-            data_list.Add(new object[3] { V, G, FL });
+            this.messageData.data_list.Add(new object[3] { V, G, FL });
         }
 
         // Data Item I010/091, Measured Height
         private void MeasuredHeight(byte[] octets)
         {
-            this.fieldTypes.Add(91);
+            this.messageData.fieldTypes.Add(91);
 
             double LSB = (double)6.25; // ft
             byte[] measuredHeight_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
             double measuredHeight = LSB * Functions.TwosComplement2Int_fromBytes(measuredHeight_bytes);
 
-            data_list.Add(new double[1] { measuredHeight });
+            this.messageData.data_list.Add(new double[1] { measuredHeight });
         }
 
         //Data Item I010/131, Amplitude of Primary Plot
         private void AmplitudePrimayPlot(byte octet1)
         {
-            this.fieldTypes.Add(131);
+            this.messageData.fieldTypes.Add(131);
 
-            data_list.Add(new int[1] { octet1 });
+            this.messageData.data_list.Add(new int[1] { octet1 });
         }
 
         // Data Item I010/140: Time of Day
         private void TimeofDay(byte[] octets)
         {
-            this.fieldTypes.Add(140);
+            this.messageData.fieldTypes.Add(140);
 
             Array.Reverse(octets);
 
             double LSB = (double)1 / 128; // s
             double timeOfDay = LSB * Functions.CombineBytes2Int(octets);
 
-            data_list.Add(new double[1] { timeOfDay });
+            this.messageData.data_list.Add(new double[1] { timeOfDay });
         }
 
         // Data Item I010/161: Track Number
         private void TrackNumber(byte[] octets)
         {
-            this.fieldTypes.Add(161);
+            this.messageData.fieldTypes.Add(161);
 
             Array.Reverse(octets);
 
             int TrackNumber = Functions.CombineBytes2Int(octets);
 
-            data_list.Add(new int[1] { TrackNumber });
+            this.messageData.data_list.Add(new int[1] { TrackNumber });
         }
 
         // Data Item I010/170, Track Status
         private int TrackStatus(byte[] octets)
         {
-            this.fieldTypes.Add(170);
+            this.messageData.fieldTypes.Add(170);
 
             BitArray bits = new BitArray(octets);
 
@@ -1032,20 +1062,20 @@ namespace ClassLibrary
                 {
                     string GHO = Dictionaries.TrackStatus_GHO_dict[bits[23]];
 
-                    data_list.Add(new string[10] { CNF, TRE, CST, MAH, TCC, STH, TOM, DOU, MRS, GHO });
+                    this.messageData.data_list.Add(new string[10] { CNF, TRE, CST, MAH, TCC, STH, TOM, DOU, MRS, GHO });
                     return 3;
                 }
-                data_list.Add(new string[9] { CNF, TRE, CST, MAH, TCC, STH, TOM, DOU, MRS });
+                this.messageData.data_list.Add(new string[9] { CNF, TRE, CST, MAH, TCC, STH, TOM, DOU, MRS });
                 return 2;
             }
-            data_list.Add(new string[6] { CNF, TRE, CST, MAH, TCC, STH });
+            this.messageData.data_list.Add(new string[6] { CNF, TRE, CST, MAH, TCC, STH });
             return 1;
         }
 
         // Data Item I010/200, Calculated Track Velocity in Polar Co-ordinates
         private void CalculatedTrackVelocityPolarCoordinates(byte[] octets)
         {
-            this.fieldTypes.Add(200);
+            this.messageData.fieldTypes.Add(200);
 
             double LSB_GroundSpeed = (double)0.22; // kt
             double LSB_TrackAngle = (double)(360 / Math.Pow(2, 16)); // degrees
@@ -1056,13 +1086,13 @@ namespace ClassLibrary
             double GroundSpeed = LSB_GroundSpeed * Functions.TwosComplement2Int_fromBytes(GroundSpeed_bytes);
             double TrackAngle = LSB_TrackAngle * Functions.TwosComplement2Int_fromBytes(TrackAngle_bytes);
 
-            data_list.Add(new double[2] { GroundSpeed, TrackAngle });
+            this.messageData.data_list.Add(new double[2] { GroundSpeed, TrackAngle });
         }
 
         // Data Item I010/202, Calculated Track Velocity in Cartesian Co-ordinates
         private void CalculatedTrackVelocityCartesianCoordinates(byte[] octets)
         {
-            this.fieldTypes.Add(202);
+            this.messageData.fieldTypes.Add(202);
 
             double LSB = (double)0.25; // m/s
 
@@ -1072,13 +1102,13 @@ namespace ClassLibrary
             double Vx = LSB * Functions.TwosComplement2Int_fromBytes(Vx_bytes);
             double Vy = LSB * Functions.TwosComplement2Int_fromBytes(Vy_bytes);
 
-            data_list.Add(new double[2] { Vx, Vy });
+            this.messageData.data_list.Add(new double[2] { Vx, Vy });
         }
 
         // Data Item I010/210, Calculated Acceleration
         private void CalculatedAcceleration(byte[] octets)
         {
-            this.fieldTypes.Add(210);
+            this.messageData.fieldTypes.Add(210);
 
             double LSB = (double)0.25; // m/(s^2)
 
@@ -1088,25 +1118,25 @@ namespace ClassLibrary
             double Ax = LSB * Functions.TwosComplement2Int_fromBytes(Ax_bytes);
             double Ay = LSB * Functions.TwosComplement2Int_fromBytes(Ay_bytes);
 
-            data_list.Add(new double[2] { Ax, Ay });
+            this.messageData.data_list.Add(new double[2] { Ax, Ay });
         }
 
         // Data Item I010/220, Target Address
         private void TargetAddress(byte[] octets)
         {
-            this.fieldTypes.Add(220);
+            this.messageData.fieldTypes.Add(220);
 
             byte[] TargetAddress_bytes = new byte[3] { octets[2], octets[1], octets[0] }; // Reversed
             int TargetAddress_int = Functions.CombineBytes2Int(TargetAddress_bytes);
             string TargetAddress = TargetAddress_int.ToString("X");
 
-            data_list.Add(new string[1] { TargetAddress });
+            this.messageData.data_list.Add(new string[1] { TargetAddress });
         }
 
         // Data Item I010/245, Target Identification
         private void TargetIdentification(byte[] octets)
         {
-            this.fieldTypes.Add(245);
+            this.messageData.fieldTypes.Add(245);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -1185,13 +1215,13 @@ namespace ClassLibrary
 
             string Characters = char1 + char2 + char3 + char4 + char5 + char6 + char7 + char8;
 
-            data_list.Add(new string[2] { STI, Characters });
+            this.messageData.data_list.Add(new string[2] { STI, Characters });
         }
 
         // Data Item I010/250, Mode S MB Data
         private void ModeSMBData(byte[] octets, int REP)
         {
-            this.fieldTypes.Add(250);
+            this.messageData.fieldTypes.Add(250);
 
             List<int> list = new List<int>();
 
@@ -1224,13 +1254,13 @@ namespace ClassLibrary
                 list.Add(BDS2);
             }
 
-            data_list.Add(list);
+            this.messageData.data_list.Add(list);
         }
 
         // Data Item I010/270, Target Size & Orientation
         private int TargetSizeAndOrientation(byte[] octets)
         {
-            this.fieldTypes.Add(270);
+            this.messageData.fieldTypes.Add(270);
 
             BitArray bits = new BitArray(octets);
 
@@ -1267,20 +1297,20 @@ namespace ClassLibrary
                     int LSB_Width = 1; // m
                     int Width = LSB_Width * Functions.BitArray2Int(Width_bits);
 
-                    data_list.Add(new double[3] { Length, Orientation, Width });
+                    this.messageData.data_list.Add(new double[3] { Length, Orientation, Width });
                     return 3;
                 }
-                data_list.Add(new double[2] { Length, Orientation });
+                this.messageData.data_list.Add(new double[2] { Length, Orientation });
                 return 2;
             }
-            data_list.Add(new double[1] { Length });
+            this.messageData.data_list.Add(new double[1] { Length });
             return 1;
         }
 
         // Data Item I010/280, Presence
         private void Presence(byte[] octets, int REP)
         {
-            this.fieldTypes.Add(280);
+            this.messageData.fieldTypes.Add(280);
 
             List<double> list = new List<double>();
 
@@ -1298,23 +1328,23 @@ namespace ClassLibrary
                 list.Add(DTHETA);
             }
 
-            data_list.Add(list);
+            this.messageData.data_list.Add(list);
         }
 
         // Data Item I010/300, Vehicle Fleet Identification
         private void VehicleFleetIdentification(byte octet1)
         {
-            this.fieldTypes.Add(300);
+            this.messageData.fieldTypes.Add(300);
 
             string VFI = Dictionaries.VehicleFleetIdentification_VFI_dict[octet1];
 
-            data_list.Add(new string[1] { VFI });
+            this.messageData.data_list.Add(new string[1] { VFI });
         }
 
         // Data Item I010/310, Pre-programmed Message
         private void PreprogrammedMessage(byte octet1)
         {
-            this.fieldTypes.Add(310);
+            this.messageData.fieldTypes.Add(310);
 
             BitArray bits = new BitArray(new byte[1] { octet1 });
 
@@ -1325,13 +1355,13 @@ namespace ClassLibrary
 
             string MSG = Dictionaries.PreprogrammedMessage_MSG_dict[Functions.BitArray2Int(bits)];
 
-            data_list.Add(new string[2] { TRB, MSG });
+            this.messageData.data_list.Add(new string[2] { TRB, MSG });
         }
 
         // Data Item I010/500, Standard Deviation of Position
         private void StandardDeviationPosition(byte[] octets)
         {
-            this.fieldTypes.Add(500);
+            this.messageData.fieldTypes.Add(500);
 
             double LSB = (double)0.25; // m and (m^2)
 
@@ -1341,13 +1371,13 @@ namespace ClassLibrary
             double SDy = LSB * octets[1];
             double Covariance = LSB * Functions.TwosComplement2Int_fromBytes(Covariance_bytes);
 
-            data_list.Add(new double[3] { SDx, SDy, Covariance });
+            this.messageData.data_list.Add(new double[3] { SDx, SDy, Covariance });
         }
 
         // Data Item I010/550, System Status
         private void SystemStatus(byte octet1)
         {
-            this.fieldTypes.Add(550);
+            this.messageData.fieldTypes.Add(550);
 
             BitArray bits = new BitArray(new byte[1] { octet1 });
 
@@ -1362,7 +1392,7 @@ namespace ClassLibrary
             string DIV = Dictionaries.SystemStatus_DIV_dict[bits[3]];
             string TTF = Dictionaries.SystemStatus_TTF_dict[bits[2]];
 
-            data_list.Add(new string[5] { NOGO, OVL, TSV, DIV, TTF });
+            this.messageData.data_list.Add(new string[5] { NOGO, OVL, TSV, DIV, TTF });
         }
 
         // --------------------------------------------------------------------------------------------------------------------------
@@ -1372,7 +1402,7 @@ namespace ClassLibrary
         // Data Item I021/008, Aircraft Operational Status
         private void AircraftOperationalStatus(byte octet1)
         {
-            this.fieldTypes.Add(8);
+            this.messageData.fieldTypes.Add(8);
 
             BitArray bits = new BitArray(new byte[1] { octet1 });
 
@@ -1389,48 +1419,48 @@ namespace ClassLibrary
             string TCAS = Dictionaries.AircraftOperationalStatus_TCAS_dict[bits[1]];
             string SA = Dictionaries.AircraftOperationalStatus_SA_dict[bits[0]];
 
-            data_list.Add(new string[7] { RA, TC, TS, ARV, CDTI_A, TCAS, SA });
+            this.messageData.data_list.Add(new string[7] { RA, TC, TS, ARV, CDTI_A, TCAS, SA });
         }
 
         // Data Item I021/010, Data Source Identification 
         private void DataSourceIdentification(byte[] octetos)
         {
-            this.fieldTypes.Add(10);
+            this.messageData.fieldTypes.Add(10);
 
-            data_list.Add(new int[2] { octetos[0], octetos[1] });
+            this.messageData.data_list.Add(new int[2] { octetos[0], octetos[1] });
         }
 
         // Data Item I021/015, Service Identification
         private void ServiceIdentification(byte octet1)
         {
-            this.fieldTypes.Add(15);
+            this.messageData.fieldTypes.Add(15);
 
-            data_list.Add(new int[1] { octet1 });
+            this.messageData.data_list.Add(new int[1] { octet1 });
         }
 
         // Data Item I021/016, Service Management
         private void ServiceManagement(byte octet1)
         {
-            this.fieldTypes.Add(16);
+            this.messageData.fieldTypes.Add(16);
 
             double LSB = (double)0.5; // s
             double ServiceManagement = LSB * octet1;
 
-            data_list.Add(new double[1] { ServiceManagement });
+            this.messageData.data_list.Add(new double[1] { ServiceManagement });
         }
 
         // Data Item I021/020, Emitter Category
         private void EmitterCategory(byte octet1)
         {
-            this.fieldTypes.Add(20);
+            this.messageData.fieldTypes.Add(20);
 
-            data_list.Add(new string[1] { Dictionaries.EmitterCategory_dict[octet1] });
+            this.messageData.data_list.Add(new string[1] { Dictionaries.EmitterCategory_dict[octet1] });
         }
 
         // Data Item I021/040, Target Report Descriptor
         private int TargetReportDescriptor_cat21(byte[] octets)
         {
-            this.fieldTypes.Add(40);
+            this.messageData.fieldTypes.Add(40);
 
             BitArray bits = new BitArray(octets);
 
@@ -1472,20 +1502,20 @@ namespace ClassLibrary
                     string LDPJ = Dictionaries.TargetReportDescriptor_LDPJ_dict[bits[18]];
                     string RCF = Dictionaries.TargetReportDescriptor_RCF_dict[bits[17]];
 
-                    data_list.Add(new string[15] { ATP, ARC, RC, RAB, DCR, GBS, SIM, TST, SAA, CL, IPC, NOGO, CPR, LDPJ, RCF });
+                    this.messageData.data_list.Add(new string[15] { ATP, ARC, RC, RAB, DCR, GBS, SIM, TST, SAA, CL, IPC, NOGO, CPR, LDPJ, RCF });
                     return 3;
                 }
-                data_list.Add(new string[10] { ATP, ARC, RC, RAB, DCR, GBS, SIM, TST, SAA, CL });
+                this.messageData.data_list.Add(new string[10] { ATP, ARC, RC, RAB, DCR, GBS, SIM, TST, SAA, CL });
                 return 2;
             }
-            data_list.Add(new string[4] { ATP, ARC, RC, RAB });
+            this.messageData.data_list.Add(new string[4] { ATP, ARC, RC, RAB });
             return 1;
         }
 
         // Data Item I021/070, Mode 3/A Code in Octal Representation
         private void Mode3ACodeOctalRepresentation_cat21(byte[] octets)
         {
-            this.fieldTypes.Add(70);
+            this.messageData.fieldTypes.Add(70);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -1510,52 +1540,52 @@ namespace ClassLibrary
             string D = Functions.BitArray2Int(bits_D).ToString();
             string Mode3ACode_Reply = A + B + C + D;
 
-            data_list.Add(new string[1] { Mode3ACode_Reply });
+            this.messageData.data_list.Add(new string[1] { Mode3ACode_Reply });
         }
 
         // Data Item I021/071, Time of Applicability for Position
         private void TimeOfApplicabilityForPosition(byte[] octets)
         {
-            this.fieldTypes.Add(71);
+            this.messageData.fieldTypes.Add(71);
 
             Array.Reverse(octets);
 
             double LSB = (double)1 / 128; // s
             double timeOfApplicabilityForPosition = LSB * Functions.CombineBytes2Int(octets);
 
-            data_list.Add(new double[1] { timeOfApplicabilityForPosition });
+            this.messageData.data_list.Add(new double[1] { timeOfApplicabilityForPosition });
         }
 
         // Data Item I021/072, Time of Applicability for Velocity
         private void TimeOfApplicabilityForVelocity(byte[] octets)
         {
-            this.fieldTypes.Add(72);
+            this.messageData.fieldTypes.Add(72);
 
             Array.Reverse(octets);
 
             double LSB = (double)1 / 128; // s
             double timeOfApplicabilityForVelocity = LSB * Functions.CombineBytes2Int(octets);
 
-            data_list.Add(new double[1] { timeOfApplicabilityForVelocity });
+            this.messageData.data_list.Add(new double[1] { timeOfApplicabilityForVelocity });
         }
 
         // Data Item I021/073, Time of Message Reception for Position
         private void TimeOfMessageReceptionForPosition(byte[] octets)
         {
-            this.fieldTypes.Add(73);
+            this.messageData.fieldTypes.Add(73);
 
             Array.Reverse(octets);
 
             double LSB = (double)1 / 128; // s
             double timeOfMessageReceptionForPosition = LSB * Functions.CombineBytes2Int(octets);
 
-            data_list.Add(new double[1] { timeOfMessageReceptionForPosition });
+            this.messageData.data_list.Add(new double[1] { timeOfMessageReceptionForPosition });
         }
 
         // Data Item I021/074, Time of Message Reception of Position–High Precision
         private void TimeOfMessageReceptionOfPosition_HighPrecision(byte[] octets)
         {
-            this.fieldTypes.Add(74);
+            this.messageData.fieldTypes.Add(74);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -1574,26 +1604,26 @@ namespace ClassLibrary
             decimal LSB = (decimal)Math.Pow(2, -30); // s (0.9313 ns)
             decimal timeOfMessageReceptionOfPosition_HighPrecision = LSB * Functions.BitArray2Int(bits);
 
-            data_list.Add(new object[2] { TimeOfMessageReceptionOfPosition_HighPrecision_FSI, timeOfMessageReceptionOfPosition_HighPrecision });
+            this.messageData.data_list.Add(new object[2] { TimeOfMessageReceptionOfPosition_HighPrecision_FSI, timeOfMessageReceptionOfPosition_HighPrecision });
         }
 
         // Data Item I021/075, Time of Message Reception for Velocity
         private void TimeOfMessageReceptionForVelocity(byte[] octets)
         {
-            this.fieldTypes.Add(75);
+            this.messageData.fieldTypes.Add(75);
 
             Array.Reverse(octets);
 
             double LSB = (double)1 / 128; // s
             double timeOfMessageReceptionForVelocity = LSB * Functions.CombineBytes2Int(octets);
 
-            data_list.Add(new double[1] { timeOfMessageReceptionForVelocity });
+            this.messageData.data_list.Add(new double[1] { timeOfMessageReceptionForVelocity });
         }
 
         // Data Item I021/076, Time of Message Reception of Velocity–High Precision
         private void TimeOfMessageReceptionOfVelocity_HighPrecision(byte[] octets)
         {
-            this.fieldTypes.Add(76);
+            this.messageData.fieldTypes.Add(76);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -1612,38 +1642,38 @@ namespace ClassLibrary
             decimal LSB = (decimal)Math.Pow(2, -30); // s (0.9313 ns)
             decimal timeOfMessageReceptionOfVelocity_HighPrecision = LSB * Functions.BitArray2Int(bits);
 
-            data_list.Add(new object[2] { TimeOfMessageReceptionOfVelocity_HighPrecision_FSI, timeOfMessageReceptionOfVelocity_HighPrecision });
+            this.messageData.data_list.Add(new object[2] { TimeOfMessageReceptionOfVelocity_HighPrecision_FSI, timeOfMessageReceptionOfVelocity_HighPrecision });
         }
 
         // Data Item I021/077, Time of ASTERIX Report Transmission
         private void TimeOfASTERIXReportTransmission(byte[] octets)
         {
-            this.fieldTypes.Add(77);
+            this.messageData.fieldTypes.Add(77);
 
             Array.Reverse(octets);
 
             double LSB = (double)1 / 128; // s
             double timeOfAsterixReportTransmission = LSB * Functions.CombineBytes2Int(octets);
 
-            data_list.Add(new double[1] { timeOfAsterixReportTransmission });
+            this.messageData.data_list.Add(new double[1] { timeOfAsterixReportTransmission });
         }
 
         // Data Item I021/080, Target Address
         private void TargetAddress_cat21(byte[] octets)
         {
-            this.fieldTypes.Add(80);
+            this.messageData.fieldTypes.Add(80);
 
             byte[] TargetAddress_bytes = new byte[3] { octets[2], octets[1], octets[0] }; // Reversed
             int TargetAddress_int = Functions.CombineBytes2Int(TargetAddress_bytes);
             string TargetAddress = TargetAddress_int.ToString("X");
 
-            data_list.Add(new string[1] { TargetAddress });
+            this.messageData.data_list.Add(new string[1] { TargetAddress });
         }
 
         // Data Item I021/090, Quality Indicators
         private int QualityIndicators(byte[] octets)
         {
-            this.fieldTypes.Add(90);
+            this.messageData.fieldTypes.Add(90);
 
             BitArray bits = new BitArray(octets);
 
@@ -1699,16 +1729,16 @@ namespace ClassLibrary
                         PIC_bits[3] = bits[31];
                         int PIC_int = Functions.BitArray2Int(PIC_bits);
 
-                        data_list.Add(new object[9] { NUCr_or_NACv_int, NUCp_or_NIC_int, NICbaro_int, SIL_int, NACp_int, SILsupplement, SDA_int, GVA_int, PIC_int });
+                        this.messageData.data_list.Add(new object[9] { NUCr_or_NACv_int, NUCp_or_NIC_int, NICbaro_int, SIL_int, NACp_int, SILsupplement, SDA_int, GVA_int, PIC_int });
                         return 4;
                     }
-                    data_list.Add(new object[8] { NUCr_or_NACv_int, NUCp_or_NIC_int, NICbaro_int, SIL_int, NACp_int, SILsupplement, SDA_int, GVA_int });
+                    this.messageData.data_list.Add(new object[8] { NUCr_or_NACv_int, NUCp_or_NIC_int, NICbaro_int, SIL_int, NACp_int, SILsupplement, SDA_int, GVA_int });
                     return 3;
                 }
-                data_list.Add(new object[5] { NUCr_or_NACv_int, NUCp_or_NIC_int, NICbaro_int, SIL_int, NACp_int });
+                this.messageData.data_list.Add(new object[5] { NUCr_or_NACv_int, NUCp_or_NIC_int, NICbaro_int, SIL_int, NACp_int });
                 return 2;
             }
-            data_list.Add(new object[2] { NUCr_or_NACv_int, NUCp_or_NIC_int });
+            this.messageData.data_list.Add(new object[2] { NUCr_or_NACv_int, NUCp_or_NIC_int });
             return 1;
         }
 
@@ -1716,8 +1746,6 @@ namespace ClassLibrary
         private int TrajectoryIntent_REP(byte[] octets)
         {
             BitArray primary_bits = new BitArray(new byte[1] { octets[0] });
-
-            int REP = 0;
 
             int index = 0;
 
@@ -1737,14 +1765,14 @@ namespace ClassLibrary
                 }
             }
 
-            REP = octets[index];
+            int REP = octets[index];
             return REP;
         }
 
         // Data Item I021/110, Trajectory Intent
         private int TrajectoryIntent(byte[] octets, int REP)
         {
-            this.fieldTypes.Add(110);
+            this.messageData.fieldTypes.Add(110);
 
             List<object> list = new List<object>();
 
@@ -1768,6 +1796,11 @@ namespace ClassLibrary
                     list.Add(NVB);
 
                     index += 1;
+                }
+                else
+                {
+                    list.Add(null);
+                    list.Add(null);
                 }
                 if (primary_bits[6] == true)
                 {
@@ -1847,14 +1880,14 @@ namespace ClassLibrary
                 }
             }
 
-            data_list.Add(list);
+            this.messageData.data_list.Add(list);
             return index;
         }
 
         // Data Item I021/130, Position in WGS-84 Co-ordinates
         private void PositionWGS84Coordinates_cat21(byte[] octets)
         {
-            this.fieldTypes.Add(130);
+            this.messageData.fieldTypes.Add(130);
 
             double LSB = (double)(180 / Math.Pow(2, 23)); // degrees
 
@@ -1864,13 +1897,13 @@ namespace ClassLibrary
             double latitude = LSB * Functions.TwosComplement2Int_fromBytes(latitude_bytes);
             double longitude = LSB * Functions.TwosComplement2Int_fromBytes(longitude_bytes);
 
-            data_list.Add(new double[2] { latitude, longitude });
+            this.messageData.data_list.Add(new double[2] { latitude, longitude });
         }
 
         // Data Item I021/131, High-Resolution Position in WGS-84 Co-ordinates
         private void PositionWGS84Coordinates_HighResolution(byte[] octets)
         {
-            this.fieldTypes.Add(131);
+            this.messageData.fieldTypes.Add(131);
 
             double LSB = (double)(180 / Math.Pow(2, 30)); // degrees
 
@@ -1880,51 +1913,51 @@ namespace ClassLibrary
             double latitudeWGS84 = LSB * Functions.TwosComplement2Int_fromBytes(latitudeWGS84_bytes);
             double longitudeWGS84 = LSB * Functions.TwosComplement2Int_fromBytes(longitudeWGS84_bytes);
 
-            data_list.Add(new double[2] { latitudeWGS84, longitudeWGS84 });
+            this.messageData.data_list.Add(new double[2] { latitudeWGS84, longitudeWGS84 });
         }
 
         // Data Item I021/132, Message Amplitude
         private void MessageAmplitude(byte octet1)
         {
-            this.fieldTypes.Add(132);
+            this.messageData.fieldTypes.Add(132);
 
             byte[] MAM_bytes = new byte[1] { octet1 }; // Reversed (no need to reverse, array of length 1)
             //double LSB = 1 // dBm
             double MessageAmplitude = Functions.TwosComplement2Int_fromBytes(MAM_bytes);
 
-            data_list.Add(new double[1] { MessageAmplitude });
+            this.messageData.data_list.Add(new double[1] { MessageAmplitude });
         }
 
         // Data Item I021/140, Geometric Height
         private void GeometricHeight(byte[] octets)
         {
-            this.fieldTypes.Add(140);
+            this.messageData.fieldTypes.Add(140);
 
             Array.Reverse(octets);
 
             double LSB = (double)6.25; // ft
             double GeometricHeight = LSB * Functions.TwosComplement2Int_fromBytes(octets);
 
-            data_list.Add(new double[1] { GeometricHeight });
+            this.messageData.data_list.Add(new double[1] { GeometricHeight });
         }
 
         // Data Item I021/145, Flight Level
         private void FlightLevel(byte[] octets)
         {
-            this.fieldTypes.Add(145);
+            this.messageData.fieldTypes.Add(145);
 
             Array.Reverse(octets);
 
             double LSB = (double)1 / 4; // FL
             double FlightLevel = LSB * Functions.TwosComplement2Int_fromBytes(octets);
 
-            data_list.Add(new double[1] { FlightLevel });
+            this.messageData.data_list.Add(new double[1] { FlightLevel });
         }
 
         // Data Item I021/146, Selected Altitude
         private void SelectedAltitude(byte[] octets)
         {
-            this.fieldTypes.Add(146);
+            this.messageData.fieldTypes.Add(146);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -1942,13 +1975,13 @@ namespace ClassLibrary
             double LSB = 25; // ft
             double Altitude = LSB * Functions.BitArray2Int(bits);
 
-            data_list.Add(new object[3] { SAS, Source, Altitude });
+            this.messageData.data_list.Add(new object[3] { SAS, Source, Altitude });
         }
 
         // Data Item I021/148, Final State Selected Altitude
         private void FinalStateSelectedAltitude(byte[] octets)
         {
-            this.fieldTypes.Add(148);
+            this.messageData.fieldTypes.Add(148);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -1962,13 +1995,13 @@ namespace ClassLibrary
             double LSB = 25; // ft
             double Altitude = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
 
-            data_list.Add(new object[4] { MV, AH, AM, Altitude });
+            this.messageData.data_list.Add(new object[4] { MV, AH, AM, Altitude });
         }
 
         // Data Item I021/150, Air Speed
         private void AirSpeed(byte[] octets)
         {
-            this.fieldTypes.Add(150);
+            this.messageData.fieldTypes.Add(150);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -1990,13 +2023,13 @@ namespace ClassLibrary
 
             double Mach_or_IAS = Mach_or_IAS_LSB * Functions.BitArray2Int(bits);
 
-            data_list.Add(new object[2] { IM, Mach_or_IAS });
+            this.messageData.data_list.Add(new object[2] { IM, Mach_or_IAS });
         }
 
         // Data Item I021/151 True Airspeed
         private void TrueAirSpeed(byte[] octets)
         {
-            this.fieldTypes.Add(151);
+            this.messageData.fieldTypes.Add(151);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -2008,26 +2041,26 @@ namespace ClassLibrary
             //double LSB = 1; // kt
             double TrueAirSpeed = Functions.BitArray2Int(bits);
 
-            data_list.Add(new object[2] { RE, TrueAirSpeed });
+            this.messageData.data_list.Add(new object[2] { RE, TrueAirSpeed });
         }
 
         // Data Item I021/152, Magnetic Heading
         private void MagneticHeading(byte[] octets)
         {
-            this.fieldTypes.Add(152);
+            this.messageData.fieldTypes.Add(152);
 
             Array.Reverse(octets);
 
             double LSB = (double)(360 / Math.Pow(2, 16)); // degrees
             double MagneticHeading = LSB * Functions.CombineBytes2Int(octets);
 
-            data_list.Add(new double[1] { MagneticHeading });
+            this.messageData.data_list.Add(new double[1] { MagneticHeading });
         }
 
         // Data Item I021/155, Barometric Vertical Rate
         private void BarometricVerticalRate(byte[] octets)
         {
-            this.fieldTypes.Add(155);
+            this.messageData.fieldTypes.Add(155);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -2039,13 +2072,13 @@ namespace ClassLibrary
             double LSB = (double)6.25; // ft/min
             double BarometricVerticalRate = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
 
-            data_list.Add(new object[2] { RE, BarometricVerticalRate });
+            this.messageData.data_list.Add(new object[2] { RE, BarometricVerticalRate });
         }
 
         // Data Item I021/157, Geometric Vertical Rate
         private void GeometricVerticalRate(byte[] octets)
         {
-            this.fieldTypes.Add(157);
+            this.messageData.fieldTypes.Add(157);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -2057,13 +2090,13 @@ namespace ClassLibrary
             double LSB = (double)6.25; // ft/min
             double GeometricVerticalRate = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
 
-            data_list.Add(new object[2] { RE, GeometricVerticalRate });
+            this.messageData.data_list.Add(new object[2] { RE, GeometricVerticalRate });
         }
 
         // Data Item I021/160, Airborne Ground Vector
         private void AirborneGroundVector(byte[] octets)
         {
-            this.fieldTypes.Add(160);
+            this.messageData.fieldTypes.Add(160);
 
             Array.Reverse(octets);
 
@@ -2083,7 +2116,7 @@ namespace ClassLibrary
             byte[] TrackAngle_bytes = new byte[2] { octets[0], octets[1] }; // Previously reversed
             double TrackAngle = LSB_TrackAngle * Functions.CombineBytes2Int(TrackAngle_bytes);
 
-            data_list.Add(new object[3] { RE, GroundSpeed, TrackAngle });
+            this.messageData.data_list.Add(new object[3] { RE, GroundSpeed, TrackAngle });
         }
 
         // Data Item I021/161: Track Number
@@ -2103,20 +2136,20 @@ namespace ClassLibrary
         // Data Item I021/165, Track Angle Rate
         private void TrackAngleRate(byte[] octets)
         {
-            this.fieldTypes.Add(165);
+            this.messageData.fieldTypes.Add(165);
 
             Array.Reverse(octets);
 
             double LSB = (double)1 / 32; // degrees/s
             double TrackAngleRate = LSB * Functions.TwosComplement2Int_fromBytes(octets);
 
-            data_list.Add(new double[1] { TrackAngleRate });
+            this.messageData.data_list.Add(new double[1] { TrackAngleRate });
         }
 
         // Data Item I021/170, Target Identification
         private void TargetIdentification_cat21(byte[] octets)
         {
-            this.fieldTypes.Add(170);
+            this.messageData.fieldTypes.Add(170);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -2187,13 +2220,13 @@ namespace ClassLibrary
             string char1 = Dictionaries.TargetIdentification_dict[char1_int];
             string TargetIdentification = char1 + char2 + char3 + char4 + char5 + char6 + char7 + char8;
 
-            data_list.Add(new string[1] { TargetIdentification });
+            this.messageData.data_list.Add(new string[1] { TargetIdentification });
         }
 
         // Data Item I021/200, Target Status
         private void TargetStatus(byte octet1)
         {
-            this.fieldTypes.Add(200);
+            this.messageData.fieldTypes.Add(200);
 
             BitArray bits = new BitArray(new byte[1] { octet1 });
 
@@ -2213,13 +2246,13 @@ namespace ClassLibrary
             string PS = Dictionaries.TargetStatus_PS_dict[PS_int];
             string SS = Dictionaries.TargetStatus_SS_dict[SS_int];
 
-            data_list.Add(new string[4] { ICF, LNAV, PS, SS });
+            this.messageData.data_list.Add(new string[4] { ICF, LNAV, PS, SS });
         }
 
         // Data Item I021/210, MOPS Version
         private void MOPSVersion(byte octet1)
         {
-            this.fieldTypes.Add(210);
+            this.messageData.fieldTypes.Add(210);
 
             BitArray bits = new BitArray(new byte[1] { octet1 });
 
@@ -2239,15 +2272,15 @@ namespace ClassLibrary
             string VN = Dictionaries.MOPSVersion_VN_dict[VN_int];
             string LTT = Dictionaries.MOPSVersion_LTT_dict[LTT_int];
 
-            data_list.Add(new string[3] { VNS, VN, LTT });
+            this.messageData.data_list.Add(new string[3] { VNS, VN, LTT });
         }
 
         // Data Item I021/220, Met Information
         private int MetInformation(byte[] octets)
         {
-            this.fieldTypes.Add(220);
+            this.messageData.fieldTypes.Add(220);
 
-            List<double> list = new List<double>();
+            List<double?> list = new List<double?>();
 
             BitArray primary_bits = new BitArray(new byte[1] { octets[0] });
 
@@ -2272,15 +2305,27 @@ namespace ClassLibrary
 
                     index += 2;
                 }
+                else
+                {
+                    list.Add(null);
+                }
                 if (WD_bool == true)
                 {
                     //double WindDirection_LSB = 1; // degree
                     byte[] WindDirection_bytes = new byte[2] { octets[index + 1], octets[index] }; // Reversed
                     double WindDirection = Functions.CombineBytes2Int(WindDirection_bytes);
+                    if (WindDirection < 0)
+                    {
+                        WindDirection += 360;
+                    }
 
                     list.Add(WindDirection);
 
                     index += 2;
+                }
+                else
+                {
+                    list.Add(null);
                 }
                 if (TMP_bool == true)
                 {
@@ -2292,6 +2337,10 @@ namespace ClassLibrary
 
                     index += 2;
                 }
+                else
+                {
+                    list.Add(null);
+                }
                 if (TRB_bool == true)
                 {
                     int Turbulence = octets[index];
@@ -2300,23 +2349,27 @@ namespace ClassLibrary
 
                     index += 1;
                 }
+                else
+                {
+                    list.Add(null);
+                }
             }
 
-            data_list.Add(list);
+            this.messageData.data_list.Add(list);
             return index;
         }
 
         // Data Item I021/230, Roll Angle
         private void RollAngle(byte[] octets)
         {
-            this.fieldTypes.Add(230);
+            this.messageData.fieldTypes.Add(230);
 
             Array.Reverse(octets);
 
             double LSB = (double)0.01; // degrees
             double RollAngle = LSB * Functions.TwosComplement2Int_fromBytes(octets);
 
-            data_list.Add(new double[1] { RollAngle });
+            this.messageData.data_list.Add(new double[1] { RollAngle });
         }
 
         // Data Item I021/250, Mode S MB Data 
@@ -2363,7 +2416,7 @@ namespace ClassLibrary
         // Data Item I021/260, ACAS Resolution Advisory Report
         private void ACASResolutionAdvisoryReport(byte[] octets)
         {
-            this.fieldTypes.Add(260);
+            this.messageData.fieldTypes.Add(260);
 
             Array.Reverse(octets);
             BitArray bits = new BitArray(octets);
@@ -2416,13 +2469,13 @@ namespace ClassLibrary
             int TTI = Functions.BitArray2Int(TTI_bits);
             int TID = Functions.BitArray2Int(TID_bits);
 
-            data_list.Add(new int[8] { TYP, STYP, ARA, RAC, RAT, MTE, TTI, TID });
+            this.messageData.data_list.Add(new int[8] { TYP, STYP, ARA, RAC, RAT, MTE, TTI, TID });
         }
 
         // Data Item I021/271, Surface Capabilities and Characteristics
         private int SurfaceCapabilitiesAndCharacteristics(byte[] octets)
         {
-            this.fieldTypes.Add(271);
+            this.messageData.fieldTypes.Add(271);
 
             BitArray bits = new BitArray(octets);
             string POA = Dictionaries.SurfaceCapabilitiesandCharacteristics_POA_dict[bits[5]];
@@ -2441,17 +2494,17 @@ namespace ClassLibrary
 
                 int LengthAndWidth_int = Functions.BitArray2Int(LengthAndWidth_bits);
 
-                data_list.Add(new object[6] { POA, CDTI_S, B2low, RAS, IDENT, LengthAndWidth_int });
+                this.messageData.data_list.Add(new object[6] { POA, CDTI_S, B2low, RAS, IDENT, LengthAndWidth_int });
                 return 2;
             }
-            data_list.Add(new string[5] { POA, CDTI_S, B2low, RAS, IDENT });
+            this.messageData.data_list.Add(new string[5] { POA, CDTI_S, B2low, RAS, IDENT });
             return 1;
         }
 
         // Data Item I021/295, Data Ages
         private int DataAges(List<byte> octets)
         {
-            this.fieldTypes.Add(295);
+            this.messageData.fieldTypes.Add(295);
 
             // First of all, we have to find which subfields will be present and which will be absent
             // Here we also count how many octets does the primary subfield have,
@@ -2531,11 +2584,11 @@ namespace ClassLibrary
 
             // ---------------------------------
 
-            double[] DataAges = new double[23];
+            double?[] DataAges = new double?[23];
 
             double LSB = (double)0.1; // s
 
-            for (int i = 0, j = 0; i < 23; i++)
+            for (int i = 0, j = primarySubfield_numberOfOctets; i < 23; i++)
             {
                 if (subfields[i] == true)
                 {
@@ -2544,20 +2597,20 @@ namespace ClassLibrary
                 }
                 else
                 {
-                    DataAges[i] = 0;
+                    DataAges[i] = null;
                 }
             }
 
-            data_list.Add(DataAges);
+            this.messageData.data_list.Add(DataAges);
             return numberOfOctets;
         }
 
         // Data Item I021 / 400, Receiver ID
         private void ReceiverID(byte octet1)
         {
-            this.fieldTypes.Add(400);
+            this.messageData.fieldTypes.Add(400);
 
-            data_list.Add(new int[1] {octet1});
+            this.messageData.data_list.Add(new int[1] {octet1});
         }
 
     }
