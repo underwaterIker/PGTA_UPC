@@ -31,13 +31,16 @@ namespace AsterixDecoder
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.loadFile_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showMap_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutUs_ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileOptions_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadFile_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterSearch_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExportCsv_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowMap_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AboutUs_ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.dataList_DGV = new System.Windows.Forms.DataGridView();
             this.dataItems_DGV = new System.Windows.Forms.DataGridView();
             this.Item_DGV = new System.Windows.Forms.DataGridView();
@@ -50,35 +53,57 @@ namespace AsterixDecoder
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadFile_ToolStripMenuItem,
-            this.showMap_ToolStripMenuItem,
-            this.aboutUs_ToolStripMenuItem1});
+            this.FileOptions_ToolStripMenuItem,
+            this.ShowMap_ToolStripMenuItem,
+            this.AboutUs_ToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1121, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // loadFile_ToolStripMenuItem
+            // FileOptions_ToolStripMenuItem
             // 
-            this.loadFile_ToolStripMenuItem.Name = "loadFile_ToolStripMenuItem";
-            this.loadFile_ToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
-            this.loadFile_ToolStripMenuItem.Text = "Load file";
-            this.loadFile_ToolStripMenuItem.Click += new System.EventHandler(this.loadFile_ToolStripMenuItem_Click);
+            this.FileOptions_ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.LoadFile_ToolStripMenuItem,
+            this.FilterSearch_ToolStripMenuItem,
+            this.ExportCsv_ToolStripMenuItem});
+            this.FileOptions_ToolStripMenuItem.Name = "FileOptions_ToolStripMenuItem";
+            this.FileOptions_ToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
+            this.FileOptions_ToolStripMenuItem.Text = "File Options";
             // 
-            // showMap_ToolStripMenuItem
+            // LoadFile_ToolStripMenuItem
             // 
-            this.showMap_ToolStripMenuItem.Name = "showMap_ToolStripMenuItem";
-            this.showMap_ToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
-            this.showMap_ToolStripMenuItem.Text = "Show map";
-            this.showMap_ToolStripMenuItem.Click += new System.EventHandler(this.showMap_ToolStripMenuItem_Click);
+            this.LoadFile_ToolStripMenuItem.Name = "LoadFile_ToolStripMenuItem";
+            this.LoadFile_ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.LoadFile_ToolStripMenuItem.Text = "Load File";
+            this.LoadFile_ToolStripMenuItem.Click += new System.EventHandler(this.LoadFile_ToolStripMenuItem_Click);
             // 
-            // aboutUs_ToolStripMenuItem1
+            // FilterSearch_ToolStripMenuItem
             // 
-            this.aboutUs_ToolStripMenuItem1.Name = "aboutUs_ToolStripMenuItem1";
-            this.aboutUs_ToolStripMenuItem1.Size = new System.Drawing.Size(67, 20);
-            this.aboutUs_ToolStripMenuItem1.Text = "About us";
-            this.aboutUs_ToolStripMenuItem1.Click += new System.EventHandler(this.aboutUsToolStripMenuItem1_Click);
+            this.FilterSearch_ToolStripMenuItem.Name = "FilterSearch_ToolStripMenuItem";
+            this.FilterSearch_ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.FilterSearch_ToolStripMenuItem.Text = "Filter search";
+            // 
+            // ExportCsv_ToolStripMenuItem
+            // 
+            this.ExportCsv_ToolStripMenuItem.Name = "ExportCsv_ToolStripMenuItem";
+            this.ExportCsv_ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.ExportCsv_ToolStripMenuItem.Text = "Export (.csv)";
+            // 
+            // ShowMap_ToolStripMenuItem
+            // 
+            this.ShowMap_ToolStripMenuItem.Name = "ShowMap_ToolStripMenuItem";
+            this.ShowMap_ToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
+            this.ShowMap_ToolStripMenuItem.Text = "Show Map";
+            this.ShowMap_ToolStripMenuItem.Click += new System.EventHandler(this.ShowMap_ToolStripMenuItem_Click);
+            // 
+            // AboutUs_ToolStripMenuItem1
+            // 
+            this.AboutUs_ToolStripMenuItem1.Name = "AboutUs_ToolStripMenuItem1";
+            this.AboutUs_ToolStripMenuItem1.Size = new System.Drawing.Size(68, 20);
+            this.AboutUs_ToolStripMenuItem1.Text = "About Us";
+            this.AboutUs_ToolStripMenuItem1.Click += new System.EventHandler(this.AboutUs_ToolStripMenuItem_Click);
             // 
             // dataList_DGV
             // 
@@ -88,14 +113,14 @@ namespace AsterixDecoder
             this.dataList_DGV.AllowUserToResizeRows = false;
             this.dataList_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataList_DGV.ColumnHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataList_DGV.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataList_DGV.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataList_DGV.Location = new System.Drawing.Point(12, 27);
             this.dataList_DGV.Name = "dataList_DGV";
             this.dataList_DGV.ReadOnly = true;
@@ -115,14 +140,14 @@ namespace AsterixDecoder
             this.dataItems_DGV.AllowUserToResizeRows = false;
             this.dataItems_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataItems_DGV.ColumnHeadersVisible = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataItems_DGV.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataItems_DGV.DefaultCellStyle = dataGridViewCellStyle5;
             this.dataItems_DGV.Location = new System.Drawing.Point(328, 27);
             this.dataItems_DGV.Name = "dataItems_DGV";
             this.dataItems_DGV.ReadOnly = true;
@@ -142,14 +167,14 @@ namespace AsterixDecoder
             this.Item_DGV.AllowUserToResizeRows = false;
             this.Item_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.Item_DGV.ColumnHeadersVisible = false;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.Item_DGV.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.Item_DGV.DefaultCellStyle = dataGridViewCellStyle6;
             this.Item_DGV.Location = new System.Drawing.Point(714, 27);
             this.Item_DGV.Name = "Item_DGV";
             this.Item_DGV.ReadOnly = true;
@@ -181,12 +206,15 @@ namespace AsterixDecoder
 
         #endregion
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem loadFile_ToolStripMenuItem;
-        private ToolStripMenuItem showMap_ToolStripMenuItem;
-        private ToolStripMenuItem aboutUs_ToolStripMenuItem1;
+        private ToolStripMenuItem FileOptions_ToolStripMenuItem;
+        private ToolStripMenuItem ShowMap_ToolStripMenuItem;
+        private ToolStripMenuItem AboutUs_ToolStripMenuItem1;
         private DataGridView dataList_DGV;
         private DataGridView dataItems_DGV;
         private DataGridView Item_DGV;
+        private ToolStripMenuItem LoadFile_ToolStripMenuItem;
+        private ToolStripMenuItem FilterSearch_ToolStripMenuItem;
+        private ToolStripMenuItem ExportCsv_ToolStripMenuItem;
     }
 }
 

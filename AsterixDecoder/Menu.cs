@@ -36,7 +36,7 @@ namespace AsterixDecoder
             InitializeComponent();
         }
 
-        private void loadFile_ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadFile_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog LoadFile = new OpenFileDialog();
             if (LoadFile.ShowDialog() == DialogResult.OK && Path.GetExtension(LoadFile.FileName) == ".ast")
@@ -76,12 +76,12 @@ namespace AsterixDecoder
             }
         }
 
-        private void showMap_ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShowMap_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void aboutUsToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void AboutUs_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AboutUs AboutUs = new AboutUs();
             AboutUs.Show();
@@ -307,5 +307,6 @@ namespace AsterixDecoder
             
         }
 
+        
     }
 }

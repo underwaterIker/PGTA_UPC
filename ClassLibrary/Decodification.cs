@@ -18,26 +18,6 @@ namespace ClassLibrary
     {
         public List<Data> messagesData_list = new List<Data>();
         private Data messageData;
-        /*
-        // CAT number
-        public int CAT { get; set; }
-
-        // LENGTH of the message (number of bytes of the message)
-        public int LENGTH { get; set; }
-
-        // Number of Data Items
-        public int numberOfDataItems { get; set; }
-
-        // Array with the Field Type numbers that the message includes
-        public List<int> fieldTypes { get; set; } = new List<int>();
-
-        // FSPEC bytes
-        public byte[] FSPEC_bytes { get; set; }
-
-        // Data List
-        public List<IList> data_list { get; set; } = new List<IList>();
-        //public List<int[]> index_list = new List<int[]>();
-        */
 
 
         // CONSTRUCTOR
