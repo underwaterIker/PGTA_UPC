@@ -23,9 +23,16 @@ namespace AsterixDecoder
     public partial class Menu : Form
     {
         // List containing all CAT messages in order
-        private List<Data> messagesData_list = new List<Data>();
+        private List<Data> messagesData_list = new List<Data>(); 
         private int index_messagesDataList;
         private int index_dataItems;
+
+        // CAT indicators
+        private bool CAT10_present;
+        private bool CAT21_present;
+
+        // file loaded indicator
+        private bool fileLoaded = false;
 
         double LAT = 41.29839;
         double LON = 2.08331;
@@ -45,8 +52,12 @@ namespace AsterixDecoder
 
                 Decodification decoder = new Decodification(fileName);
                 this.messagesData_list = decoder.messagesData_list;
+                this.CAT10_present = decoder.CAT10_present;
+                this.CAT21_present = decoder.CAT21_present;
 
                 //MessageBox.Show("done");
+
+                this.fileLoaded = true;
 
                 Set_dataList_DGV(this.messagesData_list);
             }
@@ -74,6 +85,191 @@ namespace AsterixDecoder
                 this.index_dataItems = index;
                 Set_Item_DGV(this.messagesData_list[this.index_messagesDataList].data_list[index], this.messagesData_list[this.index_messagesDataList].fieldTypes[index]);
             }
+        }
+
+        private void ExportCsv_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.fileLoaded is true)
+            {
+                if (this.CAT10_present is true)
+                {
+                    SaveFileDialog saveFile = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = "CAT10" };
+                    var csv = new StringBuilder();
+
+                    if (saveFile.ShowDialog() == DialogResult.OK)
+                    {
+                        // Loading form
+                        Loading waitingForm = new Loading();
+                        waitingForm.Show();
+                        Application.DoEvents();
+
+                        // Headers
+                        string headers = "";
+                        string subheaders = "";
+                        foreach (var header in Dictionaries.FieldType_Name_CAT10_dict)
+                        {
+                            headers = headers + header.Value;
+
+                            foreach (string itemsName in Dictionaries.FieldType_ItemsName_CAT10_dict[header.Key])
+                            {
+                                headers = headers + ";";
+                                subheaders = subheaders + itemsName + ";";
+                            }
+
+                        }
+                        csv.AppendLine(headers);
+                        csv.AppendLine(subheaders);
+
+                        
+                        // Messages
+                        foreach (Data oneMessageData in this.messagesData_list)
+                        {
+                            if (oneMessageData.CAT == 10)
+                            {
+                                string oneMessage = "";
+                                int index_oneMessageDataItems = 0;
+                                int index_allDataItems = 0;
+                                foreach (int number in Dictionaries.FieldType_Name_CAT10_dict.Keys)
+                                {
+                                    if (index_oneMessageDataItems < oneMessageData.fieldTypes.Count && oneMessageData.fieldTypes[index_oneMessageDataItems] == number)
+                                    {
+                                        for (int i = 0; i < Dictionaries.FieldType_ItemsName_CAT10_dict[number].Length; i++)
+                                        {
+                                            if (i < oneMessageData.data_list[index_oneMessageDataItems].Count)
+                                            {
+                                                var item = oneMessageData.data_list[index_oneMessageDataItems][i];
+                                                if (item is null)
+                                                {
+                                                    item = "";
+                                                }
+                                                oneMessage = oneMessage + item.ToString() + ";";
+                                            }
+                                            else
+                                            {
+                                                oneMessage = oneMessage + ";";
+                                            }
+                                        }
+                                        index_oneMessageDataItems++;
+
+                                    }
+                                    else
+                                    {
+                                        for (int i = 0; i < Dictionaries.FieldType_ItemsName_CAT10_dict[number].Length; i++)
+                                        {
+                                            oneMessage = oneMessage + ";";
+                                        }
+                                    }
+                                    index_allDataItems++;
+                                }
+                                csv.AppendLine(oneMessage);
+                            }
+                            
+                        }
+
+                        File.WriteAllText(saveFile.FileName, csv.ToString());
+
+
+                        waitingForm.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error when saving the .csv file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                }
+
+                if (this.CAT21_present is true)
+                {
+                    SaveFileDialog saveFile = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = "CAT21" };
+                    var csv = new StringBuilder();
+
+                    if (saveFile.ShowDialog() == DialogResult.OK)
+                    {
+                        // Loading form
+                        Loading waitingForm = new Loading();
+                        waitingForm.Show();
+                        Application.DoEvents();
+
+                        // Headers
+                        string headers = "";
+                        string subheaders = "";
+                        foreach (var header in Dictionaries.FieldType_Name_CAT21_dict)
+                        {
+                            headers = headers + header.Value;
+
+                            foreach (string itemsName in Dictionaries.FieldType_ItemsName_CAT21_dict[header.Key])
+                            {
+                                headers = headers + ";";
+                                subheaders = subheaders + itemsName + ";";
+                            }
+
+                        }
+                        csv.AppendLine(headers);
+                        csv.AppendLine(subheaders);
+
+
+                        // Messages
+                        foreach (Data oneMessageData in this.messagesData_list)
+                        {
+                            if (oneMessageData.CAT == 21)
+                            {
+                                string oneMessage = "";
+                                int index_oneMessageDataItems = 0;
+                                int index_allDataItems = 0;
+                                foreach (int number in Dictionaries.FieldType_Name_CAT21_dict.Keys)
+                                {
+                                    if (index_oneMessageDataItems < oneMessageData.fieldTypes.Count && oneMessageData.fieldTypes[index_oneMessageDataItems] == number)
+                                    {
+                                        for (int i = 0; i < Dictionaries.FieldType_ItemsName_CAT21_dict[number].Length; i++)
+                                        {
+                                            if (i < oneMessageData.data_list[index_oneMessageDataItems].Count)
+                                            {
+                                                var item = oneMessageData.data_list[index_oneMessageDataItems][i];
+                                                if (item is null)
+                                                {
+                                                    item = "";
+                                                }
+                                                oneMessage = oneMessage + item.ToString() + ";";
+                                            }
+                                            else
+                                            {
+                                                oneMessage = oneMessage + ";";
+                                            }
+                                        }
+                                        index_oneMessageDataItems++;
+
+                                    }
+                                    else
+                                    {
+                                        for (int i = 0; i < Dictionaries.FieldType_ItemsName_CAT21_dict[number].Length; i++)
+                                        {
+                                            oneMessage = oneMessage + ";";
+                                        }
+                                    }
+                                    index_allDataItems++;
+                                }
+                                csv.AppendLine(oneMessage);
+                            }
+                            
+                        }
+
+                        File.WriteAllText(saveFile.FileName, csv.ToString());
+
+
+                        waitingForm.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error when saving the .csv file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                }
+
+
+            }
+            else
+            {
+                MessageBox.Show("Load a file before exporting", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            
         }
 
         private void ShowMap_ToolStripMenuItem_Click(object sender, EventArgs e)

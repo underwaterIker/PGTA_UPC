@@ -16,7 +16,15 @@ namespace ClassLibrary
 {
     public class Decodification
     {
+        // List with the Data of all the messages inside the File
         public List<Data> messagesData_list = new List<Data>();
+
+        // Presence of CAT10 indicator
+        public bool CAT10_present = false;
+        // Presence of CAT21 indicator
+        public bool CAT21_present = false;
+
+        // Data of one message
         private Data messageData;
 
 
@@ -41,6 +49,11 @@ namespace ClassLibrary
                 // Save message in corresponding list
                 if (cat == 10)
                 {
+                    if (CAT10_present is false)
+                    {
+                        CAT10_present = true;
+                    }
+
                     byte[] CAT10_message = new byte[length - 3];
                     for (int j = 0, k = i; j < length - 3; j++, k++)
                     {
@@ -51,6 +64,11 @@ namespace ClassLibrary
                 }
                 else if (cat == 21)
                 {
+                    if (CAT21_present is false)
+                    {
+                        CAT21_present = true;
+                    }
+
                     byte[] CAT21_message = new byte[length - 3];
                     for (int j = 0, k = i; j < length - 3; j++, k++)
                     {
