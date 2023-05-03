@@ -1774,8 +1774,6 @@ namespace ClassLibrary
 
             List<object> list = new List<object>();
 
-            list.Add(REP);
-
             BitArray primary_bits = new BitArray(new byte[1] { octets[0] });
 
             // We will need to save the index value in a variable
@@ -1797,11 +1795,13 @@ namespace ClassLibrary
                 }
                 else
                 {
-                    list.Add(null);
-                    list.Add(null);
+                    list.Add("--");
+                    list.Add("--");
                 }
                 if (primary_bits[6] == true)
                 {
+                    list.Add(REP);
+
                     index += 1; // for the REP byte
 
                     for (int i = 0; i < REP; i++)
@@ -2278,7 +2278,7 @@ namespace ClassLibrary
         {
             this.messageData.fieldTypes.Add(220);
 
-            List<double?> list = new List<double?>();
+            List<object> list = new List<object>();
 
             BitArray primary_bits = new BitArray(new byte[1] { octets[0] });
 
@@ -2305,7 +2305,7 @@ namespace ClassLibrary
                 }
                 else
                 {
-                    list.Add(null);
+                    list.Add("--");
                 }
                 if (WD_bool == true)
                 {
@@ -2323,7 +2323,7 @@ namespace ClassLibrary
                 }
                 else
                 {
-                    list.Add(null);
+                    list.Add("--");
                 }
                 if (TMP_bool == true)
                 {
@@ -2337,7 +2337,7 @@ namespace ClassLibrary
                 }
                 else
                 {
-                    list.Add(null);
+                    list.Add("--");
                 }
                 if (TRB_bool == true)
                 {
@@ -2349,7 +2349,7 @@ namespace ClassLibrary
                 }
                 else
                 {
-                    list.Add(null);
+                    list.Add("--");
                 }
             }
 
@@ -2582,7 +2582,7 @@ namespace ClassLibrary
 
             // ---------------------------------
 
-            double?[] DataAges = new double?[23];
+            object[] DataAges = new object[23];
 
             double LSB = (double)0.1; // s
 
@@ -2595,7 +2595,7 @@ namespace ClassLibrary
                 }
                 else
                 {
-                    DataAges[i] = null;
+                    DataAges[i] = "--";
                 }
             }
 

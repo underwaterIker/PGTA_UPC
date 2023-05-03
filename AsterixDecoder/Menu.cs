@@ -17,6 +17,7 @@ using System.IO;
 using System.Collections;
 using System.Globalization;
 using Microsoft.Ajax.Utilities;
+using System.Drawing.Text;
 
 namespace AsterixDecoder
 {
@@ -93,183 +94,18 @@ namespace AsterixDecoder
             {
                 if (this.CAT10_present is true)
                 {
-                    SaveFileDialog saveFile = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = "CAT10" };
-                    var csv = new StringBuilder();
-
-                    if (saveFile.ShowDialog() == DialogResult.OK)
-                    {
-                        // Loading form
-                        Loading waitingForm = new Loading();
-                        waitingForm.Show();
-                        Application.DoEvents();
-
-                        // Headers
-                        string headers = "";
-                        string subheaders = "";
-                        foreach (var header in Dictionaries.FieldType_Name_CAT10_dict)
-                        {
-                            headers = headers + header.Value;
-
-                            foreach (string itemsName in Dictionaries.FieldType_ItemsName_CAT10_dict[header.Key])
-                            {
-                                headers = headers + ";";
-                                subheaders = subheaders + itemsName + ";";
-                            }
-
-                        }
-                        csv.AppendLine(headers);
-                        csv.AppendLine(subheaders);
-
-                        
-                        // Messages
-                        foreach (Data oneMessageData in this.messagesData_list)
-                        {
-                            if (oneMessageData.CAT == 10)
-                            {
-                                string oneMessage = "";
-                                int index_oneMessageDataItems = 0;
-                                int index_allDataItems = 0;
-                                foreach (int number in Dictionaries.FieldType_Name_CAT10_dict.Keys)
-                                {
-                                    if (index_oneMessageDataItems < oneMessageData.fieldTypes.Count && oneMessageData.fieldTypes[index_oneMessageDataItems] == number)
-                                    {
-                                        for (int i = 0; i < Dictionaries.FieldType_ItemsName_CAT10_dict[number].Length; i++)
-                                        {
-                                            if (i < oneMessageData.data_list[index_oneMessageDataItems].Count)
-                                            {
-                                                var item = oneMessageData.data_list[index_oneMessageDataItems][i];
-                                                if (item is null)
-                                                {
-                                                    item = "";
-                                                }
-                                                oneMessage = oneMessage + item.ToString() + ";";
-                                            }
-                                            else
-                                            {
-                                                oneMessage = oneMessage + ";";
-                                            }
-                                        }
-                                        index_oneMessageDataItems++;
-
-                                    }
-                                    else
-                                    {
-                                        for (int i = 0; i < Dictionaries.FieldType_ItemsName_CAT10_dict[number].Length; i++)
-                                        {
-                                            oneMessage = oneMessage + ";";
-                                        }
-                                    }
-                                    index_allDataItems++;
-                                }
-                                csv.AppendLine(oneMessage);
-                            }
-                            
-                        }
-
-                        File.WriteAllText(saveFile.FileName, csv.ToString());
-
-
-                        waitingForm.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error when saving the .csv file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    }
+                    ExportCSV(10, "CAT10", Dictionaries.FieldType_Name_CAT10_dict, Dictionaries.FieldType_ItemsName_CAT10_dict);
                 }
 
                 if (this.CAT21_present is true)
                 {
-                    SaveFileDialog saveFile = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = "CAT21" };
-                    var csv = new StringBuilder();
-
-                    if (saveFile.ShowDialog() == DialogResult.OK)
-                    {
-                        // Loading form
-                        Loading waitingForm = new Loading();
-                        waitingForm.Show();
-                        Application.DoEvents();
-
-                        // Headers
-                        string headers = "";
-                        string subheaders = "";
-                        foreach (var header in Dictionaries.FieldType_Name_CAT21_dict)
-                        {
-                            headers = headers + header.Value;
-
-                            foreach (string itemsName in Dictionaries.FieldType_ItemsName_CAT21_dict[header.Key])
-                            {
-                                headers = headers + ";";
-                                subheaders = subheaders + itemsName + ";";
-                            }
-
-                        }
-                        csv.AppendLine(headers);
-                        csv.AppendLine(subheaders);
-
-
-                        // Messages
-                        foreach (Data oneMessageData in this.messagesData_list)
-                        {
-                            if (oneMessageData.CAT == 21)
-                            {
-                                string oneMessage = "";
-                                int index_oneMessageDataItems = 0;
-                                int index_allDataItems = 0;
-                                foreach (int number in Dictionaries.FieldType_Name_CAT21_dict.Keys)
-                                {
-                                    if (index_oneMessageDataItems < oneMessageData.fieldTypes.Count && oneMessageData.fieldTypes[index_oneMessageDataItems] == number)
-                                    {
-                                        for (int i = 0; i < Dictionaries.FieldType_ItemsName_CAT21_dict[number].Length; i++)
-                                        {
-                                            if (i < oneMessageData.data_list[index_oneMessageDataItems].Count)
-                                            {
-                                                var item = oneMessageData.data_list[index_oneMessageDataItems][i];
-                                                if (item is null)
-                                                {
-                                                    item = "";
-                                                }
-                                                oneMessage = oneMessage + item.ToString() + ";";
-                                            }
-                                            else
-                                            {
-                                                oneMessage = oneMessage + ";";
-                                            }
-                                        }
-                                        index_oneMessageDataItems++;
-
-                                    }
-                                    else
-                                    {
-                                        for (int i = 0; i < Dictionaries.FieldType_ItemsName_CAT21_dict[number].Length; i++)
-                                        {
-                                            oneMessage = oneMessage + ";";
-                                        }
-                                    }
-                                    index_allDataItems++;
-                                }
-                                csv.AppendLine(oneMessage);
-                            }
-                            
-                        }
-
-                        File.WriteAllText(saveFile.FileName, csv.ToString());
-
-
-                        waitingForm.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error when saving the .csv file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    }
+                    ExportCSV(21, "CAT21", Dictionaries.FieldType_Name_CAT21_dict, Dictionaries.FieldType_ItemsName_CAT21_dict);
                 }
-
-
             }
             else
             {
                 MessageBox.Show("Load a file before exporting", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-            
+            }  
         }
 
         private void ShowMap_ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -408,88 +244,78 @@ namespace AsterixDecoder
             }
 
             // Loop depending if its a Compund Data Item or not
-            if (itemCode == 250) // Mode S MB Data (Cat10 & Cat21)
-            {
-                //int REP = (int)item_array[0];
-                int oneReport_length = 8;
-                for (int i = 0; i < item_array.Count-1;)
-                {
-                    for (int j = 0; j < oneReport_length; j++)
-                    {
-                        Item_DGV.Rows[i + 1].Cells[0].Value = item_dict[j];
-                        Item_DGV.Rows[i + 1].Cells[1].Value = item_array[i+1];
-                        i++;
-                    }
-                }
-            }
-            else if (itemCode == 280 && this.messagesData_list[this.index_messagesDataList].CAT == 10) // Presence (Cat10)
-            {
-                //int REP = (int)item_array[0];
-                int oneReport_length = 2;
-                for (int i = 0; i < item_array.Count - 1;)
-                {
-                    for (int j = 0; j < oneReport_length; j++)
-                    {
-                        Item_DGV.Rows[i + 1].Cells[0].Value = item_dict[j];
-                        Item_DGV.Rows[i + 1].Cells[1].Value = item_array[i + 1];
-                        i++;
-                    }
-                }
-            }
-            else if (itemCode == 220 && this.messagesData_list[this.index_messagesDataList].CAT == 21) // Met Information (Cat21)
-            {
-                int numberOfRows = 0;
-                for (int i = 0; i < item_array.Count; i++)
-                {
-                    if (item_array[i] != null)
-                    {
-                        Item_DGV.Rows[numberOfRows + 1].Cells[0].Value = item_dict[i];
-                        Item_DGV.Rows[numberOfRows + 1].Cells[1].Value = item_array[i];
-                        numberOfRows++;
-                    }
-                }
-                Item_DGV.RowCount = numberOfRows + 1;
-            }
-            else if (itemCode == 110 && this.messagesData_list[this.index_messagesDataList].CAT == 21) // Trajectory Intent (Cat21)
-            {
-                int index = 0;
-                //  Subfield 1
-                if (item_array[0] != null && item_array[1] != null)
-                {
-                    Item_DGV.Rows[index + 1].Cells[0].Value = item_dict[index];
-                    Item_DGV.Rows[index + 1].Cells[1].Value = item_array[index];
-                    Item_DGV.Rows[index + 2].Cells[0].Value = item_dict[index + 1];
-                    Item_DGV.Rows[index + 2].Cells[1].Value = item_array[index + 1];
-                    index = 2;
-                }
 
-                // Subfield 2
-                //int REP = (int)item_array[index];
-                int oneReport_length = 15;
-                for ( ; index < item_array.Count - 1;)
+            // Mode S MB Data (Cat10 & Cat21), Presence (Cat10)
+            if ((itemCode == 250) || (itemCode == 280 && this.messagesData_list[this.index_messagesDataList].CAT == 10))
+            {
+                int REP = (int)item_array[0];
+                int oneReport_length;
+                if (itemCode == 250)
+                {
+                    oneReport_length = 8;
+                }
+                else
+                {
+                    oneReport_length = 2;
+                }
+                    
+
+                Item_DGV.ColumnCount = REP*2;
+
+                Item_DGV.Rows[1].Cells[0].Value = "REP";
+                Item_DGV.Rows[1].Cells[1].Value = REP;
+
+                for (int i = 0, k = 1; i < REP; i++)
                 {
                     for (int j = 0; j < oneReport_length; j++)
                     {
-                        Item_DGV.Rows[index + 1].Cells[0].Value = item_dict[j];
-                        Item_DGV.Rows[index + 1].Cells[1].Value = item_array[index + 1];
-                        index++;
+                        Item_DGV.Rows[j + 1].Cells[0+ 2*i].Value = item_dict[j+1];
+                        Item_DGV.Rows[j + 1].Cells[1+ 2*i].Value = item_array[k];
+                        k++;
                     }
                 }
-                Item_DGV.RowCount = index + 1;
             }
-            else if (itemCode == 295 && this.messagesData_list[this.index_messagesDataList].CAT == 21) // Data Ages (Cat21)
+            // Trajectory Intent (Cat21)
+            else if (itemCode == 110 && this.messagesData_list[this.index_messagesDataList].CAT == 21)
             {
-                int numberOfRows = 0;
-                for (int i = 0; i < item_array.Count; i++)
+               
+                if (item_array.Count > 2)
                 {
-                    if (item_array[i] != null)
+                    int REP = (int)item_array[0];
+                    int oneReport_length = 15;
+                    if (REP != 0)
                     {
-                        Item_DGV.Rows[numberOfRows + 1].Cells[0].Value = item_dict[i];
-                        Item_DGV.Rows[numberOfRows + 1].Cells[1].Value = item_array[i];
-                        numberOfRows++;
+                        Item_DGV.ColumnCount = REP * 2;
+                    }
+
+                    // Subfield 1
+                    Item_DGV.Rows[1].Cells[0].Value = item_dict[0];
+                    Item_DGV.Rows[1].Cells[1].Value = item_array[0];
+                    Item_DGV.Rows[2].Cells[0].Value = item_dict[1];
+                    Item_DGV.Rows[2].Cells[1].Value = item_array[1];
+
+                    // Subfield 2
+                    Item_DGV.Rows[3].Cells[0].Value = "REP";
+                    Item_DGV.Rows[3].Cells[1].Value = REP;
+
+                    for (int i = 0, k = 3; i < REP; i++)
+                    {
+                        for (int j = 0; j < oneReport_length; j++)
+                        {
+                            Item_DGV.Rows[j + 4].Cells[0 + 2 * i].Value = item_dict[j+3];
+                            Item_DGV.Rows[j + 4].Cells[1 + 2 * i].Value = item_array[k];
+                            k++;
+                        }
                     }
                 }
-                Item_DGV.RowCount = numberOfRows + 1;
+                else
+                {
+                    // Subfield 1
+                    Item_DGV.Rows[1].Cells[0].Value = item_dict[0];
+                    Item_DGV.Rows[1].Cells[1].Value = item_array[0];
+                    Item_DGV.Rows[2].Cells[0].Value = item_dict[1];
+                    Item_DGV.Rows[2].Cells[1].Value = item_array[1];
+                }
             }
             else // All Data Items that are not the ones above
             {
@@ -500,9 +326,91 @@ namespace AsterixDecoder
                     Item_DGV.Rows[i + 1].Cells[1].Value = item_array[i];
                 }
             }
-            
         }
 
-        
+        // ------------------------------------------------------
+        // Export function
+        private void ExportCSV(int cat, string fileName, IDictionary<int, string> fieldTypeName_dict, IDictionary<int, string[]> ItemsName_dict)
+        {
+            SaveFileDialog saveFile = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = fileName };
+            var csv = new StringBuilder();
+
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                // Loading form
+                Loading waitingForm = new Loading();
+                waitingForm.Show();
+                Application.DoEvents();
+
+                // Headers
+                string headers = "";
+                string subheaders = "";
+                foreach (var header in fieldTypeName_dict)
+                {
+                    headers = headers + header.Value;
+
+                    foreach (string itemsName in ItemsName_dict[header.Key])
+                    {
+                        headers = headers + ";";
+                        subheaders = subheaders + itemsName + ";";
+                    }
+
+                }
+                csv.AppendLine(headers);
+                csv.AppendLine(subheaders);
+
+
+                // Messages
+                foreach (Data oneMessageData in this.messagesData_list)
+                {
+                    if (oneMessageData.CAT == cat)
+                    {
+                        string oneMessage = "";
+                        int index_oneMessageDataItems = 0;
+                        int index_allDataItems = 0;
+                        foreach (int number in fieldTypeName_dict.Keys)
+                        {
+                            if (index_oneMessageDataItems < oneMessageData.fieldTypes.Count && oneMessageData.fieldTypes[index_oneMessageDataItems] == number)
+                            {
+                                for (int i = 0; i < ItemsName_dict[number].Length; i++)
+                                {
+                                    if (i < oneMessageData.data_list[index_oneMessageDataItems].Count)
+                                    {
+                                        var item = oneMessageData.data_list[index_oneMessageDataItems][i];
+                                        oneMessage = oneMessage + item.ToString() + ";";
+                                    }
+                                    else
+                                    {
+                                        oneMessage = oneMessage + ";";
+                                    }
+                                }
+                                index_oneMessageDataItems++;
+
+                            }
+                            else
+                            {
+                                for (int i = 0; i < ItemsName_dict[number].Length; i++)
+                                {
+                                    oneMessage = oneMessage + ";";
+                                }
+                            }
+                            index_allDataItems++;
+                        }
+                        csv.AppendLine(oneMessage);
+                    }
+
+                }
+
+                File.WriteAllText(saveFile.FileName, csv.ToString());
+
+
+                waitingForm.Close();
+            }
+            else
+            {
+                MessageBox.Show("Error when saving the .csv file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
     }
 }

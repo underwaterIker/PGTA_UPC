@@ -24,7 +24,7 @@ namespace ClassLibrary
         public static readonly string[] M3ACOR = new string[4] { "V", "G", "L", "Mode-3/A reply in octal representation" };
         public static readonly string[] TA = new string[1] { "Track Address" };
         public static readonly string[] TI = new string[2] { "STI", "Target Identification" };
-        public static readonly string[] MSMBD = new string[3] { "Mode S Comm B message data", "Comm B Data Buffer Store 1 Address", "Comm B Data Buffer Store 2 Address" };
+        public static readonly string[] MSMBD = new string[4] { "REP", "Mode S Comm B message data", "Comm B Data Buffer Store 1 Address", "Comm B Data Buffer Store 2 Address" };
         public static readonly string[] VFI = new string[1] { "Vehicle Fleet Identification" };
         public static readonly string[] FLBR = new string[3] { "V", "G", "Flight Level [FL]" };
         public static readonly string[] MH = new string[1] { "Measured Height [ft]" };
@@ -32,7 +32,7 @@ namespace ClassLibrary
         public static readonly string[] SS = new string[5] { "NOGO", "OVL", "TSV", "DIV", "TTF" };
         public static readonly string[] PPM = new string[2] { "TRB", "MSG" };
         public static readonly string[] SDP = new string[3] { "Standard Deviation of X component [m]", "Standard Deviation of Y component [m]", "Covariance in two’s complement form [m^2]" };
-        public static readonly string[] P = new string[2] { "DRHO [m]", "DTHETA [deg]" };
+        public static readonly string[] P = new string[3] { "REP", "DRHO [m]", "DTHETA [deg]" };
         public static readonly string[] APP = new string[1] { "PAM" };
         public static readonly string[] CA = new string[2] { "Ax [m/s^2]", "Ay [m/s^2]" };
 
@@ -129,7 +129,7 @@ namespace ClassLibrary
         public static readonly string[] MI = new string[4] { "Wind Speed [kt]", "Wind Direction [deg]", "Temperature [°C]", "Turbulence" };
         public static readonly string[] SA = new string[3] { "Source Availability", "Source", "Altitude [ft]" };
         public static readonly string[] FSSA = new string[4] { "Manage Vertical Mode", "Altitude Hold Mode", "Approach Mode", "Altitude [ft]" };
-        public static readonly string[] TrajInt = new string[14] { "NAV", "NVB", "TCA", "NC", "Trajectory Change Point number", "Altitude [ft]", "Latitude [deg]", "Longitude [deg]", "Point Type", "TD", "Turn Radius Availabilty", "TOA", "Time Over Point", "TCP Turn radius" };
+        public static readonly string[] TrajInt = new string[15] { "NAV", "NVB", "REP", "TCA", "NC", "Trajectory Change Point number", "Altitude [ft]", "Latitude [deg]", "Longitude [deg]", "Point Type", "TD", "Turn Radius Availabilty", "TOA", "Time Over Point", "TCP Turn radius" };
         public static readonly string[] SM = new string[1] { "Report Period [s]" };
         public static readonly string[] AOS = new string[7] { "TCAS Resolution Advisory active", "Target Trajectory Change Report Capability", "Target State Report Capability", "Air-Referenced Velocity Report Capability", "Cockpit Display of Traffic Information airborne", "TCAS System Status", "Single Antenna" };
         public static readonly string[] SCC = new string[6] { "Position Offset Applied", "Cockpit Display of Traffic Information Surface", "Class B2 transmit power less than 70 Watts", "Receiving ATC Services", "Setting of “IDENT”-switch", "Length and width of the aircraft" };
