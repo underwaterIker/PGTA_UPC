@@ -25,16 +25,19 @@ namespace AsterixDecoder
     public partial class Menu : Form
     {
         // List containing all CAT messages in order
-        private List<Data> messagesData_list = new List<Data>(); 
+        private List<Data> messagesData_list; 
         private int index_messagesDataList;
         private int index_dataItems;
+        // List with Filtered messages
+        private List<Data> Filtered_messagesData_list;
+        private bool Filter_flag;
 
         // CAT indicators
-        private bool CAT10_present;
-        private bool CAT21_present;
+        private bool CAT10_flag;
+        private bool CAT21_flag;
 
         // file loaded indicator
-        private bool fileLoaded = false;
+        private bool fileLoaded_flag = false;
 
         double LAT = 41.29839;
         double LON = 2.08331;
@@ -58,12 +61,12 @@ namespace AsterixDecoder
 
                     Decodification decoder = new Decodification(fileName);
                     this.messagesData_list = decoder.messagesData_list;
-                    this.CAT10_present = decoder.CAT10_present;
-                    this.CAT21_present = decoder.CAT21_present;
+                    this.CAT10_flag = decoder.CAT10_present;
+                    this.CAT21_flag = decoder.CAT21_present;
 
                     //MessageBox.Show("done");
 
-                    this.fileLoaded = true;
+                    this.fileLoaded_flag = true;
 
                     Set_dataList_DGV(this.messagesData_list);
                 }
@@ -89,7 +92,14 @@ namespace AsterixDecoder
                 {
                     int index = e.RowIndex - 1;
                     this.index_messagesDataList = index;
-                    Set_dataItems_DGV(this.messagesData_list[index]);
+                    if (this.Filter_flag is false)
+                    {
+                        Set_dataItems_DGV(this.messagesData_list[index]);
+                    }
+                    else
+                    {
+                        Set_dataItems_DGV(this.Filtered_messagesData_list[index]);
+                    }
                 }
             }
             catch
@@ -106,7 +116,14 @@ namespace AsterixDecoder
                 {
                     int index = e.RowIndex - 1;
                     this.index_dataItems = index;
-                    Set_Item_DGV(this.messagesData_list[this.index_messagesDataList].data_list[index], this.messagesData_list[this.index_messagesDataList].fieldTypes[index]);
+                    if (this.Filter_flag is false)
+                    {
+                        Set_Item_DGV(this.messagesData_list[this.index_messagesDataList].data_list[index], this.messagesData_list[this.index_messagesDataList].fieldTypes[index], this.messagesData_list[this.index_messagesDataList].CAT);
+                    }
+                    else
+                    {
+                        Set_Item_DGV(this.Filtered_messagesData_list[this.index_messagesDataList].data_list[index], this.Filtered_messagesData_list[this.index_messagesDataList].fieldTypes[index], this.Filtered_messagesData_list[this.index_messagesDataList].CAT);
+                    }
                 }
             }
             catch
@@ -115,21 +132,75 @@ namespace AsterixDecoder
             }
         }
 
-        private void ExportCsv_ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Filter_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Filter_textBox.Enabled = true;
+            Filter_button.Enabled = true;
+        }
+
+        private void Filter_button_Click(object sender, EventArgs e)
+        {
+            if (Filter_comboBox.SelectedIndex > -1) //somthing was selected
+            {
+                dataList_DGV.Rows.Clear();
+                dataList_DGV.Columns.Clear();
+
+                int[] cat;
+                int[] fieldType;
+
+                switch (Filter_comboBox.SelectedIndex)
+                {
+                    case 0:
+                        cat = new int[2] { 10, 21 };
+                        fieldType = new int[2] { 161, 161 };
+                        Set_Filtered_messagesData_list(cat, fieldType);
+                        Set_dataList_DGV(this.Filtered_messagesData_list);
+                        break;
+
+                    case 1:
+                        cat = new int[2] { 10, 21 };
+                        fieldType = new int[2] { 220, 80 };
+                        Set_Filtered_messagesData_list(cat, fieldType);
+                        Set_dataList_DGV(this.Filtered_messagesData_list);
+                        break;
+
+                    case 2:
+                        cat = new int[2] { 10, 21 };
+                        fieldType = new int[2] { 245, 170 };
+                        Set_Filtered_messagesData_list(cat, fieldType);
+                        Set_dataList_DGV(this.Filtered_messagesData_list);
+                        break;
+
+                    case 3:
+                        cat = new int[2] { 10, 21 };
+                        fieldType = new int[2] { 60, 70 };
+                        Set_Filtered_messagesData_list(cat, fieldType);
+                        Set_dataList_DGV(this.Filtered_messagesData_list);
+                        break;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select a Data Item to filter.", "Data Item not selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+        }
+
+        private void ExportCSV_button_Click(object sender, EventArgs e)
         {
             Loading waitingForm = new Loading();
             waitingForm.Show();
 
-            if (this.fileLoaded is true)
+            if (this.fileLoaded_flag is true)
             {
                 try
                 {
-                    if (this.CAT10_present is true)
+                    if (this.CAT10_flag is true)
                     {
                         ExportCSV(10, "CAT10", Dictionaries.FieldType_Name_CAT10_dict, Dictionaries.FieldType_ItemsName_CAT10_dict);
                     }
 
-                    if (this.CAT21_present is true)
+                    if (this.CAT21_flag is true)
                     {
                         ExportCSV(21, "CAT21", Dictionaries.FieldType_Name_CAT21_dict, Dictionaries.FieldType_ItemsName_CAT21_dict);
                     }
@@ -140,8 +211,6 @@ namespace AsterixDecoder
                 {
                     MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
-                
-
             }
             else
             {
@@ -149,18 +218,6 @@ namespace AsterixDecoder
             }
 
             waitingForm.Close();
-
-        }
-
-        private void ShowMap_ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void AboutUs_ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AboutUs AboutUs = new AboutUs();
-            AboutUs.Show();
         }
 
         // -----------------------------------------------------------------------------
@@ -251,7 +308,7 @@ namespace AsterixDecoder
             }
         }
 
-        private void Set_Item_DGV(object item, int itemCode)
+        private void Set_Item_DGV(object item, int itemCode, int cat)
         {
             var item_array = item as IList;
 
@@ -278,11 +335,11 @@ namespace AsterixDecoder
 
             // Set Item Dictionary depending on CAT number
             string[] item_dict;
-            if (this.messagesData_list[this.index_messagesDataList].CAT == 10)
+            if (cat == 10)
             {
                 item_dict = Dictionaries.FieldType_ItemsName_CAT10_dict[itemCode];
             }
-            else //else if (this.data_list[this.index_dataList].CAT == 21)
+            else //else if (cat == 21)
             {
                 item_dict = Dictionaries.FieldType_ItemsName_CAT21_dict[itemCode];
             }
@@ -433,6 +490,23 @@ namespace AsterixDecoder
                 MessageBox.Show("Error when saving the .csv file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
+
+        // ------------------------------------------------------
+        // Filter function
+        private void Set_Filtered_messagesData_list(int[] cat, int[] fieldType)
+        {
+            this.Filter_flag = true;
+
+            this.Filtered_messagesData_list = new List<Data>();
+            for (int i = 0; i < this.messagesData_list.Count; i++)
+            {
+                if ((this.messagesData_list[i].fieldTypes.Contains(fieldType[0]) && this.messagesData_list[i].CAT == cat[0]) || (this.messagesData_list[i].fieldTypes.Contains(fieldType[1]) && this.messagesData_list[i].CAT == cat[1]))
+                {
+                    this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                }
+            }
+        }
+
 
     }
 }
