@@ -1221,9 +1221,14 @@ namespace ClassLibrary
         {
             this.messageData.fieldTypes.Add(250);
 
-            List<int> list = new List<int>();
+            List<object> list = new List<object>();
 
             list.Add(REP);
+
+
+            List<int> MBData_list = new List<int>();
+            List<int> BDS1_list = new List<int>();
+            List<int> BDS2_list = new List<int>();
 
             for (int i = 0; i < REP; i++)
             {
@@ -1247,10 +1252,14 @@ namespace ClassLibrary
                 int BDS1 = Functions.BitArray2Int(BDS1_bits);
                 int BDS2 = Functions.BitArray2Int(BDS2_bits);
 
-                list.Add(MBData);
-                list.Add(BDS1);
-                list.Add(BDS2);
+                MBData_list.Add(MBData);
+                BDS1_list.Add(BDS1);
+                BDS2_list.Add(BDS2);
             }
+
+            list.Add(MBData_list);
+            list.Add(BDS1_list);
+            list.Add(BDS2_list);
 
             this.messageData.data_list.Add(list);
         }
@@ -1310,9 +1319,13 @@ namespace ClassLibrary
         {
             this.messageData.fieldTypes.Add(280);
 
-            List<double> list = new List<double>();
+            List<object> list = new List<object>();
 
             list.Add(REP);
+
+
+            List<int> DRHO_list = new List<int>();
+            List<double> DTHETA_list = new List<double>();
 
             int LSB_DRHO = 1; // m
             double LSB_DTHETA = (double)0.15; //degrees
@@ -1322,9 +1335,12 @@ namespace ClassLibrary
                 int DRHO = LSB_DRHO * octets[2*i];
                 double DTHETA = LSB_DTHETA * octets[2*i + 1];
 
-                list.Add(DRHO);
-                list.Add(DTHETA);
+                DRHO_list.Add(DRHO);
+                DTHETA_list.Add(DTHETA);
             }
+
+            list.Add(DRHO_list);
+            list.Add(DTHETA_list);
 
             this.messageData.data_list.Add(list);
         }
@@ -1802,6 +1818,20 @@ namespace ClassLibrary
                 {
                     list.Add(REP);
 
+
+                    List<string> TCA_list = new List<string>();
+                    List<string> NC_list = new List<string>();
+                    List<int> TCP_list = new List<int>();
+                    List<double> Altitude_list = new List<double>();
+                    List<double> LatitudeWGS84_list = new List<double>();
+                    List<double> LongitudeWGS84_list = new List<double>();
+                    List<string> PointType_list = new List<string>();
+                    List<string> TD_list = new List<string>();
+                    List<string> TRA_list = new List<string>();
+                    List<string> TOA_list = new List<string>();
+                    List<double> TOV_list = new List<double>();
+                    List<double> TTR_list = new List<double>();
+
                     index += 1; // for the REP byte
 
                     for (int i = 0; i < REP; i++)
@@ -1816,28 +1846,28 @@ namespace ClassLibrary
                         subfield2_byte0_bits.Length = subfield2_byte0_bits.Length - 2;
                         int TCP = Functions.BitArray2Int(subfield2_byte0_bits);
 
-                        list.Add(TCA);
-                        list.Add(NC);
-                        list.Add(TCP);
+                        TCA_list.Add(TCA);
+                        NC_list.Add(NC);
+                        TCP_list.Add(TCP);
 
                         // Octet no. 3 & 4
                         double Altitude_LSB = 10; // ft
                         byte[] Altitude_bytes = new byte[2] { subfield2_bytes[2], subfield2_bytes[1] }; // Reversed
                         double Altitude = Altitude_LSB * Functions.TwosComplement2Int_fromBytes(Altitude_bytes);
-                        
-                        list.Add(Altitude);
+
+                        Altitude_list.Add(Altitude);
 
                         // Octet no. 5 & 6 & 7
                         double LatAndLongWGS84_LSB = (double)(180 / Math.Pow(2, 23)); // ft
                         byte[] LatitudeWGS84_bytes = new byte[3] { subfield2_bytes[5], subfield2_bytes[4], subfield2_bytes[3] }; // Reversed
                         double LatitudeWGS84 = LatAndLongWGS84_LSB * Functions.TwosComplement2Int_fromBytes(LatitudeWGS84_bytes);
-                        
-                        list.Add(LatitudeWGS84);
+
+                        LatitudeWGS84_list.Add(LatitudeWGS84);
 
                         // Octet no. 8 & 9 & 10
                         byte[] LongitudeWGS84_bytes = new byte[3] { subfield2_bytes[8], subfield2_bytes[7], subfield2_bytes[6] }; // Reversed
                         double LongitudeWGS84 = LatAndLongWGS84_LSB * Functions.TwosComplement2Int_fromBytes(LongitudeWGS84_bytes);
-                        list.Add(LongitudeWGS84);
+                        LongitudeWGS84_list.Add(LongitudeWGS84);
 
                         // Octet no. 11
                         BitArray subfield2_byte9_bits = new BitArray(new byte[1] { subfield2_bytes[9] });
@@ -1856,25 +1886,37 @@ namespace ClassLibrary
                         string TRA = Dictionaries.TrajectoryIntent_TRA_dict[subfield2_byte9_bits[1]];
                         string TOA = Dictionaries.TrajectoryIntent_TOA_dict[subfield2_byte9_bits[0]];
 
-                        list.Add(PointType);
-                        list.Add(TD);
-                        list.Add(TRA);
-                        list.Add(TOA);
+                        PointType_list.Add(PointType);
+                        TD_list.Add(TD);
+                        TRA_list.Add(TRA);
+                        TOA_list.Add(TOA);
 
                         // Octet no. 12 & 13 & 14
                         //double TOV_LSB = 1; // s
                         byte[] TOV_bytes = new byte[3] { subfield2_bytes[12], subfield2_bytes[11], subfield2_bytes[10] }; // Reversed
                         double TOV = Functions.CombineBytes2Int(TOV_bytes);
-                        list.Add(TOV);
+                        TOV_list.Add(TOV);
 
                         // Octet no. 15 & 16
                         double TTR_LSB = (double)0.01; // Nm
                         byte[] TTR_bytes = new byte[2] { subfield2_bytes[14], subfield2_bytes[13] }; // Reversed
                         double TTR = TTR_LSB * Functions.CombineBytes2Int(TTR_bytes);
-                        list.Add(TTR);
+                        TTR_list.Add(TTR);
 
                         index += 15;
                     }
+                    list.Add(TCA_list);
+                    list.Add(NC_list);
+                    list.Add(TCP_list);
+                    list.Add(Altitude_list);
+                    list.Add(LatitudeWGS84_list);
+                    list.Add(LongitudeWGS84_list);
+                    list.Add(PointType_list);
+                    list.Add(TD_list);
+                    list.Add(TRA_list);
+                    list.Add(TOA_list);
+                    list.Add(TOV_list);
+                    list.Add(TTR_list);
                 }
             }
 

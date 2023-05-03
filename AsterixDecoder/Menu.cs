@@ -18,6 +18,7 @@ using System.Collections;
 using System.Globalization;
 using Microsoft.Ajax.Utilities;
 using System.Drawing.Text;
+using System.CodeDom;
 
 namespace AsterixDecoder
 {
@@ -243,89 +244,28 @@ namespace AsterixDecoder
                 item_dict = Dictionaries.FieldType_ItemsName_CAT21_dict[itemCode];
             }
 
-            // Loop depending if its a Compund Data Item or not
-
-            // Mode S MB Data (Cat10 & Cat21), Presence (Cat10)
-            if ((itemCode == 250) || (itemCode == 280 && this.messagesData_list[this.index_messagesDataList].CAT == 10))
+            // Loop depending if its a Compund Data Item or not            
+            for (int i = 0; i < item_array.Count; i++)
             {
-                int REP = (int)item_array[0];
-                int oneReport_length;
-                if (itemCode == 250)
+                if (item_array[i] is IList) // REP items
                 {
-                    oneReport_length = 8;
-                }
-                else
-                {
-                    oneReport_length = 2;
-                }
-                    
+                    var REPitem_list = item_array[i] as IList;
+                    Item_DGV.ColumnCount = 2*REPitem_list.Count;
 
-                Item_DGV.ColumnCount = REP*2;
-
-                Item_DGV.Rows[1].Cells[0].Value = "REP";
-                Item_DGV.Rows[1].Cells[1].Value = REP;
-
-                for (int i = 0, k = 1; i < REP; i++)
-                {
-                    for (int j = 0; j < oneReport_length; j++)
+                    for (int j = 0; j < REPitem_list.Count; j++)
                     {
-                        Item_DGV.Rows[j + 1].Cells[0+ 2*i].Value = item_dict[j+1];
-                        Item_DGV.Rows[j + 1].Cells[1+ 2*i].Value = item_array[k];
-                        k++;
+                        Item_DGV.Rows[i + 1].Cells[0 + 2*j].Value = item_dict[i];
+                        Item_DGV.Rows[i + 1].Cells[1 + 2*j].Value = REPitem_list[j];
                     }
                 }
-            }
-            // Trajectory Intent (Cat21)
-            else if (itemCode == 110 && this.messagesData_list[this.index_messagesDataList].CAT == 21)
-            {
-               
-                if (item_array.Count > 2)
-                {
-                    int REP = (int)item_array[0];
-                    int oneReport_length = 15;
-                    if (REP != 0)
-                    {
-                        Item_DGV.ColumnCount = REP * 2;
-                    }
-
-                    // Subfield 1
-                    Item_DGV.Rows[1].Cells[0].Value = item_dict[0];
-                    Item_DGV.Rows[1].Cells[1].Value = item_array[0];
-                    Item_DGV.Rows[2].Cells[0].Value = item_dict[1];
-                    Item_DGV.Rows[2].Cells[1].Value = item_array[1];
-
-                    // Subfield 2
-                    Item_DGV.Rows[3].Cells[0].Value = "REP";
-                    Item_DGV.Rows[3].Cells[1].Value = REP;
-
-                    for (int i = 0, k = 3; i < REP; i++)
-                    {
-                        for (int j = 0; j < oneReport_length; j++)
-                        {
-                            Item_DGV.Rows[j + 4].Cells[0 + 2 * i].Value = item_dict[j+3];
-                            Item_DGV.Rows[j + 4].Cells[1 + 2 * i].Value = item_array[k];
-                            k++;
-                        }
-                    }
-                }
-                else
-                {
-                    // Subfield 1
-                    Item_DGV.Rows[1].Cells[0].Value = item_dict[0];
-                    Item_DGV.Rows[1].Cells[1].Value = item_array[0];
-                    Item_DGV.Rows[2].Cells[0].Value = item_dict[1];
-                    Item_DGV.Rows[2].Cells[1].Value = item_array[1];
-                }
-            }
-            else // All Data Items that are not the ones above
-            {
-                // Loop
-                for (int i = 0; i < item_array.Count; i++)
+                else // normal items
                 {
                     Item_DGV.Rows[i + 1].Cells[0].Value = item_dict[i];
                     Item_DGV.Rows[i + 1].Cells[1].Value = item_array[i];
                 }
+                    
             }
+            
         }
 
         // ------------------------------------------------------
@@ -368,6 +308,11 @@ namespace AsterixDecoder
                         string oneMessage = "";
                         int index_oneMessageDataItems = 0;
                         int index_allDataItems = 0;
+
+                        // for REP items:
+                        string oneMessage_emptyForREP = "";
+                        List<string> REP_oneMessage = new List<string>();
+
                         foreach (int number in fieldTypeName_dict.Keys)
                         {
                             if (index_oneMessageDataItems < oneMessageData.fieldTypes.Count && oneMessageData.fieldTypes[index_oneMessageDataItems] == number)
@@ -377,11 +322,40 @@ namespace AsterixDecoder
                                     if (i < oneMessageData.data_list[index_oneMessageDataItems].Count)
                                     {
                                         var item = oneMessageData.data_list[index_oneMessageDataItems][i];
-                                        oneMessage = oneMessage + item.ToString() + ";";
+                                        if (item is IList) // REP items
+                                        {
+                                            var REPitem_list = item as IList;
+
+                                            for (int j = 0; j < REPitem_list.Count; j++)
+                                            {
+                                                if (j == 0)
+                                                {
+                                                    oneMessage = oneMessage + REPitem_list[j].ToString() + ";";
+                                                }
+                                                else
+                                                {
+                                                    if (j >= REPitem_list.Count)
+                                                    {
+                                                        REP_oneMessage.Add(oneMessage_emptyForREP);
+                                                    }
+                                                    
+                                                    REP_oneMessage[j-1] = REP_oneMessage[j-1] + REPitem_list[j].ToString() + ";";
+                                                }
+
+                                            }
+                                            oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
+                                        }
+                                        else // normal items
+                                        {
+                                            oneMessage = oneMessage + item.ToString() + ";";
+                                            oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
+                                        }
+                                        
                                     }
                                     else
                                     {
                                         oneMessage = oneMessage + ";";
+                                        oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
                                     }
                                 }
                                 index_oneMessageDataItems++;
@@ -392,11 +366,16 @@ namespace AsterixDecoder
                                 for (int i = 0; i < ItemsName_dict[number].Length; i++)
                                 {
                                     oneMessage = oneMessage + ";";
+                                    oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
                                 }
                             }
                             index_allDataItems++;
                         }
                         csv.AppendLine(oneMessage);
+                        for(int i = 0; i < REP_oneMessage.Count; i++) // In case there is a REP Data Item
+                        {
+                            csv.AppendLine(REP_oneMessage[i]);
+                        }
                     }
 
                 }
