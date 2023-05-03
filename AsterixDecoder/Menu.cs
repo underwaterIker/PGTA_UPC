@@ -47,66 +47,109 @@ namespace AsterixDecoder
 
         private void LoadFile_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog LoadFile = new OpenFileDialog();
-            if (LoadFile.ShowDialog() == DialogResult.OK && Path.GetExtension(LoadFile.FileName) == ".ast")
+            Loading waitingForm = new Loading();
+            waitingForm.Show();
+            try
             {
-                string fileName = LoadFile.FileName;
+                OpenFileDialog LoadFile = new OpenFileDialog();
+                if (LoadFile.ShowDialog() == DialogResult.OK && Path.GetExtension(LoadFile.FileName) == ".ast")
+                {
+                    string fileName = LoadFile.FileName;
 
-                Decodification decoder = new Decodification(fileName);
-                this.messagesData_list = decoder.messagesData_list;
-                this.CAT10_present = decoder.CAT10_present;
-                this.CAT21_present = decoder.CAT21_present;
+                    Decodification decoder = new Decodification(fileName);
+                    this.messagesData_list = decoder.messagesData_list;
+                    this.CAT10_present = decoder.CAT10_present;
+                    this.CAT21_present = decoder.CAT21_present;
 
-                //MessageBox.Show("done");
+                    //MessageBox.Show("done");
 
-                this.fileLoaded = true;
+                    this.fileLoaded = true;
 
-                Set_dataList_DGV(this.messagesData_list);
+                    Set_dataList_DGV(this.messagesData_list);
+                }
+                else
+                {
+                    MessageBox.Show("Select a valid file format.", "Incorrect file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
             }
-            else
+            catch
             {
-                MessageBox.Show("Select a valid file format.", "Incorrect file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+
+            waitingForm.Close();
+
         }
 
         private void dataList_DGV_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex != 0)
+            try
             {
-                int index = e.RowIndex - 1;
-                this.index_messagesDataList = index;
-                Set_dataItems_DGV(this.messagesData_list[index]);
+                if (e.RowIndex != 0)
+                {
+                    int index = e.RowIndex - 1;
+                    this.index_messagesDataList = index;
+                    Set_dataItems_DGV(this.messagesData_list[index]);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
         private void dataItems_DGV_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex != 0)
+            try
             {
-                int index = e.RowIndex - 1;
-                this.index_dataItems = index;
-                Set_Item_DGV(this.messagesData_list[this.index_messagesDataList].data_list[index], this.messagesData_list[this.index_messagesDataList].fieldTypes[index]);
+                if (e.RowIndex != 0)
+                {
+                    int index = e.RowIndex - 1;
+                    this.index_dataItems = index;
+                    Set_Item_DGV(this.messagesData_list[this.index_messagesDataList].data_list[index], this.messagesData_list[this.index_messagesDataList].fieldTypes[index]);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
         private void ExportCsv_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Loading waitingForm = new Loading();
+            waitingForm.Show();
+
             if (this.fileLoaded is true)
             {
-                if (this.CAT10_present is true)
+                try
                 {
-                    ExportCSV(10, "CAT10", Dictionaries.FieldType_Name_CAT10_dict, Dictionaries.FieldType_ItemsName_CAT10_dict);
-                }
+                    if (this.CAT10_present is true)
+                    {
+                        ExportCSV(10, "CAT10", Dictionaries.FieldType_Name_CAT10_dict, Dictionaries.FieldType_ItemsName_CAT10_dict);
+                    }
 
-                if (this.CAT21_present is true)
-                {
-                    ExportCSV(21, "CAT21", Dictionaries.FieldType_Name_CAT21_dict, Dictionaries.FieldType_ItemsName_CAT21_dict);
+                    if (this.CAT21_present is true)
+                    {
+                        ExportCSV(21, "CAT21", Dictionaries.FieldType_Name_CAT21_dict, Dictionaries.FieldType_ItemsName_CAT21_dict);
+                    }
+
+                    //waitingForm.Close();
                 }
+                catch
+                {
+                    MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                
+
             }
             else
             {
                 MessageBox.Show("Load a file before exporting", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }  
+            }
+
+            waitingForm.Close();
+
         }
 
         private void ShowMap_ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -278,9 +321,9 @@ namespace AsterixDecoder
             if (saveFile.ShowDialog() == DialogResult.OK)
             {
                 // Loading form
-                Loading waitingForm = new Loading();
-                waitingForm.Show();
-                Application.DoEvents();
+                //Loading waitingForm = new Loading();
+                //waitingForm.Show();
+                //Application.DoEvents();
 
                 // Headers
                 string headers = "";
@@ -383,7 +426,7 @@ namespace AsterixDecoder
                 File.WriteAllText(saveFile.FileName, csv.ToString());
 
 
-                waitingForm.Close();
+                //waitingForm.Close();
             }
             else
             {
