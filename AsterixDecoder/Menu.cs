@@ -195,17 +195,15 @@ namespace AsterixDecoder
             {
                 try
                 {
-                    if (this.CAT10_flag is true)
+                    if (this.Filter_flag is false)
                     {
-                        ExportCSV(10, "CAT10", Dictionaries.FieldType_Name_CAT10_dict, Dictionaries.FieldType_ItemsName_CAT10_dict);
+                        ExportCSV(this.messagesData_list);
+                    }
+                    else
+                    {
+                        ExportCSV(this.Filtered_messagesData_list);
                     }
 
-                    if (this.CAT21_flag is true)
-                    {
-                        ExportCSV(21, "CAT21", Dictionaries.FieldType_Name_CAT21_dict, Dictionaries.FieldType_ItemsName_CAT21_dict);
-                    }
-
-                    //waitingForm.Close();
                 }
                 catch
                 {
@@ -221,7 +219,7 @@ namespace AsterixDecoder
         }
 
         // -----------------------------------------------------------------------------
-
+        // Set DataGridView funcions
         private void Set_dataList_DGV(List<Data> messagesData_list)
         {
             dataList_DGV.Columns.Clear();
@@ -370,125 +368,186 @@ namespace AsterixDecoder
 
         // ------------------------------------------------------
         // Export function
-        private void ExportCSV(int cat, string fileName, IDictionary<int, string> fieldTypeName_dict, IDictionary<int, string[]> ItemsName_dict)
+        private void ExportCSV(List<Data> messagesData_list)
         {
-            SaveFileDialog saveFile = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = fileName };
-            var csv = new StringBuilder();
+            // Set the StringBuilders we are going to need (one for each CAT present in the message)
+            StringBuilder[] CSVs = new StringBuilder[2];
+            SaveFileDialog[] SaveFileDialogs = new SaveFileDialog[2];
 
-            if (saveFile.ShowDialog() == DialogResult.OK)
+            // Set the Dictionaries we are going to need
+            IDictionary<int, string>[] fieldTypeName_dicts = new Dictionary<int, string>[2];
+            IDictionary<int, string[]>[] ItemsName_dicts = new Dictionary<int, string[]>[2];
+
+            fieldTypeName_dicts[0] = Dictionaries.FieldType_Name_CAT10_dict;
+            ItemsName_dicts[0] = Dictionaries.FieldType_ItemsName_CAT10_dict;
+
+            fieldTypeName_dicts[1] = Dictionaries.FieldType_Name_CAT21_dict;
+            ItemsName_dicts[1] = Dictionaries.FieldType_ItemsName_CAT21_dict;
+
+            bool[] flags = new bool[2];
+
+            // Headers CAT10
+            if (this.CAT10_flag is true)
             {
-                // Loading form
-                //Loading waitingForm = new Loading();
-                //waitingForm.Show();
-                //Application.DoEvents();
-
-                // Headers
-                string headers = "";
-                string subheaders = "";
-                foreach (var header in fieldTypeName_dict)
+                string headers_cat10 = "";
+                string subheaders_cat10 = "";
+                foreach (var header_cat10 in fieldTypeName_dicts[0])
                 {
-                    headers = headers + header.Value;
+                    headers_cat10 = headers_cat10 + header_cat10.Value;
 
-                    foreach (string itemsName in ItemsName_dict[header.Key])
+                    foreach (string itemsName_cat10 in ItemsName_dicts[0][header_cat10.Key])
                     {
-                        headers = headers + ";";
-                        subheaders = subheaders + itemsName + ";";
+                        headers_cat10 = headers_cat10 + ";";
+                        subheaders_cat10 = subheaders_cat10 + itemsName_cat10 + ";";
                     }
 
                 }
-                csv.AppendLine(headers);
-                csv.AppendLine(subheaders);
+                CSVs[0] = new StringBuilder();
+                CSVs[0].AppendLine(headers_cat10);
+                CSVs[0].AppendLine(subheaders_cat10);
 
+                SaveFileDialogs[0] = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = "CAT10" };
 
-                // Messages
-                foreach (Data oneMessageData in this.messagesData_list)
+                flags[0] = false;
+            }
+            
+            // Headers CAT21
+            if (this.CAT21_flag is true)
+            {
+                string headers_cat21 = "";
+                string subheaders_cat21 = "";
+                foreach (var header_cat21 in fieldTypeName_dicts[1])
                 {
-                    if (oneMessageData.CAT == cat)
+                    headers_cat21 = headers_cat21 + header_cat21.Value;
+
+                    foreach (string itemsName_cat21 in ItemsName_dicts[1][header_cat21.Key])
                     {
-                        string oneMessage = "";
-                        int index_oneMessageDataItems = 0;
-                        int index_allDataItems = 0;
+                        headers_cat21 = headers_cat21 + ";";
+                        subheaders_cat21 = subheaders_cat21 + itemsName_cat21 + ";";
+                    }
 
-                        // for REP items:
-                        string oneMessage_emptyForREP = "";
-                        List<string> REP_oneMessage = new List<string>();
+                }
+                CSVs[1] = new StringBuilder();
+                CSVs[1].AppendLine(headers_cat21);
+                CSVs[1].AppendLine(subheaders_cat21);
 
-                        foreach (int number in fieldTypeName_dict.Keys)
+                SaveFileDialogs[1] = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = "CAT21" };
+
+                flags[1] = false;
+            }
+            
+
+            // Messages
+            int dictionary_index = 0;
+            foreach (Data oneMessageData in messagesData_list)
+            {
+                if (oneMessageData.CAT == 10)
+                {
+                    dictionary_index = 0;
+                    if (flags[0] is false)
+                    {
+                        flags[0] = true;
+                    }    
+                }
+                else if (oneMessageData.CAT == 21)
+                {
+                    dictionary_index = 1;
+                    if (flags[1] is false)
+                    {
+                        flags[1] = true;
+                    }
+                }
+
+                string oneMessage = "";
+                int index_oneMessageDataItems = 0;
+                int index_allDataItems = 0;
+
+                // for REP items:
+                string oneMessage_emptyForREP = "";
+                List<string> REP_oneMessage = new List<string>();
+
+                foreach (int number in fieldTypeName_dicts[dictionary_index].Keys)
+                {
+                    if (index_oneMessageDataItems < oneMessageData.fieldTypes.Count && oneMessageData.fieldTypes[index_oneMessageDataItems] == number)
+                    {
+                        for (int i = 0; i < ItemsName_dicts[dictionary_index][number].Length; i++)
                         {
-                            if (index_oneMessageDataItems < oneMessageData.fieldTypes.Count && oneMessageData.fieldTypes[index_oneMessageDataItems] == number)
+                            if (i < oneMessageData.data_list[index_oneMessageDataItems].Count)
                             {
-                                for (int i = 0; i < ItemsName_dict[number].Length; i++)
+                                var item = oneMessageData.data_list[index_oneMessageDataItems][i];
+                                if (item is IList) // REP items
                                 {
-                                    if (i < oneMessageData.data_list[index_oneMessageDataItems].Count)
-                                    {
-                                        var item = oneMessageData.data_list[index_oneMessageDataItems][i];
-                                        if (item is IList) // REP items
-                                        {
-                                            var REPitem_list = item as IList;
+                                    var REPitem_list = item as IList;
 
-                                            for (int j = 0; j < REPitem_list.Count; j++)
+                                    for (int j = 0; j < REPitem_list.Count; j++)
+                                    {
+                                        if (j == 0)
+                                        {
+                                            oneMessage = oneMessage + REPitem_list[j].ToString() + ";";
+                                        }
+                                        else
+                                        {
+                                            if (j >= REPitem_list.Count)
                                             {
-                                                if (j == 0)
-                                                {
-                                                    oneMessage = oneMessage + REPitem_list[j].ToString() + ";";
-                                                }
-                                                else
-                                                {
-                                                    if (j >= REPitem_list.Count)
-                                                    {
-                                                        REP_oneMessage.Add(oneMessage_emptyForREP);
-                                                    }
-                                                    
-                                                    REP_oneMessage[j-1] = REP_oneMessage[j-1] + REPitem_list[j].ToString() + ";";
-                                                }
-
+                                                REP_oneMessage.Add(oneMessage_emptyForREP);
                                             }
-                                            oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
+                                                    
+                                            REP_oneMessage[j-1] = REP_oneMessage[j-1] + REPitem_list[j].ToString() + ";";
                                         }
-                                        else // normal items
-                                        {
-                                            oneMessage = oneMessage + item.ToString() + ";";
-                                            oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
-                                        }
-                                        
-                                    }
-                                    else
-                                    {
-                                        oneMessage = oneMessage + ";";
-                                        oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
-                                    }
-                                }
-                                index_oneMessageDataItems++;
 
+                                    }
+                                    oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
+                                }
+                                else // normal items
+                                {
+                                    oneMessage = oneMessage + item.ToString() + ";";
+                                    oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
+                                }
+                                        
                             }
                             else
                             {
-                                for (int i = 0; i < ItemsName_dict[number].Length; i++)
-                                {
-                                    oneMessage = oneMessage + ";";
-                                    oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
-                                }
+                                oneMessage = oneMessage + ";";
+                                oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
                             }
-                            index_allDataItems++;
                         }
-                        csv.AppendLine(oneMessage);
-                        for(int i = 0; i < REP_oneMessage.Count; i++) // In case there is a REP Data Item
+                        index_oneMessageDataItems++;
+
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ItemsName_dicts[dictionary_index][number].Length; i++)
                         {
-                            csv.AppendLine(REP_oneMessage[i]);
+                            oneMessage = oneMessage + ";";
+                            oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
                         }
                     }
-
+                    index_allDataItems++;
                 }
 
-                File.WriteAllText(saveFile.FileName, csv.ToString());
+                CSVs[dictionary_index].AppendLine(oneMessage);
+                for(int i = 0; i < REP_oneMessage.Count; i++) // In case there is a REP Data Item
+                {
+                    CSVs[dictionary_index].AppendLine(REP_oneMessage[i]);
+                }
 
-
-                //waitingForm.Close();
             }
-            else
+
+            for (int i = 0; i < CSVs.Length; i++)
             {
-                MessageBox.Show("Error when saving the .csv file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                if (flags[i] is true)
+                {
+                    if (SaveFileDialogs[i].ShowDialog() == DialogResult.OK)
+                    {
+                        File.WriteAllText(SaveFileDialogs[i].FileName, CSVs[i].ToString());
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error when saving .csv file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                }
             }
+
         }
 
         // ------------------------------------------------------
