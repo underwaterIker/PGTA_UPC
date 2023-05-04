@@ -1202,16 +1202,24 @@ namespace ClassLibrary
             int char2_int = Functions.BitArray2Int(char2_bits);
             int char1_int = Functions.BitArray2Int(char1_bits);
 
-            string char8 = Dictionaries.TargetIdentificationCharacters_dict[char8_int];
-            string char7 = Dictionaries.TargetIdentificationCharacters_dict[char7_int];
-            string char6 = Dictionaries.TargetIdentificationCharacters_dict[char6_int];
-            string char5 = Dictionaries.TargetIdentificationCharacters_dict[char5_int];
-            string char4 = Dictionaries.TargetIdentificationCharacters_dict[char4_int];
-            string char3 = Dictionaries.TargetIdentificationCharacters_dict[char3_int];
-            string char2 = Dictionaries.TargetIdentificationCharacters_dict[char2_int];
-            string char1 = Dictionaries.TargetIdentificationCharacters_dict[char1_int];
+            char[] chars = new char[8];
+            chars[7] = Dictionaries.TargetIdentificationCharacters_dict[char8_int];
+            chars[6] = Dictionaries.TargetIdentificationCharacters_dict[char7_int];
+            chars[5] = Dictionaries.TargetIdentificationCharacters_dict[char6_int];
+            chars[4] = Dictionaries.TargetIdentificationCharacters_dict[char5_int];
+            chars[3] = Dictionaries.TargetIdentificationCharacters_dict[char4_int];
+            chars[2] = Dictionaries.TargetIdentificationCharacters_dict[char3_int];
+            chars[1] = Dictionaries.TargetIdentificationCharacters_dict[char2_int];
+            chars[0] = Dictionaries.TargetIdentificationCharacters_dict[char1_int];
 
-            string Characters = char1 + char2 + char3 + char4 + char5 + char6 + char7 + char8;
+            string Characters = "";
+            for (int i = 0; i < chars.Length; i++)
+            {
+                if (chars[i] != '\0')
+                {
+                    Characters = Characters + chars[i];
+                }
+            }
 
             this.messageData.data_list.Add(new string[2] { STI, Characters });
         }
@@ -2250,17 +2258,26 @@ namespace ClassLibrary
             int char2_int = Functions.BitArray2Int(char2_bits);
             int char1_int = Functions.BitArray2Int(char1_bits);
 
-            string char8 = Dictionaries.TargetIdentification_dict[char8_int];
-            string char7 = Dictionaries.TargetIdentification_dict[char7_int];
-            string char6 = Dictionaries.TargetIdentification_dict[char6_int];
-            string char5 = Dictionaries.TargetIdentification_dict[char5_int];
-            string char4 = Dictionaries.TargetIdentification_dict[char4_int];
-            string char3 = Dictionaries.TargetIdentification_dict[char3_int];
-            string char2 = Dictionaries.TargetIdentification_dict[char2_int];
-            string char1 = Dictionaries.TargetIdentification_dict[char1_int];
-            string TargetIdentification = char1 + char2 + char3 + char4 + char5 + char6 + char7 + char8;
+            char[] chars = new char[8];
+            chars[7] = Dictionaries.TargetIdentificationCharacters_dict[char8_int];
+            chars[6] = Dictionaries.TargetIdentificationCharacters_dict[char7_int];
+            chars[5] = Dictionaries.TargetIdentificationCharacters_dict[char6_int];
+            chars[4] = Dictionaries.TargetIdentificationCharacters_dict[char5_int];
+            chars[3] = Dictionaries.TargetIdentificationCharacters_dict[char4_int];
+            chars[2] = Dictionaries.TargetIdentificationCharacters_dict[char3_int];
+            chars[1] = Dictionaries.TargetIdentificationCharacters_dict[char2_int];
+            chars[0] = Dictionaries.TargetIdentificationCharacters_dict[char1_int];
 
-            this.messageData.data_list.Add(new string[1] { TargetIdentification });
+            string Characters = "";
+            for(int i = 0; i < chars.Length; i++)
+            {
+                if (chars[i] != '\0')
+                {
+                    Characters = Characters + chars[i];
+                }
+            }
+
+            this.messageData.data_list.Add(new string[1] { Characters });
         }
 
         // Data Item I021/200, Target Status

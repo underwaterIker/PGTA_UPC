@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace AsterixDecoder
 {
-    partial class Menu
+    partial class Tables
     {
         /// <summary>
         /// Required designer variable.
@@ -34,9 +34,6 @@ namespace AsterixDecoder
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.FileOptions_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.LoadFile_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataList_DGV = new System.Windows.Forms.DataGridView();
             this.dataItems_DGV = new System.Windows.Forms.DataGridView();
             this.Item_DGV = new System.Windows.Forms.DataGridView();
@@ -44,36 +41,12 @@ namespace AsterixDecoder
             this.Filter_comboBox = new System.Windows.Forms.ComboBox();
             this.Filter_textBox = new System.Windows.Forms.TextBox();
             this.Filter_button = new System.Windows.Forms.Button();
-            this.menuStrip1.SuspendLayout();
+            this.UndoFilter_button = new System.Windows.Forms.Button();
+            this.LoadFile_button = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataList_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataItems_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Item_DGV)).BeginInit();
             this.SuspendLayout();
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileOptions_ToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1105, 24);
-            this.menuStrip1.TabIndex = 7;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // FileOptions_ToolStripMenuItem
-            // 
-            this.FileOptions_ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.LoadFile_ToolStripMenuItem});
-            this.FileOptions_ToolStripMenuItem.Name = "FileOptions_ToolStripMenuItem";
-            this.FileOptions_ToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
-            this.FileOptions_ToolStripMenuItem.Text = "File Options";
-            // 
-            // LoadFile_ToolStripMenuItem
-            // 
-            this.LoadFile_ToolStripMenuItem.Name = "LoadFile_ToolStripMenuItem";
-            this.LoadFile_ToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
-            this.LoadFile_ToolStripMenuItem.Text = "Load File";
-            this.LoadFile_ToolStripMenuItem.Click += new System.EventHandler(this.LoadFile_ToolStripMenuItem_Click);
             // 
             // dataList_DGV
             // 
@@ -155,7 +128,7 @@ namespace AsterixDecoder
             // ExportCSV_button
             // 
             this.ExportCSV_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ExportCSV_button.Location = new System.Drawing.Point(660, 598);
+            this.ExportCSV_button.Location = new System.Drawing.Point(836, 598);
             this.ExportCSV_button.Name = "ExportCSV_button";
             this.ExportCSV_button.Size = new System.Drawing.Size(117, 68);
             this.ExportCSV_button.TabIndex = 11;
@@ -173,9 +146,9 @@ namespace AsterixDecoder
             "Target Address",
             "Target Identification",
             "Mode 3A Code"});
-            this.Filter_comboBox.Location = new System.Drawing.Point(274, 566);
+            this.Filter_comboBox.Location = new System.Drawing.Point(402, 566);
             this.Filter_comboBox.Name = "Filter_comboBox";
-            this.Filter_comboBox.Size = new System.Drawing.Size(224, 32);
+            this.Filter_comboBox.Size = new System.Drawing.Size(253, 32);
             this.Filter_comboBox.TabIndex = 12;
             this.Filter_comboBox.SelectedIndexChanged += new System.EventHandler(this.Filter_comboBox_SelectedIndexChanged);
             // 
@@ -183,26 +156,51 @@ namespace AsterixDecoder
             // 
             this.Filter_textBox.Enabled = false;
             this.Filter_textBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Filter_textBox.Location = new System.Drawing.Point(274, 617);
+            this.Filter_textBox.Location = new System.Drawing.Point(402, 617);
             this.Filter_textBox.Name = "Filter_textBox";
-            this.Filter_textBox.Size = new System.Drawing.Size(224, 29);
+            this.Filter_textBox.Size = new System.Drawing.Size(253, 29);
             this.Filter_textBox.TabIndex = 13;
             // 
             // Filter_button
             // 
             this.Filter_button.Enabled = false;
             this.Filter_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Filter_button.Location = new System.Drawing.Point(334, 673);
+            this.Filter_button.Location = new System.Drawing.Point(402, 667);
             this.Filter_button.Name = "Filter_button";
-            this.Filter_button.Size = new System.Drawing.Size(92, 47);
+            this.Filter_button.Size = new System.Drawing.Size(138, 55);
             this.Filter_button.TabIndex = 14;
             this.Filter_button.Text = "Filter";
             this.Filter_button.UseVisualStyleBackColor = true;
             this.Filter_button.Click += new System.EventHandler(this.Filter_button_Click);
             // 
-            // Menu
+            // UndoFilter_button
+            // 
+            this.UndoFilter_button.Enabled = false;
+            this.UndoFilter_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UndoFilter_button.Location = new System.Drawing.Point(559, 660);
+            this.UndoFilter_button.Name = "UndoFilter_button";
+            this.UndoFilter_button.Size = new System.Drawing.Size(96, 68);
+            this.UndoFilter_button.TabIndex = 15;
+            this.UndoFilter_button.Text = "Undo Filter";
+            this.UndoFilter_button.UseVisualStyleBackColor = true;
+            this.UndoFilter_button.Click += new System.EventHandler(this.UndoFilter_button_Click);
+            // 
+            // LoadFile_button
+            // 
+            this.LoadFile_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LoadFile_button.Location = new System.Drawing.Point(95, 602);
+            this.LoadFile_button.Name = "LoadFile_button";
+            this.LoadFile_button.Size = new System.Drawing.Size(130, 64);
+            this.LoadFile_button.TabIndex = 16;
+            this.LoadFile_button.Text = "Load File";
+            this.LoadFile_button.UseVisualStyleBackColor = true;
+            this.LoadFile_button.Click += new System.EventHandler(this.LoadFile_button_Click);
+            // 
+            // Tables
             // 
             this.ClientSize = new System.Drawing.Size(1105, 740);
+            this.Controls.Add(this.LoadFile_button);
+            this.Controls.Add(this.UndoFilter_button);
             this.Controls.Add(this.Filter_button);
             this.Controls.Add(this.Filter_textBox);
             this.Controls.Add(this.Filter_comboBox);
@@ -210,14 +208,10 @@ namespace AsterixDecoder
             this.Controls.Add(this.Item_DGV);
             this.Controls.Add(this.dataItems_DGV);
             this.Controls.Add(this.dataList_DGV);
-            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Menu";
+            this.Name = "Tables";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Asterix Decoder";
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataList_DGV)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataItems_DGV)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Item_DGV)).EndInit();
@@ -227,16 +221,15 @@ namespace AsterixDecoder
         }
 
         #endregion
-        private MenuStrip menuStrip1;
-        private ToolStripMenuItem FileOptions_ToolStripMenuItem;
         private DataGridView dataList_DGV;
         private DataGridView dataItems_DGV;
         private DataGridView Item_DGV;
-        private ToolStripMenuItem LoadFile_ToolStripMenuItem;
         private Button ExportCSV_button;
         private ComboBox Filter_comboBox;
         private TextBox Filter_textBox;
         private Button Filter_button;
+        private Button UndoFilter_button;
+        private Button LoadFile_button;
     }
 }
 

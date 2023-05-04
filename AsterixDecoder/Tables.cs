@@ -22,8 +22,9 @@ using System.CodeDom;
 
 namespace AsterixDecoder
 {
-    public partial class Menu : Form
+    public partial class Tables : Form
     {
+        // ATTRIBUTES
         // List containing all CAT messages in order
         private List<Data> messagesData_list; 
         private int index_messagesDataList;
@@ -43,15 +44,18 @@ namespace AsterixDecoder
         double LON = 2.08331;
 
 
-        public Menu()
+        // CONSTRUCTOR
+        public Tables()
         {
             InitializeComponent();
         }
 
-        private void LoadFile_ToolStripMenuItem_Click(object sender, EventArgs e)
+
+        // METHODS
+        private void LoadFile_button_Click(object sender, EventArgs e)
         {
-            Loading waitingForm = new Loading();
-            waitingForm.Show();
+            Loading_ButtonState(LoadFile_button);
+
             try
             {
                 OpenFileDialog LoadFile = new OpenFileDialog();
@@ -72,7 +76,7 @@ namespace AsterixDecoder
                 }
                 else
                 {
-                    MessageBox.Show("Select a valid file format.", "Incorrect file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Select a valid file format.", "Incorrect file", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch
@@ -80,8 +84,7 @@ namespace AsterixDecoder
                 MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
-            waitingForm.Close();
-
+            FinishedLoading_ButtonState(LoadFile_button, "Load File");
         }
 
         private void dataList_DGV_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -142,6 +145,8 @@ namespace AsterixDecoder
 
         private void Filter_button_Click(object sender, EventArgs e)
         {
+            Loading_ButtonState(Filter_button);
+
             try
             {
                 if (this.fileLoaded_flag is true)
@@ -190,15 +195,16 @@ namespace AsterixDecoder
                                 Set_dataList_DGV(this.Filtered_messagesData_list);
                                 break;
                         }
+                        UndoFilter_button.Enabled = true;
                     }
                     else
                     {
-                        MessageBox.Show("Select a Data Item to filter.", "Data Item not selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show("Select a Data Item to filter.", "Data Item not selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Load a file before filtering", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Load a file before filtering", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch
@@ -206,16 +212,48 @@ namespace AsterixDecoder
                 MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
+            FinishedLoading_ButtonState(Filter_button, "Filter");
+        }
+
+        private void UndoFilter_button_Click(object sender, EventArgs e)
+        {
+            Loading_ButtonState(UndoFilter_button);
+
+            try
+            {
+                if (this.fileLoaded_flag is true)
+                {
+                    if (this.Filter_flag is true)
+                    {
+                        Set_dataList_DGV(this.messagesData_list);
+                        this.Filter_flag = false;
+                        UndoFilter_button.Enabled = false;
+                    }
+                    else
+                    {
+                        MessageBox.Show("No Filter has been applied yet.", "No Filter applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No File has been loaded yet.", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+            FinishedLoading_ButtonState(UndoFilter_button, "Undo Filter");
         }
 
         private void ExportCSV_button_Click(object sender, EventArgs e)
         {
-            Loading waitingForm = new Loading();
-            waitingForm.Show();
+            Loading_ButtonState(ExportCSV_button);
 
-            if (this.fileLoaded_flag is true)
+            try
             {
-                try
+                if (this.fileLoaded_flag is true)
                 {
                     if (this.Filter_flag is false)
                     {
@@ -225,19 +263,18 @@ namespace AsterixDecoder
                     {
                         ExportCSV(this.Filtered_messagesData_list);
                     }
-
                 }
-                catch
+                else
                 {
-                    MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Load a file before exporting", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-            else
+            catch
             {
-                MessageBox.Show("Load a file before exporting", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
-            waitingForm.Close();
+            FinishedLoading_ButtonState(ExportCSV_button, "Export to .CSV");
         }
 
         // -----------------------------------------------------------------------------
@@ -618,6 +655,23 @@ namespace AsterixDecoder
             }
         }
 
+        // ------------------------------------------------------
+        // Loading Button State functions
+        private void Loading_ButtonState(Button button)
+        {
+            button.Text = "Loading...";
+            button.ForeColor = Color.Red;
+            button.BackColor = Color.Gray;
+            Application.DoEvents();
+        }
 
+        private void FinishedLoading_ButtonState(Button button, string str)
+        {
+            button.Text = str;
+            button.ForeColor = Color.Black;
+            button.BackColor = Color.White;
+        }
+
+        
     }
 }
