@@ -136,52 +136,74 @@ namespace AsterixDecoder
         {
             Filter_textBox.Enabled = true;
             Filter_button.Enabled = true;
+
+            Filter_textBox.Clear();
         }
 
         private void Filter_button_Click(object sender, EventArgs e)
         {
-            if (Filter_comboBox.SelectedIndex > -1) //somthing was selected
+            try
             {
-                dataList_DGV.Rows.Clear();
-                dataList_DGV.Columns.Clear();
-
-                int[] cat;
-                int[] fieldType;
-
-                switch (Filter_comboBox.SelectedIndex)
+                if (this.fileLoaded_flag is true)
                 {
-                    case 0:
-                        cat = new int[2] { 10, 21 };
-                        fieldType = new int[2] { 161, 161 };
-                        Set_Filtered_messagesData_list(cat, fieldType);
-                        Set_dataList_DGV(this.Filtered_messagesData_list);
-                        break;
+                    if (Filter_comboBox.SelectedIndex > -1) //somthing was selected
+                    {
+                        dataList_DGV.Rows.Clear();
+                        dataList_DGV.Columns.Clear();
 
-                    case 1:
-                        cat = new int[2] { 10, 21 };
-                        fieldType = new int[2] { 220, 80 };
-                        Set_Filtered_messagesData_list(cat, fieldType);
-                        Set_dataList_DGV(this.Filtered_messagesData_list);
-                        break;
+                        int[] cat;
+                        int[] fieldType;
+                        int[] index_item;
+                        string textBox = Filter_textBox.Text;
 
-                    case 2:
-                        cat = new int[2] { 10, 21 };
-                        fieldType = new int[2] { 245, 170 };
-                        Set_Filtered_messagesData_list(cat, fieldType);
-                        Set_dataList_DGV(this.Filtered_messagesData_list);
-                        break;
+                        switch (Filter_comboBox.SelectedIndex)
+                        {
+                            case 0: // Track number
+                                cat = new int[2] { 10, 21 };
+                                fieldType = new int[2] { 161, 161 };
+                                index_item = new int[2] { 0, 0 };
+                                Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
+                                Set_dataList_DGV(this.Filtered_messagesData_list);
+                                break;
 
-                    case 3:
-                        cat = new int[2] { 10, 21 };
-                        fieldType = new int[2] { 60, 70 };
-                        Set_Filtered_messagesData_list(cat, fieldType);
-                        Set_dataList_DGV(this.Filtered_messagesData_list);
-                        break;
+                            case 1: // Target Address
+                                cat = new int[2] { 10, 21 };
+                                fieldType = new int[2] { 220, 80 };
+                                index_item = new int[2] { 0, 0 };
+                                Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
+                                Set_dataList_DGV(this.Filtered_messagesData_list);
+                                break;
+
+                            case 2: // Target Identification
+                                cat = new int[2] { 10, 21 };
+                                fieldType = new int[2] { 245, 170 };
+                                index_item = new int[2] { 1, 0 };
+                                Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
+                                Set_dataList_DGV(this.Filtered_messagesData_list);
+                                break;
+
+                            case 3: // Mode 3A Code
+                                cat = new int[2] { 10, 21 };
+                                fieldType = new int[2] { 60, 70 };
+                                index_item = new int[2] { 3, 0 };
+                                Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
+                                Set_dataList_DGV(this.Filtered_messagesData_list);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Select a Data Item to filter.", "Data Item not selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Load a file before filtering", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
-            else
+            catch
             {
-                MessageBox.Show("Select a Data Item to filter.", "Data Item not selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
         }
@@ -552,16 +574,46 @@ namespace AsterixDecoder
 
         // ------------------------------------------------------
         // Filter function
-        private void Set_Filtered_messagesData_list(int[] cat, int[] fieldType)
+        private void Set_Filtered_messagesData_list(int[] cat, int[] fieldType, int[] index_item, string textBox)
         {
             this.Filter_flag = true;
 
             this.Filtered_messagesData_list = new List<Data>();
             for (int i = 0; i < this.messagesData_list.Count; i++)
             {
-                if ((this.messagesData_list[i].fieldTypes.Contains(fieldType[0]) && this.messagesData_list[i].CAT == cat[0]) || (this.messagesData_list[i].fieldTypes.Contains(fieldType[1]) && this.messagesData_list[i].CAT == cat[1]))
+                int index_cat10 = this.messagesData_list[i].fieldTypes.IndexOf(fieldType[0]);
+                int index_cat21 = this.messagesData_list[i].fieldTypes.IndexOf(fieldType[1]);
+                int cat_number = this.messagesData_list[i].CAT;
+
+                if (index_cat10 != -1 && cat_number == cat[0])
                 {
-                    this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                    if (textBox == "")
+                    {
+                        this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                    }
+                    else
+                    {
+                        if (this.messagesData_list[i].data_list[index_cat10][index_item[0]].ToString() == textBox)
+                        {
+                            this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                        }
+                    }
+                    
+                }
+                else if (index_cat21 != -1 && cat_number == cat[1])
+                {
+                    if (textBox == "")
+                    {
+                        this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                    }
+                    else
+                    {
+                        if (this.messagesData_list[i].data_list[index_cat21][index_item[1]].ToString() == textBox)
+                        {
+                            this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                        }
+                    }
+
                 }
             }
         }
