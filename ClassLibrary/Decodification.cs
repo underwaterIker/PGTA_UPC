@@ -18,16 +18,22 @@ namespace ClassLibrary
     {
         // List with the Data of all the messages inside the File
         public List<Data> messagesData_list = new List<Data>();
-
-        // Presence of CAT10 indicator
-        public bool CAT10_present = false;
-        // Presence of CAT21 indicator
-        public bool CAT21_present = false;
-
         // Data of one message
         private Data messageData;
 
+        // List with the TargetData of all the messages inside the File that are targets
+        public List<TargetData> targetData_list = new List<TargetData>();
+        // TargetData of one message
+        private TargetData targetData;
+        // TargetData indicator, indicates if the message is a target or not
+        private bool isTarget;
 
+        // Presence of CAT10 indicator
+        public bool CAT10_flag = false;
+        // Presence of CAT21 indicator
+        public bool CAT21_flag = false;
+
+        
         // CONSTRUCTOR
         public Decodification(string path)
         {
@@ -36,6 +42,8 @@ namespace ClassLibrary
             for (int i = 0; i < file_byte.Length;)
             {
                 this.messageData = new Data();
+                this.targetData = new TargetData();
+                this.isTarget = false;
 
                 // CAT
                 int cat = file_byte[i];
@@ -49,9 +57,9 @@ namespace ClassLibrary
                 // Save message in corresponding list
                 if (cat == 10)
                 {
-                    if (CAT10_present is false)
+                    if (CAT10_flag is false)
                     {
-                        CAT10_present = true;
+                        CAT10_flag = true;
                     }
 
                     byte[] CAT10_message = new byte[length - 3];
@@ -61,12 +69,14 @@ namespace ClassLibrary
                     }
                     CAT10_Decodification(CAT10_message);
                     this.messagesData_list.Add(this.messageData);
+                    if (this.isTarget is true)
+                        this.targetData_list.Add(this.targetData);
                 }
                 else if (cat == 21)
                 {
-                    if (CAT21_present is false)
+                    if (CAT21_flag is false)
                     {
-                        CAT21_present = true;
+                        CAT21_flag = true;
                     }
 
                     byte[] CAT21_message = new byte[length - 3];
@@ -76,6 +86,8 @@ namespace ClassLibrary
                     }
                     CAT21_Decodification(CAT21_message);
                     this.messagesData_list.Add(this.messageData);
+                    if (this.isTarget is true)
+                        this.targetData_list.Add(this.targetData);
                 }
                 else
                 {
@@ -881,6 +893,8 @@ namespace ClassLibrary
             double THETA = Math.Round(LSB_theta * Functions.CombineBytes2Int(THETA_bytes),4);
 
             this.messageData.data_list.Add(new double[2] {RHO, THETA});
+            this.targetData.isSMR = true;
+            this.isTarget = true;
         }
 
         // Data Item I010/041, Position in WGS-84 Co-ordinates
@@ -899,7 +913,6 @@ namespace ClassLibrary
             double[] position = new double[2] { latitude, longitude };
 
             this.messageData.data_list.Add(position);
-            this.messageData.targetData.Position = position;
         }
 
         // Data Item I010/042, Position in Cartesian Co-ordinates
@@ -915,7 +928,15 @@ namespace ClassLibrary
             double x = LSB * Functions.TwosComplement2Int_fromBytes(x_bytes);
             double y = LSB * Functions.TwosComplement2Int_fromBytes(y_bytes);
 
-            this.messageData.data_list.Add(new double[2] { x, y });
+            double[] position = new double[2] { x, y };
+
+            this.messageData.data_list.Add(position);
+            this.targetData.Position = position;
+            if (this.targetData.isSMR is false)
+            {
+                this.targetData.isMLAT = true;
+                this.isTarget = true;
+            }
         }
 
         // Data Item I010/060, Mode-3/A Code in Octal Representation
@@ -952,7 +973,7 @@ namespace ClassLibrary
             string Reply = A + B + C + D;
 
             this.messageData.data_list.Add(new string[4] { V, G, L, Reply });
-            this.messageData.targetData.Mode3ACode = Reply;
+            this.targetData.Mode3ACode = Reply;
         }
 
         // Data Item I010/090, Flight Level in Binary Representation
@@ -972,7 +993,7 @@ namespace ClassLibrary
             double FL = Math.Round(LSB * Functions.TwosComplement2Int_fromBitArray(bits), 4);
 
             this.messageData.data_list.Add(new object[3] { V, G, FL });
-            this.messageData.targetData.FlightLevel = FL;
+            this.targetData.FlightLevel = FL;
         }
 
         // Data Item I010/091, Measured Height
@@ -1011,7 +1032,7 @@ namespace ClassLibrary
             string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
 
             this.messageData.data_list.Add(new string[1] { time_format_string });
-            this.messageData.targetData.Time = time_format_string;
+            this.targetData.Time = time_format_string;
         }
 
         // Data Item I010/161: Track Number
@@ -1024,7 +1045,7 @@ namespace ClassLibrary
             int TrackNumber = Functions.CombineBytes2Int(octets);
 
             this.messageData.data_list.Add(new int[1] { TrackNumber });
-            this.messageData.targetData.TrackNumber = TrackNumber;
+            this.targetData.ID.Add(TrackNumber.ToString());
         }
 
         // Data Item I010/170, Track Status
@@ -1141,7 +1162,7 @@ namespace ClassLibrary
             string TargetAddress = TargetAddress_int.ToString("X");
 
             this.messageData.data_list.Add(new string[1] { TargetAddress });
-            this.messageData.targetData.TargetAddres = TargetAddress;
+            this.targetData.ID.Add(TargetAddress);
         }
 
         // Data Item I010/245, Target Identification
@@ -1235,7 +1256,7 @@ namespace ClassLibrary
             }
 
             this.messageData.data_list.Add(new string[2] { STI, Characters });
-            this.messageData.targetData.TargetIdentification = Characters;
+            this.targetData.ID.Add(Characters);
         }
 
         // Data Item I010/250, Mode S MB Data
@@ -1577,7 +1598,7 @@ namespace ClassLibrary
             string Mode3ACode_Reply = A + B + C + D;
 
             this.messageData.data_list.Add(new string[1] { Mode3ACode_Reply });
-            this.messageData.targetData.Mode3ACode = Mode3ACode_Reply;
+            this.targetData.Mode3ACode = Mode3ACode_Reply;
         }
 
         // Data Item I021/071, Time of Applicability for Position
@@ -1722,7 +1743,7 @@ namespace ClassLibrary
             string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
 
             this.messageData.data_list.Add(new string[1] { time_format_string });
-            this.messageData.targetData.Time = time_format_string;
+            this.targetData.Time = time_format_string;
         }
 
         // Data Item I021/080, Target Address
@@ -1735,7 +1756,7 @@ namespace ClassLibrary
             string TargetAddress = TargetAddress_int.ToString("X");
 
             this.messageData.data_list.Add(new string[1] { TargetAddress });
-            this.messageData.targetData.TargetAddres = TargetAddress;
+            this.targetData.ID.Add(TargetAddress);
         }
 
         // Data Item I021/090, Quality Indicators
@@ -1994,7 +2015,10 @@ namespace ClassLibrary
             double[] position = new double[2] { latitude, longitude };
 
             this.messageData.data_list.Add(position);
-            this.messageData.targetData.Position = position;
+            this.targetData.Position = position;
+            this.targetData.isADSB = true;
+            this.isTarget = true;
+
         }
 
         // Data Item I021/131, High-Resolution Position in WGS-84 Co-ordinates
@@ -2049,7 +2073,7 @@ namespace ClassLibrary
             double FlightLevel = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(octets), 4);
 
             this.messageData.data_list.Add(new double[1] { FlightLevel });
-            this.messageData.targetData.FlightLevel = FlightLevel;
+            this.targetData.FlightLevel = FlightLevel;
         }
 
         // Data Item I021/146, Selected Altitude
@@ -2328,7 +2352,7 @@ namespace ClassLibrary
             }
 
             this.messageData.data_list.Add(new string[1] { Characters });
-            this.messageData.targetData.TargetIdentification = Characters;
+            this.targetData.ID.Add(Characters);
         }
 
         // Data Item I021/200, Target Status

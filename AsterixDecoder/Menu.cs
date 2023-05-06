@@ -15,14 +15,12 @@ namespace AsterixDecoder
     public partial class Menu : Form
     {
         // ATTRIBUTES
-        // List containing all CAT messages in order
-        private List<Data> messagesData_list;
+        // My Forms
+        Tables myTables;
+        Map myMap;
+        AboutUs myAboutUs = new AboutUs();
 
-        // CAT indicators
-        private bool CAT10_flag;
-        private bool CAT21_flag;
-
-        // file loaded indicator
+        // File Loaded indicator
         private bool fileLoaded_flag = false;
 
 
@@ -47,9 +45,8 @@ namespace AsterixDecoder
                     string fileName = LoadFile.FileName;
 
                     Decodification decoder = new Decodification(fileName);
-                    this.messagesData_list = decoder.messagesData_list;
-                    this.CAT10_flag = decoder.CAT10_present;
-                    this.CAT21_flag = decoder.CAT21_present;
+                    this.myTables = new Tables(decoder.messagesData_list, decoder.CAT10_flag, decoder.CAT21_flag);
+                    this.myMap = new Map(decoder.targetData_list);
 
                     //MessageBox.Show("done");
 
@@ -73,9 +70,8 @@ namespace AsterixDecoder
         {
             if (this.fileLoaded_flag == true)
             {
-                Tables myTables = new Tables(this.messagesData_list, this.CAT10_flag, this.CAT21_flag);
-                myTables.Show();
-                myTables.dataList_DGV.Rows[0].Cells[0].Selected = false;
+                this.myTables.Show();
+                this.myTables.dataList_DGV.Rows[0].Cells[0].Selected = false;
             }
             else
             {
@@ -86,14 +82,13 @@ namespace AsterixDecoder
         // MapView
         private void MapView_button_Click(object sender, EventArgs e)
         {
-
+            this.myMap.Show();
         }
 
         // AboutUs
         private void AboutUs_button_Click(object sender, EventArgs e)
         {
-            AboutUs AboutUs = new AboutUs();
-            AboutUs.Show();
+            this.myAboutUs.Show();
         }
 
         // Exit

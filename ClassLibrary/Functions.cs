@@ -105,8 +105,17 @@ namespace ClassLibrary
             return value;
         }
 
+        // Degrees to Radians converter
+        public static double Deg2Rad(double degrees)
+        {
+            return degrees*Math.PI/180;
+        }
 
-
+        // Radians to Degrees converter
+        public static double Rad2Deg(double degrees)
+        {
+            return degrees * 180 / Math.PI;
+        }
 
 
 

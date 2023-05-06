@@ -32,171 +32,124 @@ namespace AsterixDecoder
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
+            this.Map_pictureBox = new System.Windows.Forms.PictureBox();
+            this.GMap_control = new GMap.NET.WindowsForms.GMapControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.labelhora = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Play_button = new System.Windows.Forms.Button();
+            this.Stop_button = new System.Windows.Forms.Button();
+            this.Time_label = new System.Windows.Forms.Label();
+            this.TargetData_DGV = new System.Windows.Forms.DataGridView();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
+            this.ExportKML_button = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.ClearSelection_button = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.Map_pictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // Map_pictureBox
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(679, 94);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(575, 344);
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
+            this.Map_pictureBox.Location = new System.Drawing.Point(464, 94);
+            this.Map_pictureBox.Name = "Map_pictureBox";
+            this.Map_pictureBox.Size = new System.Drawing.Size(1032, 547);
+            this.Map_pictureBox.TabIndex = 5;
+            this.Map_pictureBox.TabStop = false;
             // 
-            // gMapControl1
+            // GMap_control
             // 
-            this.gMapControl1.Bearing = 0F;
-            this.gMapControl1.CanDragMap = true;
-            this.gMapControl1.EmptyTileColor = System.Drawing.Color.Navy;
-            this.gMapControl1.GrayScaleMode = false;
-            this.gMapControl1.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
-            this.gMapControl1.LevelsKeepInMemory = 5;
-            this.gMapControl1.Location = new System.Drawing.Point(679, 94);
-            this.gMapControl1.MarkersEnabled = true;
-            this.gMapControl1.MaxZoom = 2;
-            this.gMapControl1.MinZoom = 2;
-            this.gMapControl1.MouseWheelZoomEnabled = true;
-            this.gMapControl1.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
-            this.gMapControl1.Name = "gMapControl1";
-            this.gMapControl1.NegativeMode = false;
-            this.gMapControl1.PolygonsEnabled = true;
-            this.gMapControl1.RetryLoadTile = 0;
-            this.gMapControl1.RoutesEnabled = true;
-            this.gMapControl1.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
-            this.gMapControl1.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
-            this.gMapControl1.ShowTileGridLines = false;
-            this.gMapControl1.Size = new System.Drawing.Size(575, 344);
-            this.gMapControl1.TabIndex = 6;
-            this.gMapControl1.Zoom = 0D;
-            this.gMapControl1.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.gMapControl1_OnMarkerClick_1);
-            this.gMapControl1.Load += new System.EventHandler(this.gMapControl1_Load);
+            this.GMap_control.Bearing = 0F;
+            this.GMap_control.CanDragMap = true;
+            this.GMap_control.EmptyTileColor = System.Drawing.Color.Navy;
+            this.GMap_control.GrayScaleMode = false;
+            this.GMap_control.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
+            this.GMap_control.LevelsKeepInMemory = 5;
+            this.GMap_control.Location = new System.Drawing.Point(464, 94);
+            this.GMap_control.MarkersEnabled = true;
+            this.GMap_control.MaxZoom = 2;
+            this.GMap_control.MinZoom = 2;
+            this.GMap_control.MouseWheelZoomEnabled = true;
+            this.GMap_control.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
+            this.GMap_control.Name = "GMap_control";
+            this.GMap_control.NegativeMode = false;
+            this.GMap_control.PolygonsEnabled = true;
+            this.GMap_control.RetryLoadTile = 0;
+            this.GMap_control.RoutesEnabled = true;
+            this.GMap_control.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
+            this.GMap_control.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
+            this.GMap_control.ShowTileGridLines = false;
+            this.GMap_control.Size = new System.Drawing.Size(1032, 547);
+            this.GMap_control.TabIndex = 6;
+            this.GMap_control.Zoom = 0D;
+            this.GMap_control.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.GMap_control_OnMarkerClick);
             // 
             // timer1
             // 
             this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // button2
+            // Play_button
             // 
-            this.button2.Location = new System.Drawing.Point(619, 541);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(119, 32);
-            this.button2.TabIndex = 8;
-            this.button2.Text = "Play";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.Play_button.Location = new System.Drawing.Point(600, 718);
+            this.Play_button.Name = "Play_button";
+            this.Play_button.Size = new System.Drawing.Size(119, 32);
+            this.Play_button.TabIndex = 8;
+            this.Play_button.Text = "Play";
+            this.Play_button.UseVisualStyleBackColor = true;
+            this.Play_button.Click += new System.EventHandler(this.Play_button_Click);
             // 
-            // button3
+            // Stop_button
             // 
-            this.button3.Location = new System.Drawing.Point(744, 541);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(119, 32);
-            this.button3.TabIndex = 9;
-            this.button3.Text = "Stop";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.Stop_button.Location = new System.Drawing.Point(725, 718);
+            this.Stop_button.Name = "Stop_button";
+            this.Stop_button.Size = new System.Drawing.Size(119, 32);
+            this.Stop_button.TabIndex = 9;
+            this.Stop_button.Text = "Stop";
+            this.Stop_button.UseVisualStyleBackColor = true;
+            this.Stop_button.Click += new System.EventHandler(this.Stop_button_Click);
             // 
-            // labelhora
+            // Time_label
             // 
-            this.labelhora.AutoSize = true;
-            this.labelhora.Location = new System.Drawing.Point(958, 71);
-            this.labelhora.Name = "labelhora";
-            this.labelhora.Size = new System.Drawing.Size(57, 13);
-            this.labelhora.TabIndex = 10;
-            this.labelhora.Text = "00:00:00";
+            this.Time_label.AutoSize = true;
+            this.Time_label.Location = new System.Drawing.Point(958, 66);
+            this.Time_label.Name = "Time_label";
+            this.Time_label.Size = new System.Drawing.Size(104, 26);
+            this.Time_label.TabIndex = 10;
+            this.Time_label.Text = "00:00:00";
             // 
-            // dataGridView1
+            // TargetData_DGV
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(332, 160);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 62;
-            this.dataGridView1.RowTemplate.Height = 28;
-            this.dataGridView1.Size = new System.Drawing.Size(310, 311);
-            this.dataGridView1.TabIndex = 11;
+            this.TargetData_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.TargetData_DGV.Location = new System.Drawing.Point(27, 146);
+            this.TargetData_DGV.Name = "TargetData_DGV";
+            this.TargetData_DGV.RowHeadersWidth = 62;
+            this.TargetData_DGV.RowTemplate.Height = 28;
+            this.TargetData_DGV.Size = new System.Drawing.Size(310, 311);
+            this.TargetData_DGV.TabIndex = 11;
             // 
-            // pictureBox2
+            // ExportKML_button
             // 
-            this.pictureBox2.BackColor = System.Drawing.SystemColors.Highlight;
-            this.pictureBox2.Location = new System.Drawing.Point(1, 0);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(222, 700);
-            this.pictureBox2.TabIndex = 12;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.pictureBox3.Location = new System.Drawing.Point(218, 0);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(1314, 58);
-            this.pictureBox3.TabIndex = 13;
-            this.pictureBox3.TabStop = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(615, 24);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 13);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "CURRENT FILE:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.label2.Location = new System.Drawing.Point(764, 24);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 13);
-            this.label2.TabIndex = 15;
-            this.label2.Text = "FILE NAME";
-            // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.ForeColor = System.Drawing.Color.Black;
-            this.button4.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.button4.Location = new System.Drawing.Point(813, 470);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(136, 60);
-            this.button4.TabIndex = 16;
-            this.button4.Text = "KML";
-            this.button4.UseVisualStyleBackColor = false;
+            this.ExportKML_button.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.ExportKML_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ExportKML_button.ForeColor = System.Drawing.Color.Black;
+            this.ExportKML_button.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.ExportKML_button.Location = new System.Drawing.Point(1255, 686);
+            this.ExportKML_button.Name = "ExportKML_button";
+            this.ExportKML_button.Size = new System.Drawing.Size(165, 88);
+            this.ExportKML_button.TabIndex = 16;
+            this.ExportKML_button.Text = "Export to .KML";
+            this.ExportKML_button.UseVisualStyleBackColor = false;
+            this.ExportKML_button.Click += new System.EventHandler(this.ExportKML_button_Click);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.SystemColors.Control;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(425, 490);
+            this.label3.Location = new System.Drawing.Point(64, 681);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(80, 13);
+            this.label3.Size = new System.Drawing.Size(152, 26);
             this.label3.TabIndex = 21;
             this.label3.Text = "TIME SCALE";
             // 
@@ -205,115 +158,64 @@ namespace AsterixDecoder
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.SystemColors.Control;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(529, 547);
+            this.label4.Location = new System.Drawing.Point(168, 738);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(20, 13);
+            this.label4.Size = new System.Drawing.Size(37, 26);
             this.label4.TabIndex = 22;
             this.label4.Text = "x1";
             // 
-            // button8
+            // ClearSelection_button
             // 
-            this.button8.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button8.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button8.Location = new System.Drawing.Point(955, 470);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(135, 60);
-            this.button8.TabIndex = 23;
-            this.button8.Text = "LEBL";
-            this.button8.UseVisualStyleBackColor = false;
-            // 
-            // button9
-            // 
-            this.button9.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button9.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button9.Location = new System.Drawing.Point(1096, 470);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(135, 60);
-            this.button9.TabIndex = 24;
-            this.button9.Text = "CAT";
-            this.button9.UseVisualStyleBackColor = false;
-            // 
-            // button10
-            // 
-            this.button10.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button10.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button10.Location = new System.Drawing.Point(955, 541);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(135, 60);
-            this.button10.TabIndex = 25;
-            this.button10.Text = "LAYOUT";
-            this.button10.UseVisualStyleBackColor = false;
-            // 
-            // button11
-            // 
-            this.button11.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button11.Location = new System.Drawing.Point(332, 94);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(310, 60);
-            this.button11.TabIndex = 26;
-            this.button11.Text = "CLEAR SELECTION";
-            this.button11.UseVisualStyleBackColor = false;
+            this.ClearSelection_button.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.ClearSelection_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClearSelection_button.Location = new System.Drawing.Point(27, 80);
+            this.ClearSelection_button.Name = "ClearSelection_button";
+            this.ClearSelection_button.Size = new System.Drawing.Size(310, 60);
+            this.ClearSelection_button.TabIndex = 26;
+            this.ClearSelection_button.Text = "CLEAR SELECTION";
+            this.ClearSelection_button.UseVisualStyleBackColor = false;
             // 
             // Map
             // 
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(1304, 659);
-            this.Controls.Add(this.button11);
-            this.Controls.Add(this.button10);
-            this.Controls.Add(this.button9);
-            this.Controls.Add(this.button8);
+            this.ClientSize = new System.Drawing.Size(1522, 804);
+            this.Controls.Add(this.ClearSelection_button);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.labelhora);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.gMapControl1);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.pictureBox3);
+            this.Controls.Add(this.ExportKML_button);
+            this.Controls.Add(this.TargetData_DGV);
+            this.Controls.Add(this.Time_label);
+            this.Controls.Add(this.Stop_button);
+            this.Controls.Add(this.Play_button);
+            this.Controls.Add(this.GMap_control);
+            this.Controls.Add(this.Map_pictureBox);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Map";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Menu";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Load += new System.EventHandler(this.Map_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.Map_pictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private GMap.NET.WindowsForms.GMapControl gMapControl1;
+        private System.Windows.Forms.PictureBox Map_pictureBox;
+        private GMap.NET.WindowsForms.GMapControl GMap_control;
         private Timer timer1;
-        private Button button2;
-        private Button button3;
-        private Label labelhora;
-        private DataGridView dataGridView1;
+        private Button Play_button;
+        private Button Stop_button;
+        private Label Time_label;
+        private DataGridView TargetData_DGV;
         private BindingSource bindingSource1;
-        private PictureBox pictureBox2;
-        private PictureBox pictureBox3;
-        private Label label1;
-        private Label label2;
-        private Button button4;
+        private Button ExportKML_button;
         private Label label3;
         private Label label4;
-        private Button button8;
-        private Button button9;
-        private Button button10;
-        private Button button11;
+        private Button ClearSelection_button;
     }
 }
 

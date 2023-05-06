@@ -27,9 +27,6 @@ namespace ClassLibrary
         // Data List
         public List<IList> data_list { get; set; } = new List<IList>();
 
-        // Target Data
-        public TargetData targetData { get; set; } = new TargetData();
-
 
 
         // Clear Data() method (check if needed or not)
