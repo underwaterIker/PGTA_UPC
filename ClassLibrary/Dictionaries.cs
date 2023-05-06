@@ -13,7 +13,7 @@ namespace ClassLibrary
         public static readonly string[] DSI = new string[2] { "System Area Code fixed to zero", "System Identification Code" };
         public static readonly string[] MT = new string[1] { "Message Type" };
         public static readonly string[] TRD = new string[11] { "TYP", "DCR", "CHN", "GBS", "CRT", "SIM", "TST", "RAB", "LOP", "TOT", "SPI" };
-        public static readonly string[] TOD = new string[1] { "Time of Day [s]" };
+        public static readonly string[] TOD = new string[1] { "Time of Day" };
         public static readonly string[] PWGS84C = new string[2] { "Latitude in WGS - 84 [deg]", "Longitude in WGS - 84 [deg]" };
         public static readonly string[] MPPC = new string[2] { "RHO [m]", "THETA [deg]" };
         public static readonly string[] PCC = new string[2] { "X-Component [m]", "Y-Component [m]" };
@@ -22,7 +22,7 @@ namespace ClassLibrary
         public static readonly string[] TN = new string[1] { "Track Number" };
         public static readonly string[] TS = new string[10] { "CNF", "TRE", "CST", "MAH", "TCC", "STH", "TOM", "DOU", "MRS", "GHO" };
         public static readonly string[] M3ACOR = new string[4] { "V", "G", "L", "Mode-3/A reply in octal representation" };
-        public static readonly string[] TA = new string[1] { "Track Address" };
+        public static readonly string[] TA = new string[1] { "Target Address" };
         public static readonly string[] TI = new string[2] { "STI", "Target Identification" };
         public static readonly string[] MSMBD = new string[4] { "REP", "Mode S Comm B message data", "Comm B Data Buffer Store 1 Address", "Comm B Data Buffer Store 2 Address" };
         public static readonly string[] VFI = new string[1] { "Vehicle Fleet Identification" };
@@ -92,7 +92,9 @@ namespace ClassLibrary
         public static readonly IDictionary<bool, string> SystemStatus_DIV_dict = new Dictionary<bool, string>() { { false, "Normal Operation" }, { true, "Diversity degraded" } };
         public static readonly IDictionary<bool, string> SystemStatus_TTF_dict = new Dictionary<bool, string>() { { false, "Test Target Operative" }, { true, "Test Target Failure" } };
 
+
         // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
         // CAT21
         // Field Types
@@ -106,7 +108,7 @@ namespace ClassLibrary
         public static readonly string[] TAV = new string[1] { "Time of Applicability of Velocity [s]" };
         public static readonly string[] AS = new string[2] { "IM", "Air Speed [IAS: NM/s, Mach:-]" };
         public static readonly string[] TAS = new string[2] { "“Range Exceeded” Indicator", "True Air Speed [kt]" };
-        public static readonly string[] TargAdd = new string[1] { "Target Address" };
+        //public static readonly string[] TA = new string[1] { "Target Address" };
         public static readonly string[] TMRP = new string[1] { "Time of Message Reception of Position [s]" };
         public static readonly string[] TMRPHP = new string[2] { "Full Second Indication", "Time of Message Reception of Position – high precision [s]" };
         public static readonly string[] TMRV = new string[1] { "Time of Message Reception of Velocity [s]" };
@@ -123,7 +125,7 @@ namespace ClassLibrary
         public static readonly string[] GVR = new string[2] { "“Range Exceeded” Indicator", "Geometric Vertical Rate [ft/min]" };
         public static readonly string[] AGV = new string[3] { "“Range Exceeded” Indicator", "Ground Speed referenced to WGS-84 [NM/s]", "Track Angle clockwise reference to “True North” [deg]" };
         public static readonly string[] TAR = new string[1] { "Track Angle Rate [deg/s]" };
-        public static readonly string[] TART = new string[1] { "Time of ASTERIX Report Transmission [s]" };
+        public static readonly string[] TART = new string[1] { "Time of ASTERIX Report Transmission" };
         public static readonly string[] TI_cat21 = new string[1] { "Target Identification" };
         public static readonly string[] EC = new string[1] { "Emitter Category" };
         public static readonly string[] MI = new string[4] { "Wind Speed [kt]", "Wind Direction [deg]", "Temperature [°C]", "Turbulence" };
@@ -141,7 +143,7 @@ namespace ClassLibrary
 
         public static readonly IDictionary<int, string> FieldType_Code_CAT21_dict = new Dictionary<int, string>() { { 10, "I021/010" }, { 40, "I021/040" }, { 161, "I021/161" }, { 15, "I021/015" }, { 71, "I021/071" }, { 130, "I021/130" }, { 131, "I021/131" }, { 72, "I021/072" }, { 150, "I021/150" }, { 151, "I021/151" }, { 80, "I021/080" }, { 73, "I021/073" }, { 74, "I021/074" }, { 75, "I021/075" }, { 76, "I021/076" }, { 140, "I021/140" }, { 90, "I021/090" }, { 210, "I021/210" }, { 70, "I021/070" }, { 230, "I021/230" }, { 145, "I021/145" }, { 152, "I021/152" }, { 200, "I021/200" }, { 155, "I021/155" }, { 157, "I021/157" }, { 160, "I021/160" }, { 165, "I021/165" }, { 77, "I021/077" }, { 170, "I021/170" }, { 20, "I021/020" }, { 220, "I021/220" }, { 146, "I021/146" }, { 148, "I021/148" }, { 110, "I021/110" }, { 16, "I021/016" }, { 8, "I021/008" }, { 271, "I021/271" }, { 132, "I021/132" }, { 250, "I021/250" }, { 260, "I021/260" }, { 400, "I021/400" }, { 295, "I021/295" } };
         public static readonly IDictionary<int, string> FieldType_Name_CAT21_dict = new Dictionary<int, string>() { { 10, "Data Source Identification" }, { 40, "Target Report Descriptor" }, { 161, "Track Number" }, { 15, "Service Identification" }, { 71, "Time of Applicability for Position" }, { 130, "Position in WGS-84 co-ordinates" }, { 131, "Position in WGS-84 co-ordinates, high res." }, { 72, "Time of Applicability for Velocity" }, { 150, "Air Speed" }, { 151, "True Air Speed" }, { 80, "Target Address" }, { 73, "Time of Message Reception of Position" }, { 74, "Time of Message Reception of Position-High Precision" }, { 75, "Time of Message Reception of Velocity" }, { 76, "Time of Message Reception of Velocity-High Precision" }, { 140, "Geometric Height" }, { 90, "Quality Indicators" }, { 210, "MOPS Version" }, { 70, "Mode 3/A Code" }, { 230, "Roll Angle" }, { 145, "Flight Level" }, { 152, "Magnetic Heading" }, { 200, "Target Status" }, { 155, "Barometric Vertical Rate" }, { 157, "Geometric Vertical Rate" }, { 160, "Airborne Ground Vector" }, { 165, "Track Angle Rate" }, { 77, "Time of Report Transmission" }, { 170, "Target Identification" }, { 20, "Emitter Category" }, { 220, "Met Information" }, { 146, "Selected Altitude" }, { 148, "Final State Selected Altitude" }, { 110, "Trajectory Intent" }, { 16, "Service Management" }, { 8, "Aircraft Operational Status" }, { 271, "Surface Capabilities and Characteristics" }, { 132, "Message Amplitude" }, { 250, "Mode S MB Data" }, { 260, "ACAS Resolution Advisory Report" }, { 400, "Receiver ID" }, { 295, "Data Ages" } };
-        public static readonly IDictionary<int, string[]> FieldType_ItemsName_CAT21_dict = new Dictionary<int, string[]>() { { 10, DSI_cat21 }, { 40, TRD_cat21 }, { 161, TN }, { 15, SI }, { 71, TAP }, { 130, PWGS84C }, { 131, PWGS84C }, { 72, TAV }, { 150, AS }, { 151, TAS }, { 80, TargAdd }, { 73, TMRP }, { 74, TMRPHP }, { 75, TMRV }, { 76, TMRVHP }, { 140, GH }, { 90, QI }, { 210, MOPSV }, { 70, M3ACOR_cat21 }, { 230, RA }, { 145, FL }, { 152, MagHea }, { 200, TargSta }, { 155, BVR }, { 157, GVR }, { 160, AGV }, { 165, TAR }, { 77, TART }, { 170, TI_cat21 }, { 20, EC }, { 220, MI }, { 146, SA }, { 148, FSSA }, { 110, TrajInt }, { 16, SM }, { 8, AOS }, { 271, SCC }, { 132, MA }, { 250, MSMBD }, { 260, ACASRAR }, { 400, RID }, { 295, DA } };
+        public static readonly IDictionary<int, string[]> FieldType_ItemsName_CAT21_dict = new Dictionary<int, string[]>() { { 10, DSI_cat21 }, { 40, TRD_cat21 }, { 161, TN }, { 15, SI }, { 71, TAP }, { 130, PWGS84C }, { 131, PWGS84C }, { 72, TAV }, { 150, AS }, { 151, TAS }, { 80, TA }, { 73, TMRP }, { 74, TMRPHP }, { 75, TMRV }, { 76, TMRVHP }, { 140, GH }, { 90, QI }, { 210, MOPSV }, { 70, M3ACOR_cat21 }, { 230, RA }, { 145, FL }, { 152, MagHea }, { 200, TargSta }, { 155, BVR }, { 157, GVR }, { 160, AGV }, { 165, TAR }, { 77, TART }, { 170, TI_cat21 }, { 20, EC }, { 220, MI }, { 146, SA }, { 148, FSSA }, { 110, TrajInt }, { 16, SM }, { 8, AOS }, { 271, SCC }, { 132, MA }, { 250, MSMBD }, { 260, ACASRAR }, { 400, RID }, { 295, DA } };
 
         //Data Item I021/008, Aircraft Operational Status
         public static readonly IDictionary<bool, string> AircrafOperationalStatus_RA_dict = new Dictionary<bool, string>() { { false, "TCAS II or ACAS RA not active" }, { true, "TCAS RA active " } };

@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using GMap.NET;
-using GMap.NET.MapProviders;
-using GMap.NET.WindowsForms;
-using GMap.NET.WindowsForms.Markers;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,10 +10,7 @@ using System.Windows.Forms;
 using ClassLibrary;
 using System.IO;
 using System.Collections;
-using System.Globalization;
-using Microsoft.Ajax.Utilities;
-using System.Drawing.Text;
-using System.CodeDom;
+using System.Threading;
 
 namespace AsterixDecoder
 {
@@ -29,64 +21,30 @@ namespace AsterixDecoder
         private List<Data> messagesData_list; 
         private int index_messagesDataList;
         private int index_dataItems;
+
         // List with Filtered messages
         private List<Data> Filtered_messagesData_list;
-        private bool Filter_flag;
+        private bool Filter_flag = false;
 
         // CAT indicators
         private bool CAT10_flag;
         private bool CAT21_flag;
 
-        // file loaded indicator
-        private bool fileLoaded_flag = false;
-
-        double LAT = 41.29839;
-        double LON = 2.08331;
-
 
         // CONSTRUCTOR
-        public Tables()
+        public Tables(List<Data> messagesData_list, bool CAT10_flag, bool CAT21_flag)
         {
             InitializeComponent();
+
+            this.messagesData_list = messagesData_list;
+            this.CAT10_flag = CAT10_flag;
+            this.CAT21_flag = CAT21_flag;
+            
+            Set_dataList_DGV(this.messagesData_list);
         }
 
 
         // METHODS
-        private void LoadFile_button_Click(object sender, EventArgs e)
-        {
-            Loading_ButtonState(LoadFile_button);
-
-            try
-            {
-                OpenFileDialog LoadFile = new OpenFileDialog();
-                if (LoadFile.ShowDialog() == DialogResult.OK && Path.GetExtension(LoadFile.FileName) == ".ast")
-                {
-                    string fileName = LoadFile.FileName;
-
-                    Decodification decoder = new Decodification(fileName);
-                    this.messagesData_list = decoder.messagesData_list;
-                    this.CAT10_flag = decoder.CAT10_present;
-                    this.CAT21_flag = decoder.CAT21_present;
-
-                    //MessageBox.Show("done");
-
-                    this.fileLoaded_flag = true;
-
-                    Set_dataList_DGV(this.messagesData_list);
-                }
-                else
-                {
-                    MessageBox.Show("Select a valid file format.", "Incorrect file", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch
-            {
-                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            FinishedLoading_ButtonState(LoadFile_button, "Load File");
-        }
-
         private void dataList_DGV_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -149,62 +107,55 @@ namespace AsterixDecoder
 
             try
             {
-                if (this.fileLoaded_flag is true)
+                if (Filter_comboBox.SelectedIndex > -1) //somthing was selected
                 {
-                    if (Filter_comboBox.SelectedIndex > -1) //somthing was selected
+                    dataList_DGV.Rows.Clear();
+                    dataList_DGV.Columns.Clear();
+
+                    int[] cat;
+                    int[] fieldType;
+                    int[] index_item;
+                    string textBox = Filter_textBox.Text;
+
+                    switch (Filter_comboBox.SelectedIndex)
                     {
-                        dataList_DGV.Rows.Clear();
-                        dataList_DGV.Columns.Clear();
+                        case 0: // Track number
+                            cat = new int[2] { 10, 21 };
+                            fieldType = new int[2] { 161, 161 };
+                            index_item = new int[2] { 0, 0 };
+                            Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
+                            Set_dataList_DGV(this.Filtered_messagesData_list);
+                            break;
 
-                        int[] cat;
-                        int[] fieldType;
-                        int[] index_item;
-                        string textBox = Filter_textBox.Text;
+                        case 1: // Target Address
+                            cat = new int[2] { 10, 21 };
+                            fieldType = new int[2] { 220, 80 };
+                            index_item = new int[2] { 0, 0 };
+                            Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
+                            Set_dataList_DGV(this.Filtered_messagesData_list);
+                            break;
 
-                        switch (Filter_comboBox.SelectedIndex)
-                        {
-                            case 0: // Track number
-                                cat = new int[2] { 10, 21 };
-                                fieldType = new int[2] { 161, 161 };
-                                index_item = new int[2] { 0, 0 };
-                                Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
-                                Set_dataList_DGV(this.Filtered_messagesData_list);
-                                break;
+                        case 2: // Target Identification
+                            cat = new int[2] { 10, 21 };
+                            fieldType = new int[2] { 245, 170 };
+                            index_item = new int[2] { 1, 0 };
+                            Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
+                            Set_dataList_DGV(this.Filtered_messagesData_list);
+                            break;
 
-                            case 1: // Target Address
-                                cat = new int[2] { 10, 21 };
-                                fieldType = new int[2] { 220, 80 };
-                                index_item = new int[2] { 0, 0 };
-                                Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
-                                Set_dataList_DGV(this.Filtered_messagesData_list);
-                                break;
-
-                            case 2: // Target Identification
-                                cat = new int[2] { 10, 21 };
-                                fieldType = new int[2] { 245, 170 };
-                                index_item = new int[2] { 1, 0 };
-                                Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
-                                Set_dataList_DGV(this.Filtered_messagesData_list);
-                                break;
-
-                            case 3: // Mode 3A Code
-                                cat = new int[2] { 10, 21 };
-                                fieldType = new int[2] { 60, 70 };
-                                index_item = new int[2] { 3, 0 };
-                                Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
-                                Set_dataList_DGV(this.Filtered_messagesData_list);
-                                break;
-                        }
-                        UndoFilter_button.Enabled = true;
+                        case 3: // Mode 3A Code
+                            cat = new int[2] { 10, 21 };
+                            fieldType = new int[2] { 60, 70 };
+                            index_item = new int[2] { 3, 0 };
+                            Set_Filtered_messagesData_list(cat, fieldType, index_item, textBox);
+                            Set_dataList_DGV(this.Filtered_messagesData_list);
+                            break;
                     }
-                    else
-                    {
-                        MessageBox.Show("Select a Data Item to filter.", "Data Item not selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    UndoFilter_button.Enabled = true;
                 }
                 else
                 {
-                    MessageBox.Show("Load a file before filtering", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Select a Data Item to filter.", "Data Item not selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch
@@ -221,22 +172,18 @@ namespace AsterixDecoder
 
             try
             {
-                if (this.fileLoaded_flag is true)
+                if (this.Filter_flag is true)
                 {
-                    if (this.Filter_flag is true)
-                    {
-                        Set_dataList_DGV(this.messagesData_list);
-                        this.Filter_flag = false;
-                        UndoFilter_button.Enabled = false;
-                    }
-                    else
-                    {
-                        MessageBox.Show("No Filter has been applied yet.", "No Filter applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    Set_dataList_DGV(this.messagesData_list);
+
+                    this.Filter_flag = false;
+                    UndoFilter_button.Enabled = false;
+                    Filter_comboBox.SelectedIndex = -1;
+                    Filter_textBox.Clear();
                 }
                 else
                 {
-                    MessageBox.Show("No File has been loaded yet.", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("No Filter has been applied yet.", "No Filter applied", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch
@@ -253,20 +200,13 @@ namespace AsterixDecoder
 
             try
             {
-                if (this.fileLoaded_flag is true)
+                if (this.Filter_flag is false)
                 {
-                    if (this.Filter_flag is false)
-                    {
-                        ExportCSV(this.messagesData_list);
-                    }
-                    else
-                    {
-                        ExportCSV(this.Filtered_messagesData_list);
-                    }
+                    ExportCSV(this.messagesData_list);
                 }
                 else
                 {
-                    MessageBox.Show("Load a file before exporting", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ExportCSV(this.Filtered_messagesData_list);
                 }
             }
             catch

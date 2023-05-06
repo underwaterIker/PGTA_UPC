@@ -785,7 +785,7 @@ namespace ClassLibrary
             {
                 FSPEC_bytes[i] = octets[i];
             }
-            this.messageData.FSPEC_bytes = FSPEC_bytes;
+            //this.messageData.FSPEC_bytes = FSPEC_bytes;
 
             return FSPEC_bytes;
         }
@@ -877,8 +877,8 @@ namespace ClassLibrary
             byte[] RHO_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
             byte[] THETA_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
 
-            double RHO = LSB_RHO * Functions.CombineBytes2Int(RHO_bytes);
-            double THETA = LSB_theta * Functions.CombineBytes2Int(THETA_bytes);
+            double RHO = Math.Round(LSB_RHO * Functions.CombineBytes2Int(RHO_bytes),4);
+            double THETA = Math.Round(LSB_theta * Functions.CombineBytes2Int(THETA_bytes),4);
 
             this.messageData.data_list.Add(new double[2] {RHO, THETA});
         }
@@ -896,7 +896,10 @@ namespace ClassLibrary
             double latitude  = LSB * Functions.TwosComplement2Int_fromBytes(latitude_bytes);
             double longitude = LSB * Functions.TwosComplement2Int_fromBytes(longitude_bytes);
 
-            this.messageData.data_list.Add(new double[2] { latitude, longitude });
+            double[] position = new double[2] { latitude, longitude };
+
+            this.messageData.data_list.Add(position);
+            this.messageData.targetData.Position = position;
         }
 
         // Data Item I010/042, Position in Cartesian Co-ordinates
@@ -949,6 +952,7 @@ namespace ClassLibrary
             string Reply = A + B + C + D;
 
             this.messageData.data_list.Add(new string[4] { V, G, L, Reply });
+            this.messageData.targetData.Mode3ACode = Reply;
         }
 
         // Data Item I010/090, Flight Level in Binary Representation
@@ -965,9 +969,10 @@ namespace ClassLibrary
             bits.Length = bits.Length - 2;
 
             double LSB = (double)1 / 4; // FL
-            double FL = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
+            double FL = Math.Round(LSB * Functions.TwosComplement2Int_fromBitArray(bits), 4);
 
             this.messageData.data_list.Add(new object[3] { V, G, FL });
+            this.messageData.targetData.FlightLevel = FL;
         }
 
         // Data Item I010/091, Measured Height
@@ -977,7 +982,7 @@ namespace ClassLibrary
 
             double LSB = (double)6.25; // ft
             byte[] measuredHeight_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
-            double measuredHeight = LSB * Functions.TwosComplement2Int_fromBytes(measuredHeight_bytes);
+            double measuredHeight = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(measuredHeight_bytes), 4);
 
             this.messageData.data_list.Add(new double[1] { measuredHeight });
         }
@@ -991,6 +996,7 @@ namespace ClassLibrary
         }
 
         // Data Item I010/140: Time of Day
+        // This is the Time to use for CAT10 when simulating on the map !!!
         private void TimeofDay(byte[] octets)
         {
             this.messageData.fieldTypes.Add(140);
@@ -999,8 +1005,13 @@ namespace ClassLibrary
 
             double LSB = (double)1 / 128; // s
             double timeOfDay = LSB * Functions.CombineBytes2Int(octets);
+            
+            // From seconds to hh:mm:ss.fff format
+            TimeSpan time_format = TimeSpan.FromSeconds(timeOfDay);
+            string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
 
-            this.messageData.data_list.Add(new double[1] { timeOfDay });
+            this.messageData.data_list.Add(new string[1] { time_format_string });
+            this.messageData.targetData.Time = time_format_string;
         }
 
         // Data Item I010/161: Track Number
@@ -1013,6 +1024,7 @@ namespace ClassLibrary
             int TrackNumber = Functions.CombineBytes2Int(octets);
 
             this.messageData.data_list.Add(new int[1] { TrackNumber });
+            this.messageData.targetData.TrackNumber = TrackNumber;
         }
 
         // Data Item I010/170, Track Status
@@ -1081,8 +1093,8 @@ namespace ClassLibrary
             byte[] GroundSpeed_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
             byte[] TrackAngle_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
 
-            double GroundSpeed = LSB_GroundSpeed * Functions.TwosComplement2Int_fromBytes(GroundSpeed_bytes);
-            double TrackAngle = LSB_TrackAngle * Functions.TwosComplement2Int_fromBytes(TrackAngle_bytes);
+            double GroundSpeed = Math.Round(LSB_GroundSpeed * Functions.TwosComplement2Int_fromBytes(GroundSpeed_bytes), 4);
+            double TrackAngle = Math.Round(LSB_TrackAngle * Functions.TwosComplement2Int_fromBytes(TrackAngle_bytes), 4);
 
             this.messageData.data_list.Add(new double[2] { GroundSpeed, TrackAngle });
         }
@@ -1097,8 +1109,8 @@ namespace ClassLibrary
             byte[] Vx_bytes = new byte[2] { octets[1], octets[0] }; // Reversed
             byte[] Vy_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
 
-            double Vx = LSB * Functions.TwosComplement2Int_fromBytes(Vx_bytes);
-            double Vy = LSB * Functions.TwosComplement2Int_fromBytes(Vy_bytes);
+            double Vx = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(Vx_bytes), 4);
+            double Vy = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(Vy_bytes), 4);
 
             this.messageData.data_list.Add(new double[2] { Vx, Vy });
         }
@@ -1113,8 +1125,8 @@ namespace ClassLibrary
             byte[] Ax_bytes = new byte[1] { octets[0] }; // Reversed (no need to reverse, array of length 1)
             byte[] Ay_bytes = new byte[1] { octets[1] }; // Reversed (no need to reverse, array of length 1)
 
-            double Ax = LSB * Functions.TwosComplement2Int_fromBytes(Ax_bytes);
-            double Ay = LSB * Functions.TwosComplement2Int_fromBytes(Ay_bytes);
+            double Ax = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(Ax_bytes), 4);
+            double Ay = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(Ay_bytes), 4);
 
             this.messageData.data_list.Add(new double[2] { Ax, Ay });
         }
@@ -1129,6 +1141,7 @@ namespace ClassLibrary
             string TargetAddress = TargetAddress_int.ToString("X");
 
             this.messageData.data_list.Add(new string[1] { TargetAddress });
+            this.messageData.targetData.TargetAddres = TargetAddress;
         }
 
         // Data Item I010/245, Target Identification
@@ -1222,6 +1235,7 @@ namespace ClassLibrary
             }
 
             this.messageData.data_list.Add(new string[2] { STI, Characters });
+            this.messageData.targetData.TargetIdentification = Characters;
         }
 
         // Data Item I010/250, Mode S MB Data
@@ -1304,7 +1318,7 @@ namespace ClassLibrary
             {
                 // Orientation
                 double LSB_Orientation = (double)360 / 128; // degrees
-                double Orientation = LSB_Orientation * Functions.BitArray2Int(Orientation_bits);
+                double Orientation = Math.Round(LSB_Orientation * Functions.BitArray2Int(Orientation_bits), 4);
 
                 if (bits[8] == true)
                 {
@@ -1341,7 +1355,7 @@ namespace ClassLibrary
             for (int i = 0; i < REP; i++)
             {
                 int DRHO = LSB_DRHO * octets[2*i];
-                double DTHETA = LSB_DTHETA * octets[2*i + 1];
+                double DTHETA = Math.Round(LSB_DTHETA * octets[2*i + 1], 4);
 
                 DRHO_list.Add(DRHO);
                 DTHETA_list.Add(DTHETA);
@@ -1389,9 +1403,9 @@ namespace ClassLibrary
 
             byte[] Covariance_bytes = new byte[2] { octets[3], octets[2] }; // Reversed
 
-            double SDx = LSB * octets[0];
-            double SDy = LSB * octets[1];
-            double Covariance = LSB * Functions.TwosComplement2Int_fromBytes(Covariance_bytes);
+            double SDx = Math.Round(LSB * octets[0], 4);
+            double SDy = Math.Round(LSB * octets[1], 4);
+            double Covariance = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(Covariance_bytes), 4);
 
             this.messageData.data_list.Add(new double[3] { SDx, SDy, Covariance });
         }
@@ -1466,7 +1480,7 @@ namespace ClassLibrary
             this.messageData.fieldTypes.Add(16);
 
             double LSB = (double)0.5; // s
-            double ServiceManagement = LSB * octet1;
+            double ServiceManagement = Math.Round(LSB * octet1, 4);
 
             this.messageData.data_list.Add(new double[1] { ServiceManagement });
         }
@@ -1563,6 +1577,7 @@ namespace ClassLibrary
             string Mode3ACode_Reply = A + B + C + D;
 
             this.messageData.data_list.Add(new string[1] { Mode3ACode_Reply });
+            this.messageData.targetData.Mode3ACode = Mode3ACode_Reply;
         }
 
         // Data Item I021/071, Time of Applicability for Position
@@ -1575,7 +1590,11 @@ namespace ClassLibrary
             double LSB = (double)1 / 128; // s
             double timeOfApplicabilityForPosition = LSB * Functions.CombineBytes2Int(octets);
 
-            this.messageData.data_list.Add(new double[1] { timeOfApplicabilityForPosition });
+            // From seconds to hh:mm:ss.fff format
+            TimeSpan time_format = TimeSpan.FromSeconds(timeOfApplicabilityForPosition);
+            string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
+
+            this.messageData.data_list.Add(new string[1] { time_format_string });
         }
 
         // Data Item I021/072, Time of Applicability for Velocity
@@ -1588,7 +1607,11 @@ namespace ClassLibrary
             double LSB = (double)1 / 128; // s
             double timeOfApplicabilityForVelocity = LSB * Functions.CombineBytes2Int(octets);
 
-            this.messageData.data_list.Add(new double[1] { timeOfApplicabilityForVelocity });
+            // From seconds to hh:mm:ss.fff format
+            TimeSpan time_format = TimeSpan.FromSeconds(timeOfApplicabilityForVelocity);
+            string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
+
+            this.messageData.data_list.Add(new string[1] { time_format_string });
         }
 
         // Data Item I021/073, Time of Message Reception for Position
@@ -1601,7 +1624,11 @@ namespace ClassLibrary
             double LSB = (double)1 / 128; // s
             double timeOfMessageReceptionForPosition = LSB * Functions.CombineBytes2Int(octets);
 
-            this.messageData.data_list.Add(new double[1] { timeOfMessageReceptionForPosition });
+            // From seconds to hh:mm:ss.fff format
+            TimeSpan time_format = TimeSpan.FromSeconds(timeOfMessageReceptionForPosition);
+            string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
+
+            this.messageData.data_list.Add(new string[1] { time_format_string });
         }
 
         // Data Item I021/074, Time of Message Reception of Position–High Precision
@@ -1626,7 +1653,11 @@ namespace ClassLibrary
             decimal LSB = (decimal)Math.Pow(2, -30); // s (0.9313 ns)
             decimal timeOfMessageReceptionOfPosition_HighPrecision = LSB * Functions.BitArray2Int(bits);
 
-            this.messageData.data_list.Add(new object[2] { TimeOfMessageReceptionOfPosition_HighPrecision_FSI, timeOfMessageReceptionOfPosition_HighPrecision });
+            // From seconds to hh:mm:ss.fff format
+            TimeSpan time_format = TimeSpan.FromSeconds((double)timeOfMessageReceptionOfPosition_HighPrecision);
+            string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
+
+            this.messageData.data_list.Add(new string[2] { TimeOfMessageReceptionOfPosition_HighPrecision_FSI, time_format_string });
         }
 
         // Data Item I021/075, Time of Message Reception for Velocity
@@ -1639,7 +1670,11 @@ namespace ClassLibrary
             double LSB = (double)1 / 128; // s
             double timeOfMessageReceptionForVelocity = LSB * Functions.CombineBytes2Int(octets);
 
-            this.messageData.data_list.Add(new double[1] { timeOfMessageReceptionForVelocity });
+            // From seconds to hh:mm:ss.fff format
+            TimeSpan time_format = TimeSpan.FromSeconds(timeOfMessageReceptionForVelocity);
+            string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
+
+            this.messageData.data_list.Add(new string[1] { time_format_string });
         }
 
         // Data Item I021/076, Time of Message Reception of Velocity–High Precision
@@ -1664,10 +1699,15 @@ namespace ClassLibrary
             decimal LSB = (decimal)Math.Pow(2, -30); // s (0.9313 ns)
             decimal timeOfMessageReceptionOfVelocity_HighPrecision = LSB * Functions.BitArray2Int(bits);
 
-            this.messageData.data_list.Add(new object[2] { TimeOfMessageReceptionOfVelocity_HighPrecision_FSI, timeOfMessageReceptionOfVelocity_HighPrecision });
+            // From seconds to hh:mm:ss.fff format
+            TimeSpan time_format = TimeSpan.FromSeconds((double)timeOfMessageReceptionOfVelocity_HighPrecision);
+            string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
+
+            this.messageData.data_list.Add(new string[2] { TimeOfMessageReceptionOfVelocity_HighPrecision_FSI, time_format_string });
         }
 
         // Data Item I021/077, Time of ASTERIX Report Transmission
+        // This is the Time to use for CAT21 when simulating on the map !!!
         private void TimeOfASTERIXReportTransmission(byte[] octets)
         {
             this.messageData.fieldTypes.Add(77);
@@ -1677,7 +1717,12 @@ namespace ClassLibrary
             double LSB = (double)1 / 128; // s
             double timeOfAsterixReportTransmission = LSB * Functions.CombineBytes2Int(octets);
 
-            this.messageData.data_list.Add(new double[1] { timeOfAsterixReportTransmission });
+            // From seconds to hh:mm:ss.fff format
+            TimeSpan time_format = TimeSpan.FromSeconds(timeOfAsterixReportTransmission);
+            string time_format_string = time_format.ToString(@"hh\:mm\:ss\.fff");
+
+            this.messageData.data_list.Add(new string[1] { time_format_string });
+            this.messageData.targetData.Time = time_format_string;
         }
 
         // Data Item I021/080, Target Address
@@ -1690,6 +1735,7 @@ namespace ClassLibrary
             string TargetAddress = TargetAddress_int.ToString("X");
 
             this.messageData.data_list.Add(new string[1] { TargetAddress });
+            this.messageData.targetData.TargetAddres = TargetAddress;
         }
 
         // Data Item I021/090, Quality Indicators
@@ -1861,20 +1907,20 @@ namespace ClassLibrary
                         // Octet no. 3 & 4
                         double Altitude_LSB = 10; // ft
                         byte[] Altitude_bytes = new byte[2] { subfield2_bytes[2], subfield2_bytes[1] }; // Reversed
-                        double Altitude = Altitude_LSB * Functions.TwosComplement2Int_fromBytes(Altitude_bytes);
+                        double Altitude = Math.Round(Altitude_LSB * Functions.TwosComplement2Int_fromBytes(Altitude_bytes), 4);
 
                         Altitude_list.Add(Altitude);
 
                         // Octet no. 5 & 6 & 7
                         double LatAndLongWGS84_LSB = (double)(180 / Math.Pow(2, 23)); // ft
                         byte[] LatitudeWGS84_bytes = new byte[3] { subfield2_bytes[5], subfield2_bytes[4], subfield2_bytes[3] }; // Reversed
-                        double LatitudeWGS84 = LatAndLongWGS84_LSB * Functions.TwosComplement2Int_fromBytes(LatitudeWGS84_bytes);
+                        double LatitudeWGS84 = Math.Round(LatAndLongWGS84_LSB * Functions.TwosComplement2Int_fromBytes(LatitudeWGS84_bytes), 4);
 
                         LatitudeWGS84_list.Add(LatitudeWGS84);
 
                         // Octet no. 8 & 9 & 10
                         byte[] LongitudeWGS84_bytes = new byte[3] { subfield2_bytes[8], subfield2_bytes[7], subfield2_bytes[6] }; // Reversed
-                        double LongitudeWGS84 = LatAndLongWGS84_LSB * Functions.TwosComplement2Int_fromBytes(LongitudeWGS84_bytes);
+                        double LongitudeWGS84 = Math.Round(LatAndLongWGS84_LSB * Functions.TwosComplement2Int_fromBytes(LongitudeWGS84_bytes), 4);
                         LongitudeWGS84_list.Add(LongitudeWGS84);
 
                         // Octet no. 11
@@ -1900,15 +1946,15 @@ namespace ClassLibrary
                         TOA_list.Add(TOA);
 
                         // Octet no. 12 & 13 & 14
-                        //double TOV_LSB = 1; // s
+                        //int TOV_LSB = 1; // s
                         byte[] TOV_bytes = new byte[3] { subfield2_bytes[12], subfield2_bytes[11], subfield2_bytes[10] }; // Reversed
-                        double TOV = Functions.CombineBytes2Int(TOV_bytes);
+                        int TOV = Functions.CombineBytes2Int(TOV_bytes);
                         TOV_list.Add(TOV);
 
                         // Octet no. 15 & 16
                         double TTR_LSB = (double)0.01; // Nm
                         byte[] TTR_bytes = new byte[2] { subfield2_bytes[14], subfield2_bytes[13] }; // Reversed
-                        double TTR = TTR_LSB * Functions.CombineBytes2Int(TTR_bytes);
+                        double TTR = Math.Round(TTR_LSB * Functions.CombineBytes2Int(TTR_bytes), 4);
                         TTR_list.Add(TTR);
 
                         index += 15;
@@ -1945,7 +1991,10 @@ namespace ClassLibrary
             double latitude = LSB * Functions.TwosComplement2Int_fromBytes(latitude_bytes);
             double longitude = LSB * Functions.TwosComplement2Int_fromBytes(longitude_bytes);
 
-            this.messageData.data_list.Add(new double[2] { latitude, longitude });
+            double[] position = new double[2] { latitude, longitude };
+
+            this.messageData.data_list.Add(position);
+            this.messageData.targetData.Position = position;
         }
 
         // Data Item I021/131, High-Resolution Position in WGS-84 Co-ordinates
@@ -1958,7 +2007,7 @@ namespace ClassLibrary
             byte[] latitudeWGS84_bytes = new byte[4] { octets[3], octets[2], octets[1], octets[0] }; // Reversed
             byte[] longitudeWGS84_bytes = new byte[4] { octets[7], octets[6], octets[5], octets[4] }; // Reversed
 
-            double latitudeWGS84 = LSB * Functions.TwosComplement2Int_fromBytes(latitudeWGS84_bytes);
+            double latitudeWGS84 =LSB * Functions.TwosComplement2Int_fromBytes(latitudeWGS84_bytes);
             double longitudeWGS84 = LSB * Functions.TwosComplement2Int_fromBytes(longitudeWGS84_bytes);
 
             this.messageData.data_list.Add(new double[2] { latitudeWGS84, longitudeWGS84 });
@@ -1970,10 +2019,10 @@ namespace ClassLibrary
             this.messageData.fieldTypes.Add(132);
 
             byte[] MAM_bytes = new byte[1] { octet1 }; // Reversed (no need to reverse, array of length 1)
-            //double LSB = 1 // dBm
-            double MessageAmplitude = Functions.TwosComplement2Int_fromBytes(MAM_bytes);
+            //int LSB = 1 // dBm
+            int MessageAmplitude = Functions.TwosComplement2Int_fromBytes(MAM_bytes);
 
-            this.messageData.data_list.Add(new double[1] { MessageAmplitude });
+            this.messageData.data_list.Add(new int[1] { MessageAmplitude });
         }
 
         // Data Item I021/140, Geometric Height
@@ -1984,7 +2033,7 @@ namespace ClassLibrary
             Array.Reverse(octets);
 
             double LSB = (double)6.25; // ft
-            double GeometricHeight = LSB * Functions.TwosComplement2Int_fromBytes(octets);
+            double GeometricHeight = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(octets), 4);
 
             this.messageData.data_list.Add(new double[1] { GeometricHeight });
         }
@@ -1997,9 +2046,10 @@ namespace ClassLibrary
             Array.Reverse(octets);
 
             double LSB = (double)1 / 4; // FL
-            double FlightLevel = LSB * Functions.TwosComplement2Int_fromBytes(octets);
+            double FlightLevel = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(octets), 4);
 
             this.messageData.data_list.Add(new double[1] { FlightLevel });
+            this.messageData.targetData.FlightLevel = FlightLevel;
         }
 
         // Data Item I021/146, Selected Altitude
@@ -2020,8 +2070,8 @@ namespace ClassLibrary
 
             bits.Length = bits.Length - 3;
 
-            double LSB = 25; // ft
-            double Altitude = LSB * Functions.BitArray2Int(bits);
+            int LSB = 25; // ft
+            int Altitude = LSB * Functions.BitArray2Int(bits);
 
             this.messageData.data_list.Add(new object[3] { SAS, Source, Altitude });
         }
@@ -2040,8 +2090,8 @@ namespace ClassLibrary
 
             bits.Length = bits.Length - 3;
 
-            double LSB = 25; // ft
-            double Altitude = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
+            int LSB = 25; // ft
+            int Altitude = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
 
             this.messageData.data_list.Add(new object[4] { MV, AH, AM, Altitude });
         }
@@ -2069,7 +2119,7 @@ namespace ClassLibrary
                 Mach_or_IAS_LSB = (double)Math.Pow(2, -14); // NM/s
             }
 
-            double Mach_or_IAS = Mach_or_IAS_LSB * Functions.BitArray2Int(bits);
+            double Mach_or_IAS = Math.Round(Mach_or_IAS_LSB * Functions.BitArray2Int(bits), 4);
 
             this.messageData.data_list.Add(new object[2] { IM, Mach_or_IAS });
         }
@@ -2086,8 +2136,8 @@ namespace ClassLibrary
 
             bits.Length = bits.Length - 1;
 
-            //double LSB = 1; // kt
-            double TrueAirSpeed = Functions.BitArray2Int(bits);
+            //int LSB = 1; // kt
+            int TrueAirSpeed = Functions.BitArray2Int(bits);
 
             this.messageData.data_list.Add(new object[2] { RE, TrueAirSpeed });
         }
@@ -2100,7 +2150,7 @@ namespace ClassLibrary
             Array.Reverse(octets);
 
             double LSB = (double)(360 / Math.Pow(2, 16)); // degrees
-            double MagneticHeading = LSB * Functions.CombineBytes2Int(octets);
+            double MagneticHeading = Math.Round(LSB * Functions.CombineBytes2Int(octets), 4);
 
             this.messageData.data_list.Add(new double[1] { MagneticHeading });
         }
@@ -2118,7 +2168,7 @@ namespace ClassLibrary
             bits.Length = bits.Length - 1;
 
             double LSB = (double)6.25; // ft/min
-            double BarometricVerticalRate = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
+            double BarometricVerticalRate = Math.Round(LSB * Functions.TwosComplement2Int_fromBitArray(bits), 4);
 
             this.messageData.data_list.Add(new object[2] { RE, BarometricVerticalRate });
         }
@@ -2136,7 +2186,7 @@ namespace ClassLibrary
             bits.Length = bits.Length - 1;
 
             double LSB = (double)6.25; // ft/min
-            double GeometricVerticalRate = LSB * Functions.TwosComplement2Int_fromBitArray(bits);
+            double GeometricVerticalRate = Math.Round(LSB * Functions.TwosComplement2Int_fromBitArray(bits), 4);
 
             this.messageData.data_list.Add(new object[2] { RE, GeometricVerticalRate });
         }
@@ -2157,12 +2207,12 @@ namespace ClassLibrary
             GroundSpeed_and_RE_bits.Length = GroundSpeed_and_RE_bits.Length - 1;
 
             double LSB_GroundSpeed = (double)Math.Pow(2, -14); // NM/s
-            double GroundSpeed = LSB_GroundSpeed * Functions.BitArray2Int(GroundSpeed_and_RE_bits);
+            double GroundSpeed = Math.Round(LSB_GroundSpeed * Functions.BitArray2Int(GroundSpeed_and_RE_bits), 4);
 
             // Track Angle
             double LSB_TrackAngle = (double)(360 / Math.Pow(2, 16)); // degrees
             byte[] TrackAngle_bytes = new byte[2] { octets[0], octets[1] }; // Previously reversed
-            double TrackAngle = LSB_TrackAngle * Functions.CombineBytes2Int(TrackAngle_bytes);
+            double TrackAngle = Math.Round(LSB_TrackAngle * Functions.CombineBytes2Int(TrackAngle_bytes), 4);
 
             this.messageData.data_list.Add(new object[3] { RE, GroundSpeed, TrackAngle });
         }
@@ -2189,7 +2239,7 @@ namespace ClassLibrary
             Array.Reverse(octets);
 
             double LSB = (double)1 / 32; // degrees/s
-            double TrackAngleRate = LSB * Functions.TwosComplement2Int_fromBytes(octets);
+            double TrackAngleRate = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(octets), 4);
 
             this.messageData.data_list.Add(new double[1] { TrackAngleRate });
         }
@@ -2278,6 +2328,7 @@ namespace ClassLibrary
             }
 
             this.messageData.data_list.Add(new string[1] { Characters });
+            this.messageData.targetData.TargetIdentification = Characters;
         }
 
         // Data Item I021/200, Target Status
@@ -2354,9 +2405,9 @@ namespace ClassLibrary
             {
                 if (WS_bool == true)
                 {
-                    //double WindSpeed_LSB = 1; // kt
+                    //int WindSpeed_LSB = 1; // kt
                     byte[] WindSpeed_bytes = new byte[2] { octets[index + 1], octets[index] }; // Reversed
-                    double WindSpeed = Functions.CombineBytes2Int(WindSpeed_bytes);
+                    int WindSpeed = Functions.CombineBytes2Int(WindSpeed_bytes);
 
                     list.Add(WindSpeed);
 
@@ -2368,9 +2419,9 @@ namespace ClassLibrary
                 }
                 if (WD_bool == true)
                 {
-                    //double WindDirection_LSB = 1; // degree
+                    //int WindDirection_LSB = 1; // degree
                     byte[] WindDirection_bytes = new byte[2] { octets[index + 1], octets[index] }; // Reversed
-                    double WindDirection = Functions.CombineBytes2Int(WindDirection_bytes);
+                    int WindDirection = Functions.CombineBytes2Int(WindDirection_bytes);
                     if (WindDirection < 0)
                     {
                         WindDirection += 360;
@@ -2388,7 +2439,7 @@ namespace ClassLibrary
                 {
                     double Temperature_LSB = (double)0.25; // 'C
                     byte[] Temperature_bytes = new byte[2] { octets[index + 1], octets[index] }; // Reversed
-                    double Temperature = Temperature_LSB * Functions.CombineBytes2Int(Temperature_bytes);
+                    double Temperature = Math.Round(Temperature_LSB * Functions.CombineBytes2Int(Temperature_bytes), 4);
 
                     list.Add(Temperature);
 
@@ -2424,7 +2475,7 @@ namespace ClassLibrary
             Array.Reverse(octets);
 
             double LSB = (double)0.01; // degrees
-            double RollAngle = LSB * Functions.TwosComplement2Int_fromBytes(octets);
+            double RollAngle = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(octets), 4);
 
             this.messageData.data_list.Add(new double[1] { RollAngle });
         }
@@ -2649,7 +2700,7 @@ namespace ClassLibrary
             {
                 if (subfields[i] == true)
                 {
-                    DataAges[i] = LSB * octets[j];
+                    DataAges[i] = Math.Round(LSB * octets[j], 4);
                     j++;
                 }
                 else

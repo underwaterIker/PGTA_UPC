@@ -93,9 +93,12 @@ namespace Testing
             Console.ReadLine();
         }
 
+
+        /*
         // Testing readFile function
         private static void test_readFile()
         {
+            
             string path = @"D:\Proyectos\PGTA_UPC\Archivos AST\201002-lebl-080001_adsb.ast";
             ReadFile readFile = new ReadFile(path);
 
@@ -904,6 +907,8 @@ namespace Testing
                 }
             } 
         }
+        */
+
 
     }
 }

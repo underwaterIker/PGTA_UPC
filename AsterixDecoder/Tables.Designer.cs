@@ -42,7 +42,6 @@ namespace AsterixDecoder
             this.Filter_textBox = new System.Windows.Forms.TextBox();
             this.Filter_button = new System.Windows.Forms.Button();
             this.UndoFilter_button = new System.Windows.Forms.Button();
-            this.LoadFile_button = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataList_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataItems_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Item_DGV)).BeginInit();
@@ -65,6 +64,7 @@ namespace AsterixDecoder
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataList_DGV.DefaultCellStyle = dataGridViewCellStyle1;
             this.dataList_DGV.Location = new System.Drawing.Point(12, 27);
+            this.dataList_DGV.MultiSelect = false;
             this.dataList_DGV.Name = "dataList_DGV";
             this.dataList_DGV.ReadOnly = true;
             this.dataList_DGV.RowHeadersVisible = false;
@@ -91,6 +91,7 @@ namespace AsterixDecoder
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataItems_DGV.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataItems_DGV.Location = new System.Drawing.Point(328, 27);
+            this.dataItems_DGV.MultiSelect = false;
             this.dataItems_DGV.Name = "dataItems_DGV";
             this.dataItems_DGV.ReadOnly = true;
             this.dataItems_DGV.RowHeadersVisible = false;
@@ -117,6 +118,7 @@ namespace AsterixDecoder
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.Item_DGV.DefaultCellStyle = dataGridViewCellStyle3;
             this.Item_DGV.Location = new System.Drawing.Point(714, 27);
+            this.Item_DGV.MultiSelect = false;
             this.Item_DGV.Name = "Item_DGV";
             this.Item_DGV.ReadOnly = true;
             this.Item_DGV.RowHeadersVisible = false;
@@ -185,21 +187,9 @@ namespace AsterixDecoder
             this.UndoFilter_button.UseVisualStyleBackColor = true;
             this.UndoFilter_button.Click += new System.EventHandler(this.UndoFilter_button_Click);
             // 
-            // LoadFile_button
-            // 
-            this.LoadFile_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LoadFile_button.Location = new System.Drawing.Point(95, 602);
-            this.LoadFile_button.Name = "LoadFile_button";
-            this.LoadFile_button.Size = new System.Drawing.Size(130, 64);
-            this.LoadFile_button.TabIndex = 16;
-            this.LoadFile_button.Text = "Load File";
-            this.LoadFile_button.UseVisualStyleBackColor = true;
-            this.LoadFile_button.Click += new System.EventHandler(this.LoadFile_button_Click);
-            // 
             // Tables
             // 
             this.ClientSize = new System.Drawing.Size(1105, 740);
-            this.Controls.Add(this.LoadFile_button);
             this.Controls.Add(this.UndoFilter_button);
             this.Controls.Add(this.Filter_button);
             this.Controls.Add(this.Filter_textBox);
@@ -221,7 +211,6 @@ namespace AsterixDecoder
         }
 
         #endregion
-        private DataGridView dataList_DGV;
         private DataGridView dataItems_DGV;
         private DataGridView Item_DGV;
         private Button ExportCSV_button;
@@ -229,7 +218,7 @@ namespace AsterixDecoder
         private TextBox Filter_textBox;
         private Button Filter_button;
         private Button UndoFilter_button;
-        private Button LoadFile_button;
+        public DataGridView dataList_DGV;
     }
 }
 

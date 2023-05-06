@@ -15,8 +15,8 @@ namespace ClassLibrary
         // LENGTH of the message (number of bytes of the message)
         public int LENGTH { get; set; }
 
-        // FSPEC bytes
-        public byte[] FSPEC_bytes { get; set; }
+        // FSPEC bytes (check if it's useful or not)
+        //public byte[] FSPEC_bytes { get; set; }
 
         // Number of Data Items
         public int numberOfDataItems { get; set; }
@@ -27,17 +27,26 @@ namespace ClassLibrary
         // Data List
         public List<IList> data_list { get; set; } = new List<IList>();
 
+        // Target Data
+        public TargetData targetData { get; set; } = new TargetData();
 
-        // Clear Data() method
+
+
+        // Clear Data() method (check if needed or not)
+        /*
         public void clearData()
         {
             this.CAT = 0;
             this.LENGTH = 0;
             this.numberOfDataItems = 0;
             this.fieldTypes = new List<int>();
-            Array.Clear(this.FSPEC_bytes, 0, this.FSPEC_bytes.Length);
+            //Array.Clear(this.FSPEC_bytes, 0, this.FSPEC_bytes.Length);
             this.data_list = new List<IList>();
         }
+        */
+
+
+
 
         /*
         // CAT10
