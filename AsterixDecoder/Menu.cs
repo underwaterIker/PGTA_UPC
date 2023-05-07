@@ -9,16 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Drawing.Imaging;
 
 namespace AsterixDecoder
 {
     public partial class Menu : Form
     {
         // ATTRIBUTES
-        // My Forms
-        Tables myTables;
-        Map myMap;
-        AboutUs myAboutUs = new AboutUs();
+        // Decodification class
+        Decodification myDecoder;
 
         // File Loaded indicator
         private bool fileLoaded_flag = false;
@@ -44,10 +43,8 @@ namespace AsterixDecoder
                 {
                     string fileName = LoadFile.FileName;
 
-                    Decodification decoder = new Decodification(fileName);
-                    this.myTables = new Tables(decoder.messagesData_list, decoder.CAT10_flag, decoder.CAT21_flag);
-                    this.myMap = new Map(decoder.targetData_list);
-
+                    this.myDecoder = new Decodification(fileName);
+                    
                     //MessageBox.Show("done");
 
                     this.fileLoaded_flag = true;
@@ -70,8 +67,9 @@ namespace AsterixDecoder
         {
             if (this.fileLoaded_flag == true)
             {
-                this.myTables.Show();
-                this.myTables.dataList_DGV.Rows[0].Cells[0].Selected = false;
+                Tables myTables = new Tables(this.myDecoder.messagesData_list, this.myDecoder.CAT10_flag, this.myDecoder.CAT21_flag);
+                myTables.Show();
+                myTables.dataList_DGV.Rows[0].Cells[0].Selected = false;
             }
             else
             {
@@ -82,13 +80,15 @@ namespace AsterixDecoder
         // MapView
         private void MapView_button_Click(object sender, EventArgs e)
         {
-            this.myMap.Show();
+            Map myMap = new Map(this.myDecoder.targetData_list);
+            myMap.Show();
         }
 
         // AboutUs
         private void AboutUs_button_Click(object sender, EventArgs e)
         {
-            this.myAboutUs.Show();
+            AboutUs myAboutUs = new AboutUs();
+            myAboutUs.Show();
         }
 
         // Exit
