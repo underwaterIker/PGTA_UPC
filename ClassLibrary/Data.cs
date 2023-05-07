@@ -28,23 +28,6 @@ namespace ClassLibrary
         public List<IList> data_list { get; set; } = new List<IList>();
 
 
-
-        // Clear Data() method (check if needed or not)
-        /*
-        public void clearData()
-        {
-            this.CAT = 0;
-            this.LENGTH = 0;
-            this.numberOfDataItems = 0;
-            this.fieldTypes = new List<int>();
-            //Array.Clear(this.FSPEC_bytes, 0, this.FSPEC_bytes.Length);
-            this.data_list = new List<IList>();
-        }
-        */
-
-
-
-
         /*
         // CAT10
         // Data Item I010/000, Message Type

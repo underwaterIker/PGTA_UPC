@@ -928,7 +928,7 @@ namespace ClassLibrary
             double x = LSB * Functions.TwosComplement2Int_fromBytes(x_bytes);
             double y = LSB * Functions.TwosComplement2Int_fromBytes(y_bytes);
 
-            double[] position = new double[2] { x, y };
+            double[] position = new double[3] { x, y, 0 };
 
             this.messageData.data_list.Add(position);
             this.targetData.Position = position;
@@ -1006,6 +1006,7 @@ namespace ClassLibrary
             double measuredHeight = Math.Round(LSB * Functions.TwosComplement2Int_fromBytes(measuredHeight_bytes), 4);
 
             this.messageData.data_list.Add(new double[1] { measuredHeight });
+            this.targetData.Position[2] = measuredHeight;
         }
 
         //Data Item I010/131, Amplitude of Primary Plot

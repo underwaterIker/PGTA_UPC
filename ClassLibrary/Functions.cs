@@ -117,25 +117,5 @@ namespace ClassLibrary
             return degrees * 180 / Math.PI;
         }
 
-
-
-        /// TO REMOVE IN A FUTURE ???
-        public static int Bin2Num(string bin)
-        {
-            return Convert.ToInt32(bin, 2);
-        }
-
-        public static string Bin2Hex(string bin)
-        {
-            return Convert.ToInt32(bin, 2).ToString("X");
-            // this would not work with strings of more than 64 bits
-        }
-
-        public static string Hex2Bin(string hex)
-        {
-            string binary = Convert.ToString(Convert.ToInt32(hex, 16), 2).PadLeft(hex.Length * 4, '0');
-            return binary;
-        }
-
     }
 }

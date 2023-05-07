@@ -24,20 +24,24 @@ namespace AsterixDecoder
         // ATTRIBUTES
         // List containing TargetData of all targets
         private List<TargetData> targetData_list;
+        
+        // One Overlay for each type
+        GMapOverlay SMR_overlay = new GMapOverlay("SMR");
+        GMapOverlay MLAT_overlay = new GMapOverlay("MLAT");
+        GMapOverlay ADSB_overlay = new GMapOverlay("ADSB");
 
-        // List containing the GoogleMarkers
-        List<GMarkerGoogle> GMarker_list = new List<GMarkerGoogle>();
+        // Radar WGS84 Coordinates of SMR and MLAT
+        CoordinatesWGS84 SMR_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29561833), Functions.Deg2Rad(2.09511417));
+        CoordinatesWGS84 MLAT_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29706278), Functions.Deg2Rad(2.07844722));
 
-        // Initial Coordinates for the Map
-        private readonly double LEBL_latitude = 41.29839;
-        private readonly double LEBL_longitude = 2.08331;
+        // Initial Position for the Map
+        PointLatLng LEBL_position = new PointLatLng(41.29839, 2.08331);
 
         // Current time
         string currentTime = "08:00:00";
 
-        // Cosas que tenía Paula, mirar si son necesarias o no
-        bool CancelThread = false;
-        Thread checkTargetThread;
+        // GeoUtils class
+        GeoUtils myGeoUtils = new GeoUtils();
 
 
         // CONSTRUCTOR
@@ -57,8 +61,8 @@ namespace AsterixDecoder
             GMap_control.PolygonsEnabled = true;
             GMap_control.CanDragMap = false;
             GMap_control.MapProvider = GMapProviders.GoogleMap;
-            PointLatLng ubicacion = new PointLatLng(LEBL_latitude, LEBL_longitude);
-            GMap_control.Position = ubicacion;
+            
+            GMap_control.Position = LEBL_position;
             GMap_control.MinZoom = 8;
             GMap_control.MaxZoom = 22;
             GMap_control.Zoom = 13;
@@ -72,17 +76,10 @@ namespace AsterixDecoder
             Stop_button.Show();
             Play_button.Hide();
             GMap_control.Overlays.Clear();
-            //TargetsList.Clear();
-            GMarker_list.Clear();
 
             //timer1.Enabled = true;
             //timer1.Interval = 1000;
             timer1.Start();
-            CancelThread = false;
-
-            //checkTargetThread = new Thread(CheckTargets);
-            //checkTargetThread.SetApartmentState(System.Threading.ApartmentState.STA);
-            //checkTargetThread.Start();
         }
 
         // Stop button
@@ -91,6 +88,7 @@ namespace AsterixDecoder
             Stop_button.Hide();
             Play_button.Show();
             timer1.Stop();
+            //timer1.Enabled = false;
         }
 
         // Export to .KML button
@@ -105,6 +103,7 @@ namespace AsterixDecoder
             TimeSpan time = TimeSpan.FromSeconds(TimeSpan.Parse(this.currentTime).TotalSeconds + 1);
             this.currentTime = time.ToString(@"hh\:mm\:ss");
             Time_label.Text = this.currentTime;
+            CheckTargets();
         }
 
         // Method that is executed when a marker from the GMap_control is clicked
@@ -115,192 +114,99 @@ namespace AsterixDecoder
 
         // -----------------------------------------------------------------------------------------------------------------------------
 
-
-        /*
         private void CheckTargets()
         {
-
-            // Check when the target has to be plotted 
-
-            for (int i = 0; i < this.targetData_list.Count; i++)
+            for (int i = 0; i<this.targetData_list.Count; i++)
             {
-                bool searching = true;
-                while (searching)
+                if ((double)TimeSpan.Parse(targetData_list[i].Time).TotalSeconds <= (double)TimeSpan.Parse(this.currentTime).TotalSeconds)
                 {
-                    if ((double)TimeSpan.Parse(Time_label.Text).TotalSeconds >= (double)TimeSpan.Parse(this.targetData_list[i].Time).TotalSeconds)
-                    {
-
-                        //Thread plotTargetThread = new Thread(() => Targets(data_list[i]));
-                        //plotTargetThread.Start();
-                        //searching = false;
-
-                        GeoUtils g = new GeoUtils();
-                        CoordinatesWGS84 radarWGS84 = new CoordinatesWGS84(Functions.Deg2Rad(latitudRadar), Functions.Deg2Rad(longitudRadar));
-                        CoordinatesXYZ cartesian = new CoordinatesXYZ(data.PositionCartesianCoordinates_x, data.PositionCartesianCoordinates_y, h);
-                        //Cartesianas radar -> Geocéntricas Radar -> Geodésicas
-                        CoordinatesXYZ geocentric = g.change_radar_cartesian2geocentric(radarWGS84, cartesian);
-                        CoordinatesWGS84 geodesic = g.change_geocentric2geodesic(geocentric);
-                        latitud = Functions.Rad2Deg(geodesic.Lat);
-                        longitud = Functions.Rad2Deg(geodesic.Lon);
-                        h = geodesic.Height;
-                        //Cartesianas radar –> Geocéntricas Radar -> Cartesianas ->Estereográficas ???
-                    }
-
-                    if (CancelThread)
-                    {
-                        break;
-                    }
+                    AddMarkerToItsOverlay(i);
                 }
+                else
+                {
+                    break;
+                }
+                    
             }
-            timer1.Stop();
-
-            if (CancelThread == false)
-            {
-                MessageBox.Show("End of the simulation");
-            }
-            else
-            {
-                GMap_control.Overlays.Clear();
-                //TargetsList.Clear();
-                GMarker_list.Clear();
-
-            }
+            AddOverlays();
         }
-        */
 
-        /*
-        private void Targets(Data data)
+        private void AddMarkerToItsOverlay(int index)
         {
-            double groundspeed = 0;
-            double FL = 0;
-            double TrackNumber = 0;
-            double longitud = 0;
-            double latitud = 0;
-            int cat = 0;
+            CoordinatesXYZ cartesian;
+            CoordinatesXYZ geocentric = new CoordinatesXYZ();
+            double latitude = 0;
+            double longitude = 0;
 
-            double h = 0;
+            GMarkerGoogleType markerType = new GMarkerGoogleType();
+            GMarkerGoogle marker;
 
-            if (data.MeasuredHeight != 0)
+            if (this.targetData_list[index].isSMR is true || this.targetData_list[index].isMLAT is true)
             {
-                h = data.MeasuredHeight;
-            }
-
-            if (data.CalculatedTrackVelocityPolarCoordinates_GroundSpeed != 0)
-            {
-                groundspeed = data.CalculatedTrackVelocityPolarCoordinates_GroundSpeed;
-            }
-
-            if (data.FlightLevel_FL != 0)
-            {
-                FL = data.FlightLevel_FL;
-            }
-            if (data.TrackNumber != 0)
-            {
-                TrackNumber = data.TrackNumber;
-            }
-
-
-            // CAT10: SMR ofrece la posición de los blancos en dos sistemes de coordenadas: polares y cartesianas respecto el radar SMR
-            // CAT10: MLAT solo da las posiciones de los blancos en cartesianas respecto al ARP del Aeropuerto de LEBL
-
-            if ((data.PositionCartesianCoordinates_x != 0 && data.PositionCartesianCoordinates_y != 0 && data.MessageType != null))
-            {
-                if (data.MessageType == "Target Report")
+                if (this.targetData_list[index].isSMR is true)
                 {
-                    double latitudRadar;
-                    double longitudRadar;
-                    cat = 10;
-                    if (data.TargetAddress != null)
-                    {
-                        //Radar SMR
-                        latitudRadar = 41.297;
-                        longitudRadar = 2.07845;
-                    }
-                    else
-                    {
-                        //ARP
-                        latitudRadar = 41.2956;
-                        longitudRadar = 2.095;
-                    }
+                    markerType = GMarkerGoogleType.yellow_small;
 
-                    GeoUtils g = new GeoUtils();
-                    CoordinatesWGS84 radarWGS84 = new CoordinatesWGS84(Functions.DegToRad(latitudRadar), Functions.DegToRad(longitudRadar));
-                    CoordinatesXYZ cartesian = new CoordinatesXYZ(data.PositionCartesianCoordinates_x, data.PositionCartesianCoordinates_y, h);
-                    //Cartesianas radar -> Geocéntricas Radar -> Geodésicas
-                    CoordinatesXYZ geocentric = g.change_radar_cartesian2geocentric(radarWGS84, cartesian);
-                    CoordinatesWGS84 geodesic = g.change_geocentric2geodesic(geocentric);
-                    latitud = Functions.RadToDeg(geodesic.Lat);
-                    longitud = Functions.RadToDeg(geodesic.Lon);
-                    h = geodesic.Height;
-                    //Cartesianas radar –> Geocéntricas Radar -> Cartesianas ->Estereográficas ???
+                    cartesian = new CoordinatesXYZ(this.targetData_list[index].Position[0], this.targetData_list[index].Position[1], this.targetData_list[index].Position[2]);
+                    geocentric = this.myGeoUtils.change_radar_cartesian2geocentric(this.SMR_radar_WGS84Coordinates, cartesian);
+                    CoordinatesWGS84 geodesic = this.myGeoUtils.change_geocentric2geodesic(geocentric);
+                    latitude = Functions.Rad2Deg(geodesic.Lat);
+                    longitude = Functions.Rad2Deg(geodesic.Lon);
+                    //double h = geodesic.Height;
+
+                    marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+                    this.SMR_overlay.Markers.Add(marker);
                 }
+                else if (this.targetData_list[index].isMLAT is true)
+                {
+                    markerType = GMarkerGoogleType.green_small;
 
+                    cartesian = new CoordinatesXYZ(this.targetData_list[index].Position[0], this.targetData_list[index].Position[1], this.targetData_list[index].Position[2]);
+                    geocentric = this.myGeoUtils.change_radar_cartesian2geocentric(this.MLAT_radar_WGS84Coordinates, cartesian);
+                    CoordinatesWGS84 geodesic = this.myGeoUtils.change_geocentric2geodesic(geocentric);
+                    latitude = Functions.Rad2Deg(geodesic.Lat);
+                    longitude = Functions.Rad2Deg(geodesic.Lon);
+                    //double h = geodesic.Height;
+
+                    marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+                    this.MLAT_overlay.Markers.Add(marker);
+                }
             }
-            //CAT21:ADSB da la posición de sus blancos en geodésicas WGS84
-            else if (data.PositionWGS84Coordinates_Latitude != 0 && data.PositionWGS84Coordinates_Longitude != 0)
+            else //if (this.targetData_list[index].isADSB is true)
             {
-                cat = 21;
+                markerType = GMarkerGoogleType.red_small;
 
+                latitude = this.targetData_list[index].Position[0];
+                longitude = this.targetData_list[index].Position[1];
 
-                latitud = data.PositionWGS84Coordinates_Latitude;
-                longitud = data.PositionWGS84Coordinates_Longitude;
+                marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+                this.ADSB_overlay.Markers.Add(marker);
             }
 
-            string ID = null;
-            if (cat == 10 || cat == 21)
-            {
-                if (data.TargetIdentification_Characters != null)
-                {
-
-                    ID = data.TargetIdentification_Characters.ToString();
-                }
-
-                else if (data.TrackNumber != 0)
-                {
-                    ID = data.TrackNumber.ToString();
-                }
-
-                if (longitud != 0 && latitud != 0 && ID != null && groundspeed != 0)
-                {
-                    int index = TargetsList.FindIndex(a => a.ID == ID);
-                    TargetData exists = TargetsList.Find(a => a.ID == ID);
-                    if (exists != null) //itexists? UPDATE
-                    {
-                        TargetsList[index].Lat = latitud;
-                        TargetsList[index].Long = longitud;
-                        TargetsList[index].FL = FL;
-                        TargetsList[index].height = h;
-                        TargetsList[index].groundSpeed = groundspeed;
-                        //targetList[index].TimeOftheDay= data.TimeOfDay;
-                        markersList[index].Position = new PointLatLng(latitud, longitud);
-                        //GMapOverlay targets = new GMapOverlay(ID);
-                        //GMarkerGoogle markerTarget = new GMarkerGoogle(new PointLatLng(latitud, longitud), targetList[index].Bitmap);
-                        //targets.Markers.Add(markerTarget);
-                        //gMapControl1.Overlays.Add(targets);
-                    }
-                    else
-                    {
-                        TargetData a = new TargetData(ID, longitud, latitud, h, "", groundspeed, FL, TrackNumber, cat);
-                        GMapOverlay targets = new GMapOverlay(ID);
-                        GMarkerGoogle markerTarget = new GMarkerGoogle(new PointLatLng(latitud, longitud), a.Bitmap);
-                        TargetsList.Add(a);
-                        markersList.Add(markerTarget);
-                        targets.Markers.Add(markerTarget);
-                        gMapControl1.Overlays.Add(targets);
-
-                    }
-                }
-
-            }
         }
-        */
 
+        private void AddOverlays()
+        {
+            if (this.SMR_overlay.Markers.Any())
+            {
+                this.GMap_control.Overlays.Add(this.SMR_overlay);
+                //MessageBox.Show("smr");
+            }
+            if (this.MLAT_overlay.Markers.Any())
+            {
+                this.GMap_control.Overlays.Add(this.MLAT_overlay);
+                //MessageBox.Show("mlat");
+            }
+            if (this.ADSB_overlay.Markers.Any())
+            {
+                this.GMap_control.Overlays.Add(this.ADSB_overlay);
+                //MessageBox.Show("adsb");
+            }
 
-        
-
-
-        
-        //TIME SCALE
+            //this.GMap_control.Overlays.Add(this.SMR_overlay);
+            //this.GMap_control.Overlays.Add(this.MLAT_overlay);
+            //this.GMap_control.Overlays.Add(this.ADSB_overlay);
+        }
 
 
 
