@@ -131,11 +131,11 @@ namespace AsterixDecoder
 
         private void CheckTargets()
         {
-            for (int i = 0; i<this.targetData_list.Count; i++)
+            for (int index = 0; index<this.targetData_list.Count; index++)
             {
-                if ((double)TimeSpan.Parse(targetData_list[i].Time).TotalSeconds <= (double)TimeSpan.Parse(this.currentTime).TotalSeconds)
+                if ((double)TimeSpan.Parse(targetData_list[index].Time).TotalSeconds <= (double)TimeSpan.Parse(this.currentTime).TotalSeconds)
                 {
-                    AddMarkerToItsOverlay(i);
+                    AddMarkerToItsOverlay(index);
                 }
                 else
                 {
@@ -160,8 +160,6 @@ namespace AsterixDecoder
             {
                 if (this.targetData_list[index].isSMR is true)
                 {
-                    markerType = GMarkerGoogleType.yellow_small;
-
                     cartesian = new CoordinatesXYZ(this.targetData_list[index].Position[0], this.targetData_list[index].Position[1], this.targetData_list[index].Position[2]);
                     geocentric = this.myGeoUtils.change_radar_cartesian2geocentric(this.SMR_radar_WGS84Coordinates, cartesian);
                     CoordinatesWGS84 geodesic = this.myGeoUtils.change_geocentric2geodesic(geocentric);
@@ -169,24 +167,13 @@ namespace AsterixDecoder
                     longitude = Functions.Rad2Deg(geodesic.Lon);
                     //double h = geodesic.Height;
 
-                    marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
-                    marker.ToolTipText = this.targetData_list[index].ID[0];
-                    marker.Tag = index;
+                    markerType = GMarkerGoogleType.yellow_small;
+                    marker = CreateMarker(latitude, longitude, markerType, index);
 
-                    int delete_index = this.SMR_markerTags.IndexOf(marker.ToolTipText);
-                    if (delete_index != -1)
-                    {
-                        this.SMR_markerTags.RemoveAt(delete_index);
-                        this.SMR_overlay.Markers.RemoveAt(delete_index);
-                    }
-
-                    this.SMR_markerTags.Add(marker.ToolTipText);
-                    this.SMR_overlay.Markers.Add(marker);
+                    RemovePreviousMarker_and_AddNewMarker(marker, this.SMR_markerTags, this.SMR_overlay);
                 }
                 else if (this.targetData_list[index].isMLAT is true)
                 {
-                    markerType = GMarkerGoogleType.green_small;
-
                     cartesian = new CoordinatesXYZ(this.targetData_list[index].Position[0], this.targetData_list[index].Position[1], this.targetData_list[index].Position[2]);
                     geocentric = this.myGeoUtils.change_radar_cartesian2geocentric(this.MLAT_radar_WGS84Coordinates, cartesian);
                     CoordinatesWGS84 geodesic = this.myGeoUtils.change_geocentric2geodesic(geocentric);
@@ -194,43 +181,45 @@ namespace AsterixDecoder
                     longitude = Functions.Rad2Deg(geodesic.Lon);
                     //double h = geodesic.Height;
 
-                    marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
-                    marker.ToolTipText = this.targetData_list[index].ID[0];
-                    marker.Tag = index;
+                    markerType = GMarkerGoogleType.green_small;
+                    marker = CreateMarker(latitude, longitude, markerType, index);
 
-                    int delete_index = this.MLAT_markerTags.IndexOf(marker.ToolTipText);
-                    if (delete_index != -1)
-                    {
-                        this.MLAT_markerTags.RemoveAt(delete_index);
-                        this.MLAT_overlay.Markers.RemoveAt(delete_index);
-                    }
-
-                    this.MLAT_markerTags.Add(marker.ToolTipText);
-                    this.MLAT_overlay.Markers.Add(marker);
+                    RemovePreviousMarker_and_AddNewMarker(marker, this.MLAT_markerTags, this.MLAT_overlay);
                 }
             }
             else //if (this.targetData_list[index].isADSB is true)
             {
-                markerType = GMarkerGoogleType.red_small;
-
                 latitude = this.targetData_list[index].Position[0];
                 longitude = this.targetData_list[index].Position[1];
 
-                marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
-                marker.ToolTipText = this.targetData_list[index].ID[0];
-                marker.Tag = index;
+                markerType = GMarkerGoogleType.red_small;
+                marker = CreateMarker(latitude, longitude, markerType, index);
 
-                int delete_index = this.ADSB_markerTags.IndexOf(marker.ToolTipText);
-                if (delete_index != -1)
-                {
-                    this.ADSB_markerTags.RemoveAt(delete_index);
-                    this.ADSB_overlay.Markers.RemoveAt(delete_index);
-                }
-
-                this.ADSB_markerTags.Add(marker.ToolTipText);
-                this.ADSB_overlay.Markers.Add(marker);
+                RemovePreviousMarker_and_AddNewMarker(marker, this.ADSB_markerTags, this.ADSB_overlay);
             }
 
+        }
+
+        private GMarkerGoogle CreateMarker(double latitude, double longitude, GMarkerGoogleType markerType, int index)
+        {
+            GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+            marker.ToolTipText = this.targetData_list[index].ID[0];
+            marker.Tag = index;
+
+            return marker;
+        }
+
+        private void RemovePreviousMarker_and_AddNewMarker(GMarkerGoogle marker, List<string> markerTags, GMapOverlay overlay)
+        {
+            int delete_index = markerTags.IndexOf(marker.ToolTipText);
+            if (delete_index != -1)
+            {
+                markerTags.RemoveAt(delete_index);
+                overlay.Markers.RemoveAt(delete_index);
+            }
+
+            markerTags.Add(marker.ToolTipText);
+            overlay.Markers.Add(marker);
         }
 
         private void AddOverlays()
@@ -283,10 +272,6 @@ namespace AsterixDecoder
             TargetData_DGV.Rows[5].Cells[0].Value = "Target Identification";
             TargetData_DGV.Rows[6].Cells[0].Value = "Mode 3A Code";
             TargetData_DGV.Rows[7].Cells[0].Value = "Flight Level";
-
-            //int index = target.ToolTipText);
-
-            //int index = this.SMR_markerTags.IndexOf((string)target.Tag);
 
             int index = (int)target.Tag;
 
