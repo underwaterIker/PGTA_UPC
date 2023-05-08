@@ -91,6 +91,13 @@ namespace AsterixDecoder
             //timer1.Enabled = false;
         }
 
+        // Clear Selection button
+        private void ClearSelection_button_Click(object sender, EventArgs e)
+        {
+            TargetData_DGV.Columns.Clear();
+            TargetData_DGV.Rows.Clear();
+        }
+
         // Export to .KML button
         private void ExportKML_button_Click(object sender, EventArgs e)
         {
@@ -211,13 +218,8 @@ namespace AsterixDecoder
             //this.GMap_control.Overlays.Add(this.ADSB_overlay);
         }
 
-
-
-        // TABLE CLICK TARGET
-        
         private void Set_TargetData_DGV(GMapMarker target)
         {
-
             TargetData_DGV.Columns.Clear();
             TargetData_DGV.Rows.Clear();
 
@@ -225,7 +227,7 @@ namespace AsterixDecoder
             TargetData_DGV.ColumnHeadersVisible = false;
 
             // Set the number of rows and columns
-            TargetData_DGV.RowCount = 6;
+            TargetData_DGV.RowCount = 8;
             TargetData_DGV.ColumnCount = 2;
 
             TargetData_DGV.Rows[0].Cells[0].Selected = false;
@@ -235,66 +237,46 @@ namespace AsterixDecoder
             // Column[0] bold
             TargetData_DGV.Columns[0].DefaultCellStyle.Font = new Font("Tahoma", 11, FontStyle.Bold);
 
+            TargetData_DGV.Rows[0].Cells[0].Value = "Time";
+            TargetData_DGV.Rows[1].Cells[0].Value = "Pos. Latitude";
+            TargetData_DGV.Rows[2].Cells[0].Value = "Pos. Longitude";
+            TargetData_DGV.Rows[3].Cells[0].Value = "Track Number";
+            TargetData_DGV.Rows[4].Cells[0].Value = "Target Address";
+            TargetData_DGV.Rows[5].Cells[0].Value = "Target Identification";
+            TargetData_DGV.Rows[6].Cells[0].Value = "Mode 3A Code";
+            TargetData_DGV.Rows[7].Cells[0].Value = "Flight Level";
+
             int index = (int)target.Tag;
 
-            TargetData_DGV.Rows[0].Cells[0].Value = "Time";
             TargetData_DGV.Rows[0].Cells[1].Value = this.targetData_list[index].Time;
-            TargetData_DGV.Rows[1].Cells[0].Value = "Pos. Latitude";
             TargetData_DGV.Rows[1].Cells[1].Value = target.Position.Lat;
-            TargetData_DGV.Rows[2].Cells[0].Value = "Pos. Longitude";
             TargetData_DGV.Rows[2].Cells[1].Value = target.Position.Lng;
-            string[] ID_names = new string[3] { "Track Number", "Target Address", "Target Identification" };
-            for (int i = 0; i < this.targetData_list[index].ID.Count; i++)
+
+            string[] IDs = this.targetData_list[index].ID;
+            for (int i = 0; i < IDs.Length; i++)
             {
-                TargetData_DGV.Rows[i+3].Cells[0].Value = ID_names[i];
-                TargetData_DGV.Rows[i+3].Cells[1].Value = this.targetData_list[index].ID[i];
-            }
-
-            /*
-            // Headers
-            int k = 0;
-            int indice = 0;
-            while (k < TargetsList.Count)
-            {
-                indice = TargetsList[k].ID.IndexOf(target.Overlay.Id);
-
-                k = k + 1;
-            }
-
-            {
-
-                if (TargetsList[indice].cat == 10)
-                {
-                    dataGridView1.Rows[0].Cells[0].Value = "ID";
-                    dataGridView1.Rows[1].Cells[0].Value = "Flight Level";
-
-                    dataGridView1.Rows[0].Cells[1].Value = TargetsList[indice].ID;
-                    dataGridView1.Rows[1].Cells[1].Value = TargetsList[indice].FL;
-                    //dataGridView1.Rows[2].Cells[1].Value = targetList[indice].ID;
-                    //dataGridView1.Rows[3].Cells[1].Value = targetList[indice].FL
-
-
-                }
-                else if (TargetsList[indice].cat == 21)
-                {
-                    dataGridView1.Rows[0].Cells[0].Value = "ID";
-                    dataGridView1.Rows[1].Cells[0].Value = "Flight Level";
-
-
-                }
+                if (IDs[i] != null)
+                    TargetData_DGV.Rows[i + 3].Cells[1].Value = IDs[i];
                 else
-                {
-                    //MessageBox("Error");
-                }
+                    TargetData_DGV.Rows[i + 3].Cells[1].Value = "--";
 
             }
-            */
+
+            string mode3a = this.targetData_list[index].Mode3ACode;
+            if (mode3a != null )
+                TargetData_DGV.Rows[6].Cells[1].Value = mode3a;
+            else
+                TargetData_DGV.Rows[6].Cells[1].Value = "--";
+
+
+            double FL = this.targetData_list[index].FlightLevel;
+            if (FL != 0)  
+                TargetData_DGV.Rows[7].Cells[1].Value = FL;
+            else
+                TargetData_DGV.Rows[7].Cells[1].Value = "--";
         }
         
-
-        
-        
-
+ 
         // ------------------------------------------------------
         // Loading Button State functions
         private void Loading_ButtonState(Button button)

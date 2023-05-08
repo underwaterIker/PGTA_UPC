@@ -1046,7 +1046,7 @@ namespace ClassLibrary
             int TrackNumber = Functions.CombineBytes2Int(octets);
 
             this.messageData.data_list.Add(new int[1] { TrackNumber });
-            this.targetData.ID.Add(TrackNumber.ToString());
+            this.targetData.ID[0] = TrackNumber.ToString();
         }
 
         // Data Item I010/170, Track Status
@@ -1163,7 +1163,7 @@ namespace ClassLibrary
             string TargetAddress = TargetAddress_int.ToString("X");
 
             this.messageData.data_list.Add(new string[1] { TargetAddress });
-            this.targetData.ID.Add(TargetAddress);
+            this.targetData.ID[1] = TargetAddress;
         }
 
         // Data Item I010/245, Target Identification
@@ -1257,7 +1257,7 @@ namespace ClassLibrary
             }
 
             this.messageData.data_list.Add(new string[2] { STI, Characters });
-            this.targetData.ID.Add(Characters);
+            this.targetData.ID[2] = Characters;
         }
 
         // Data Item I010/250, Mode S MB Data
@@ -1757,7 +1757,7 @@ namespace ClassLibrary
             string TargetAddress = TargetAddress_int.ToString("X");
 
             this.messageData.data_list.Add(new string[1] { TargetAddress });
-            this.targetData.ID.Add(TargetAddress);
+            this.targetData.ID[1] = TargetAddress;
         }
 
         // Data Item I021/090, Quality Indicators
@@ -2353,7 +2353,7 @@ namespace ClassLibrary
             }
 
             this.messageData.data_list.Add(new string[1] { Characters });
-            this.targetData.ID.Add(Characters);
+            this.targetData.ID[2] = Characters;
         }
 
         // Data Item I021/200, Target Status

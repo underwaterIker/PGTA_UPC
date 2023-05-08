@@ -114,7 +114,7 @@ namespace AsterixDecoder
             this.Time_label.AutoSize = true;
             this.Time_label.Location = new System.Drawing.Point(958, 66);
             this.Time_label.Name = "Time_label";
-            this.Time_label.Size = new System.Drawing.Size(104, 26);
+            this.Time_label.Size = new System.Drawing.Size(57, 13);
             this.Time_label.TabIndex = 10;
             this.Time_label.Text = "00:00:00";
             // 
@@ -149,7 +149,7 @@ namespace AsterixDecoder
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(64, 681);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(152, 26);
+            this.label3.Size = new System.Drawing.Size(80, 13);
             this.label3.TabIndex = 21;
             this.label3.Text = "TIME SCALE";
             // 
@@ -160,7 +160,7 @@ namespace AsterixDecoder
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(168, 738);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(37, 26);
+            this.label4.Size = new System.Drawing.Size(20, 13);
             this.label4.TabIndex = 22;
             this.label4.Text = "x1";
             // 
@@ -174,6 +174,7 @@ namespace AsterixDecoder
             this.ClearSelection_button.TabIndex = 26;
             this.ClearSelection_button.Text = "CLEAR SELECTION";
             this.ClearSelection_button.UseVisualStyleBackColor = false;
+            this.ClearSelection_button.Click += new System.EventHandler(this.ClearSelection_button_Click);
             // 
             // Map
             // 

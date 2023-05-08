@@ -12,7 +12,7 @@ namespace ClassLibrary
         // ATTRIBUTES
         public string Time { get; set; }
         public double[] Position { get; set; }
-        public List<string> ID { get; set; } = new List<string>();
+        public string[] ID { get; set; } = new string[3]; // ID[0]=TrackNumber, ID[1]=TargetAddress, ID[2]=TargetIdentification
         //public int TrackNumber { get; set; }
         //public string TargetAddres { get; set; }
         //public string TargetIdentification { get; set; }
