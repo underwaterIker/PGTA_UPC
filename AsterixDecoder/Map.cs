@@ -109,7 +109,7 @@ namespace AsterixDecoder
         // Method that is executed when a marker from the GMap_control is clicked
         private void GMap_control_OnMarkerClick(GMapMarker item, MouseEventArgs e)
         {
-            //TargetsTable(item);
+            Set_TargetData_DGV(item);
         }
 
         // -----------------------------------------------------------------------------------------------------------------------------
@@ -155,6 +155,7 @@ namespace AsterixDecoder
                     //double h = geodesic.Height;
 
                     marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+                    marker.Tag = index;
                     this.SMR_overlay.Markers.Add(marker);
                 }
                 else if (this.targetData_list[index].isMLAT is true)
@@ -169,6 +170,7 @@ namespace AsterixDecoder
                     //double h = geodesic.Height;
 
                     marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+                    marker.Tag = index;
                     this.MLAT_overlay.Markers.Add(marker);
                 }
             }
@@ -180,6 +182,7 @@ namespace AsterixDecoder
                 longitude = this.targetData_list[index].Position[1];
 
                 marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+                marker.Tag = index;
                 this.ADSB_overlay.Markers.Add(marker);
             }
 
@@ -211,19 +214,43 @@ namespace AsterixDecoder
 
 
         // TABLE CLICK TARGET
-        /*
-        private void TargetsTable(GMapMarker target)
+        
+        private void Set_TargetData_DGV(GMapMarker target)
         {
 
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.ColumnHeadersVisible = false;
+            TargetData_DGV.Columns.Clear();
+            TargetData_DGV.Rows.Clear();
 
-            dataGridView1.RowCount = 3;
-            dataGridView1.ColumnCount = 5;
+            TargetData_DGV.RowHeadersVisible = false;
+            TargetData_DGV.ColumnHeadersVisible = false;
 
+            // Set the number of rows and columns
+            TargetData_DGV.RowCount = 6;
+            TargetData_DGV.ColumnCount = 2;
 
-            //dataGridView1.Cell.Font = new Font("Tahoma", 11, FontStyle.Bold);
+            TargetData_DGV.Rows[0].Cells[0].Selected = false;
+            TargetData_DGV.Columns[0].Width = 160;
+            TargetData_DGV.Columns[1].Width = 160;
 
+            // Column[0] bold
+            TargetData_DGV.Columns[0].DefaultCellStyle.Font = new Font("Tahoma", 11, FontStyle.Bold);
+
+            int index = (int)target.Tag;
+
+            TargetData_DGV.Rows[0].Cells[0].Value = "Time";
+            TargetData_DGV.Rows[0].Cells[1].Value = this.targetData_list[index].Time;
+            TargetData_DGV.Rows[1].Cells[0].Value = "Pos. Latitude";
+            TargetData_DGV.Rows[1].Cells[1].Value = target.Position.Lat;
+            TargetData_DGV.Rows[2].Cells[0].Value = "Pos. Longitude";
+            TargetData_DGV.Rows[2].Cells[1].Value = target.Position.Lng;
+            string[] ID_names = new string[3] { "Track Number", "Target Address", "Target Identification" };
+            for (int i = 0; i < this.targetData_list[index].ID.Count; i++)
+            {
+                TargetData_DGV.Rows[i+3].Cells[0].Value = ID_names[i];
+                TargetData_DGV.Rows[i+3].Cells[1].Value = this.targetData_list[index].ID[i];
+            }
+
+            /*
             // Headers
             int k = 0;
             int indice = 0;
@@ -261,9 +288,9 @@ namespace AsterixDecoder
                 }
 
             }
-
+            */
         }
-        */
+        
 
         
         
