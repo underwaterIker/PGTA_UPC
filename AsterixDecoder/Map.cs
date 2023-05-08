@@ -26,22 +26,30 @@ namespace AsterixDecoder
         private List<TargetData> targetData_list;
         
         // One Overlay for each type
-        GMapOverlay SMR_overlay = new GMapOverlay("SMR");
-        GMapOverlay MLAT_overlay = new GMapOverlay("MLAT");
-        GMapOverlay ADSB_overlay = new GMapOverlay("ADSB");
+        private GMapOverlay SMR_overlay = new GMapOverlay("SMR");
+        private GMapOverlay MLAT_overlay = new GMapOverlay("MLAT");
+        private GMapOverlay ADSB_overlay = new GMapOverlay("ADSB");
+
+        // List containing the IDs of the targets ploted, necessary for the RemovePreviousMarker() method
+        private List<string> SMR_markerTags = new List<string>();
+        private List<string> MLAT_markerTags = new List<string>();
+        private List<string> ADSB_markerTags = new List<string>();
+
+        //
+        private List<int> indexes = new List<int>();
 
         // Radar WGS84 Coordinates of SMR and MLAT
-        CoordinatesWGS84 SMR_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29561833), Functions.Deg2Rad(2.09511417));
-        CoordinatesWGS84 MLAT_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29706278), Functions.Deg2Rad(2.07844722));
+        private CoordinatesWGS84 SMR_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29561833), Functions.Deg2Rad(2.09511417));
+        private CoordinatesWGS84 MLAT_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29706278), Functions.Deg2Rad(2.07844722));
 
         // Initial Position for the Map
-        PointLatLng LEBL_position = new PointLatLng(41.29839, 2.08331);
+        private PointLatLng LEBL_position = new PointLatLng(41.29839, 2.08331);
 
         // Current time
-        string currentTime = "08:00:00";
+        private string currentTime = "08:00:00";
 
         // GeoUtils class
-        GeoUtils myGeoUtils = new GeoUtils();
+        private GeoUtils myGeoUtils = new GeoUtils();
 
 
         // CONSTRUCTOR
@@ -162,7 +170,17 @@ namespace AsterixDecoder
                     //double h = geodesic.Height;
 
                     marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+                    marker.ToolTipText = this.targetData_list[index].ID[0];
                     marker.Tag = index;
+
+                    int delete_index = this.SMR_markerTags.IndexOf(marker.ToolTipText);
+                    if (delete_index != -1)
+                    {
+                        this.SMR_markerTags.RemoveAt(delete_index);
+                        this.SMR_overlay.Markers.RemoveAt(delete_index);
+                    }
+
+                    this.SMR_markerTags.Add(marker.ToolTipText);
                     this.SMR_overlay.Markers.Add(marker);
                 }
                 else if (this.targetData_list[index].isMLAT is true)
@@ -177,7 +195,17 @@ namespace AsterixDecoder
                     //double h = geodesic.Height;
 
                     marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+                    marker.ToolTipText = this.targetData_list[index].ID[0];
                     marker.Tag = index;
+
+                    int delete_index = this.MLAT_markerTags.IndexOf(marker.ToolTipText);
+                    if (delete_index != -1)
+                    {
+                        this.MLAT_markerTags.RemoveAt(delete_index);
+                        this.MLAT_overlay.Markers.RemoveAt(delete_index);
+                    }
+
+                    this.MLAT_markerTags.Add(marker.ToolTipText);
                     this.MLAT_overlay.Markers.Add(marker);
                 }
             }
@@ -189,7 +217,17 @@ namespace AsterixDecoder
                 longitude = this.targetData_list[index].Position[1];
 
                 marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
+                marker.ToolTipText = this.targetData_list[index].ID[0];
                 marker.Tag = index;
+
+                int delete_index = this.ADSB_markerTags.IndexOf(marker.ToolTipText);
+                if (delete_index != -1)
+                {
+                    this.ADSB_markerTags.RemoveAt(delete_index);
+                    this.ADSB_overlay.Markers.RemoveAt(delete_index);
+                }
+
+                this.ADSB_markerTags.Add(marker.ToolTipText);
                 this.ADSB_overlay.Markers.Add(marker);
             }
 
@@ -245,6 +283,10 @@ namespace AsterixDecoder
             TargetData_DGV.Rows[5].Cells[0].Value = "Target Identification";
             TargetData_DGV.Rows[6].Cells[0].Value = "Mode 3A Code";
             TargetData_DGV.Rows[7].Cells[0].Value = "Flight Level";
+
+            //int index = target.ToolTipText);
+
+            //int index = this.SMR_markerTags.IndexOf((string)target.Tag);
 
             int index = (int)target.Tag;
 
