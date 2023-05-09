@@ -32,7 +32,6 @@ namespace AsterixDecoder
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.Map_pictureBox = new System.Windows.Forms.PictureBox();
             this.GMap_control = new GMap.NET.WindowsForms.GMapControl();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.Play_button = new System.Windows.Forms.Button();
@@ -44,18 +43,9 @@ namespace AsterixDecoder
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.ClearSelection_button = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.Map_pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // Map_pictureBox
-            // 
-            this.Map_pictureBox.Location = new System.Drawing.Point(464, 94);
-            this.Map_pictureBox.Name = "Map_pictureBox";
-            this.Map_pictureBox.Size = new System.Drawing.Size(1032, 547);
-            this.Map_pictureBox.TabIndex = 5;
-            this.Map_pictureBox.TabStop = false;
             // 
             // GMap_control
             // 
@@ -65,7 +55,7 @@ namespace AsterixDecoder
             this.GMap_control.GrayScaleMode = false;
             this.GMap_control.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
             this.GMap_control.LevelsKeepInMemory = 5;
-            this.GMap_control.Location = new System.Drawing.Point(464, 94);
+            this.GMap_control.Location = new System.Drawing.Point(454, 94);
             this.GMap_control.MarkersEnabled = true;
             this.GMap_control.MaxZoom = 2;
             this.GMap_control.MinZoom = 2;
@@ -114,7 +104,7 @@ namespace AsterixDecoder
             this.Time_label.AutoSize = true;
             this.Time_label.Location = new System.Drawing.Point(958, 66);
             this.Time_label.Name = "Time_label";
-            this.Time_label.Size = new System.Drawing.Size(57, 13);
+            this.Time_label.Size = new System.Drawing.Size(104, 26);
             this.Time_label.TabIndex = 10;
             this.Time_label.Text = "00:00:00";
             // 
@@ -149,7 +139,7 @@ namespace AsterixDecoder
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(64, 681);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(80, 13);
+            this.label3.Size = new System.Drawing.Size(152, 26);
             this.label3.TabIndex = 21;
             this.label3.Text = "TIME SCALE";
             // 
@@ -160,7 +150,7 @@ namespace AsterixDecoder
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(168, 738);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(20, 13);
+            this.label4.Size = new System.Drawing.Size(37, 26);
             this.label4.TabIndex = 22;
             this.label4.Text = "x1";
             // 
@@ -189,14 +179,12 @@ namespace AsterixDecoder
             this.Controls.Add(this.Stop_button);
             this.Controls.Add(this.Play_button);
             this.Controls.Add(this.GMap_control);
-            this.Controls.Add(this.Map_pictureBox);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Map";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Menu";
             this.Load += new System.EventHandler(this.Map_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.Map_pictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
@@ -205,7 +193,6 @@ namespace AsterixDecoder
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox Map_pictureBox;
         private GMap.NET.WindowsForms.GMapControl GMap_control;
         private Timer timer1;
         private Button Play_button;

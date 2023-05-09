@@ -17,21 +17,21 @@ namespace ClassLibrary
     public class Decodification
     {
         // List with the Data of all the messages inside the File
-        public List<Data> messagesData_list = new List<Data>();
+        public List<Data> messagesData_list { get; } = new List<Data>();
         // Data of one message
         private Data messageData;
 
         // List with the TargetData of all the messages inside the File that are targets
-        public List<TargetData> targetData_list = new List<TargetData>();
+        public List<TargetData> targetData_list { get; } = new List<TargetData>();
         // TargetData of one message
         private TargetData targetData;
         // TargetData indicator, indicates if the message is a target or not
         private bool isTarget;
 
         // Presence of CAT10 indicator
-        public bool CAT10_flag = false;
+        public bool CAT10_flag { get; } = false;
         // Presence of CAT21 indicator
-        public bool CAT21_flag = false;
+        public bool CAT21_flag { get; } = false;
 
         
         // CONSTRUCTOR
@@ -58,9 +58,7 @@ namespace ClassLibrary
                 if (cat == 10)
                 {
                     if (CAT10_flag is false)
-                    {
                         CAT10_flag = true;
-                    }
 
                     byte[] CAT10_message = new byte[length - 3];
                     for (int j = 0, k = i; j < length - 3; j++, k++)
@@ -75,9 +73,7 @@ namespace ClassLibrary
                 else if (cat == 21)
                 {
                     if (CAT21_flag is false)
-                    {
                         CAT21_flag = true;
-                    }
 
                     byte[] CAT21_message = new byte[length - 3];
                     for (int j = 0, k = i; j < length - 3; j++, k++)
@@ -928,10 +924,11 @@ namespace ClassLibrary
             double x = LSB * Functions.TwosComplement2Int_fromBytes(x_bytes);
             double y = LSB * Functions.TwosComplement2Int_fromBytes(y_bytes);
 
-            double[] position = new double[3] { x, y, 0 };
+            double[] position_forMessageData = new double[2] { x, y };
+            double[] position_forTargetData = new double[3] { x, y, 0 };
 
-            this.messageData.data_list.Add(position);
-            this.targetData.Position = position;
+            this.messageData.data_list.Add(position_forMessageData);
+            this.targetData.Position = position_forTargetData;
             if (this.targetData.isSMR is false)
             {
                 this.targetData.isMLAT = true;

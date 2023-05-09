@@ -27,34 +27,7 @@ namespace ClassLibrary
         {
             BitArray bits = new BitArray(bytes);
 
-            if (bits[bits.Length-1] == true)
-            {
-                // Ones complement
-                for (int i = 0; i < bits.Length; i++)
-                {
-                    bits[i] = !bits[i];
-                }
-
-                // Twos complement
-                for (int i = 0; i < bits.Length; i++)
-                {
-                    if (bits[i] == true)
-                    {
-                        bits[i] = false;
-                    }
-                    else
-                    {
-                        bits[i] = true;
-                        break;
-                    }
-                }
-                return -BitArray2Int(bits);
-            }
-            else
-            {
-                return BitArray2Int(bits);
-            }
-
+            return TwosComplement2Int_fromBitArray(bits);
         }
 
         // A2 Complement function from BitArray (bytes have to be already reversed)
@@ -87,7 +60,6 @@ namespace ClassLibrary
             {
                 return BitArray2Int(bits);
             }
-
         }
 
         // BitArray to a number

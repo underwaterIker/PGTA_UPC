@@ -53,11 +53,12 @@ namespace AsterixDecoder
             this.dataList_DGV.AllowUserToDeleteRows = false;
             this.dataList_DGV.AllowUserToResizeColumns = false;
             this.dataList_DGV.AllowUserToResizeRows = false;
+            this.dataList_DGV.ColumnHeadersHeight = 46;
             this.dataList_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataList_DGV.ColumnHeadersVisible = false;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -68,11 +69,14 @@ namespace AsterixDecoder
             this.dataList_DGV.Name = "dataList_DGV";
             this.dataList_DGV.ReadOnly = true;
             this.dataList_DGV.RowHeadersVisible = false;
+            this.dataList_DGV.RowHeadersWidth = 82;
             this.dataList_DGV.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dataList_DGV.RowTemplate.Height = 26;
             this.dataList_DGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataList_DGV.Size = new System.Drawing.Size(310, 504);
             this.dataList_DGV.TabIndex = 8;
             this.dataList_DGV.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataList_DGV_CellClick);
+            this.dataList_DGV.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dataList_DGV_RowPrePaint);
             // 
             // dataItems_DGV
             // 
@@ -80,11 +84,12 @@ namespace AsterixDecoder
             this.dataItems_DGV.AllowUserToDeleteRows = false;
             this.dataItems_DGV.AllowUserToResizeColumns = false;
             this.dataItems_DGV.AllowUserToResizeRows = false;
+            this.dataItems_DGV.ColumnHeadersHeight = 46;
             this.dataItems_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataItems_DGV.ColumnHeadersVisible = false;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -95,11 +100,14 @@ namespace AsterixDecoder
             this.dataItems_DGV.Name = "dataItems_DGV";
             this.dataItems_DGV.ReadOnly = true;
             this.dataItems_DGV.RowHeadersVisible = false;
+            this.dataItems_DGV.RowHeadersWidth = 82;
             this.dataItems_DGV.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dataItems_DGV.RowTemplate.Height = 26;
             this.dataItems_DGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataItems_DGV.Size = new System.Drawing.Size(380, 504);
             this.dataItems_DGV.TabIndex = 9;
             this.dataItems_DGV.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataItems_DGV_CellClick);
+            this.dataItems_DGV.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dataItems_DGV_RowPrePaint);
             // 
             // Item_DGV
             // 
@@ -107,11 +115,12 @@ namespace AsterixDecoder
             this.Item_DGV.AllowUserToDeleteRows = false;
             this.Item_DGV.AllowUserToResizeColumns = false;
             this.Item_DGV.AllowUserToResizeRows = false;
+            this.Item_DGV.ColumnHeadersHeight = 46;
             this.Item_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.Item_DGV.ColumnHeadersVisible = false;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -122,10 +131,13 @@ namespace AsterixDecoder
             this.Item_DGV.Name = "Item_DGV";
             this.Item_DGV.ReadOnly = true;
             this.Item_DGV.RowHeadersVisible = false;
+            this.Item_DGV.RowHeadersWidth = 82;
             this.Item_DGV.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.Item_DGV.RowTemplate.Height = 26;
             this.Item_DGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.Item_DGV.Size = new System.Drawing.Size(380, 504);
             this.Item_DGV.TabIndex = 10;
+            this.Item_DGV.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.Item_DGV_RowPrePaint);
             // 
             // ExportCSV_button
             // 

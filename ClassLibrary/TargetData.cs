@@ -20,9 +20,9 @@ namespace ClassLibrary
         public double FlightLevel { get; set; }
 
         // SMR, MLAT or ADSB message indicator
-        public bool isSMR = false;
-        public bool isMLAT = false;
-        public bool isADSB = false;
+        public bool isSMR { get; set; } = false;
+        public bool isMLAT { get; set; } = false;
+        public bool isADSB { get; set; } = false;
 
 
         // CONSTRUCTOR

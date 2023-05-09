@@ -39,7 +39,7 @@ namespace AsterixDecoder
             this.messagesData_list = messagesData_list;
             this.CAT10_flag = CAT10_flag;
             this.CAT21_flag = CAT21_flag;
-            
+
             Set_dataList_DGV(this.messagesData_list);
         }
 
@@ -230,7 +230,7 @@ namespace AsterixDecoder
 
             dataList_DGV.RowHeadersVisible = false;
             dataList_DGV.ColumnHeadersVisible = false;
-
+            
             // Set the number of rows and columns
             dataList_DGV.RowCount = messagesData_list.Count + 1;
             dataList_DGV.ColumnCount = 4;
@@ -241,8 +241,10 @@ namespace AsterixDecoder
             dataList_DGV.Columns[2].Width = 80;
             dataList_DGV.Columns[3].Width = 80;
 
-            // Row[0] bold
-            dataList_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 11, FontStyle.Bold);
+            // Row[0] Bold and Frozen
+            dataList_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
+            dataList_DGV.Rows[0].Frozen = true;
+            dataList_DGV.Columns[0].DefaultCellStyle.Font = new Font("Tahoma", 8, FontStyle.Bold);
 
             // Headers
             dataList_DGV.Rows[0].Cells[1].Value = "Length";
@@ -256,6 +258,11 @@ namespace AsterixDecoder
                 dataList_DGV.Rows[i + 1].Cells[2].Value = messagesData_list[i].numberOfDataItems;
                 dataList_DGV.Rows[i + 1].Cells[3].Value = messagesData_list[i].CAT;
             }
+        }
+
+        private void dataList_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            SetRowsColor(e.RowIndex, dataList_DGV);
         }
 
         private void Set_dataItems_DGV(Data messageData)
@@ -276,8 +283,9 @@ namespace AsterixDecoder
             dataItems_DGV.Columns[0].Width = 120;
             dataItems_DGV.Columns[1].Width = 240;
 
-            // Row[0] bold
-            dataItems_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 11, FontStyle.Bold);
+            // Row[0] Bold and Frozen
+            dataItems_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
+            dataItems_DGV.Rows[0].Frozen = true;
 
             // Headers
             dataItems_DGV.Rows[0].Cells[0].Value = "Field Type";
@@ -302,7 +310,13 @@ namespace AsterixDecoder
             {
                 dataItems_DGV.Rows[i + 1].Cells[0].Value = code_dict[messageData.fieldTypes[i]];
                 dataItems_DGV.Rows[i + 1].Cells[1].Value = name_dict[messageData.fieldTypes[i]];
+                
             }
+        }
+
+        private void dataItems_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            SetRowsColor(e.RowIndex, dataItems_DGV);
         }
 
         private void Set_Item_DGV(object item, int itemCode, int cat)
@@ -320,11 +334,12 @@ namespace AsterixDecoder
             Item_DGV.ColumnCount = 2;
 
             Item_DGV.Rows[0].Cells[0].Selected = false;
-            Item_DGV.Columns[0].Width = 120;
-            Item_DGV.Columns[1].Width = 240;
+            Item_DGV.Columns[0].Width = 160;
+            Item_DGV.Columns[1].Width = 200;
 
-            // Row[0] bold
-            Item_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 11, FontStyle.Bold);
+            // Row[0] Bold and Frozen
+            Item_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
+            Item_DGV.Rows[0].Frozen = true;
 
             // Headers
             Item_DGV.Rows[0].Cells[0].Value = "Item name";
@@ -359,10 +374,13 @@ namespace AsterixDecoder
                 {
                     Item_DGV.Rows[i + 1].Cells[0].Value = item_dict[i];
                     Item_DGV.Rows[i + 1].Cells[1].Value = item_array[i];
-                }
-                    
-            }
-            
+                }    
+            } 
+        }
+
+        private void Item_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            SetRowsColor(e.RowIndex, Item_DGV);
         }
 
         // ------------------------------------------------------
@@ -597,6 +615,16 @@ namespace AsterixDecoder
 
         // ------------------------------------------------------
         // Loading Button State functions
+        private void SetRowsColor(int rowIndex, DataGridView DGV)
+        {
+            if (rowIndex % 2 == 0)
+                DGV.Rows[rowIndex].DefaultCellStyle.BackColor = Color.White;
+            else
+                DGV.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightCyan;
+        }
+
+        // ------------------------------------------------------
+        // Loading Button State functions
         private void Loading_ButtonState(Button button)
         {
             button.Text = "Loading...";
@@ -612,6 +640,6 @@ namespace AsterixDecoder
             button.BackColor = Color.White;
         }
 
-        
+
     }
 }
