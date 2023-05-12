@@ -34,8 +34,14 @@ namespace AsterixDecoder
         // Load Data
         private void LoadFile_button_Click(object sender, EventArgs e)
         {
-            Loading_ButtonState(LoadFile_button);
+            fileLoaded_flag = false;
+            child_panel.Controls.Clear();
+            EndDisplay_ButtonState(ViewData_button);
+            EndDisplay_ButtonState(ViewMap_button);
+            EndDisplay_ButtonState(AboutUs_button);
 
+            Loading_ButtonState(LoadFile_button);
+            
             try
             {
                 OpenFileDialog LoadFile = new OpenFileDialog();
@@ -69,24 +75,24 @@ namespace AsterixDecoder
 
             if (this.fileLoaded_flag == true)
             {
+                EndDisplay_ButtonState(ViewMap_button);
+                EndDisplay_ButtonState(AboutUs_button);
+
                 Tables myTables = new Tables(this.myDecoder.messagesData_list, this.myDecoder.CAT10_flag, this.myDecoder.CAT21_flag);
-                myTables.TopLevel = false;
-                if (child_panel.Controls.Count>0)
-                    child_panel.Controls.Clear();
-                child_panel.Controls.Add(myTables);
-                myTables.BringToFront();
-                myTables.Show();
+                OpenFormInPanel(myTables);
 
-
-                //myTables.Show();
                 //myTables.dataList_DGV.Rows[0].Cells[0].Selected = false;
+
+                CurrentDisplay_ButtonState(ViewData_button, "VIEW DATA");
             }
             else
             {
                 MessageBox.Show("Load the File first.", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FinishedLoading_ButtonState(ViewData_button, "VIEW DATA");
             }
 
-            FinishedLoading_ButtonState(ViewData_button, "VIEW DATA");
+            
+            
         }
 
         // MapView
@@ -94,17 +100,34 @@ namespace AsterixDecoder
         {
             Loading_ButtonState(ViewMap_button);
 
-            Map myMap = new Map(this.myDecoder.targetData_list);
-            myMap.Show();
+            if (this.fileLoaded_flag == true)
+            {
+                EndDisplay_ButtonState(ViewData_button);
+                EndDisplay_ButtonState(AboutUs_button);
 
-            FinishedLoading_ButtonState(ViewMap_button, "VIEW MAP");
+                Map myMap = new Map(this.myDecoder.targetData_list);
+                OpenFormInPanel(myMap);
+
+                CurrentDisplay_ButtonState(ViewMap_button, "VIEW MAP");
+            }
+            else
+            {
+                MessageBox.Show("Load the File first.", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FinishedLoading_ButtonState(ViewMap_button, "VIEW MAP");
+            }
         }
 
         // AboutUs
         private void AboutUs_button_Click(object sender, EventArgs e)
         {
             AboutUs myAboutUs = new AboutUs();
-            myAboutUs.Show();
+            OpenFormInPanel(myAboutUs);
+
+            EndDisplay_ButtonState(ViewData_button);
+            EndDisplay_ButtonState(ViewMap_button);
+
+            CurrentDisplay_ButtonState(AboutUs_button, "ABOUT US");
+            
         }
 
         // Exit
@@ -113,25 +136,52 @@ namespace AsterixDecoder
             this.Close();
         }
 
+        // ------------------------------------------------------
+        // Open new Form inside the Main Form (in a Panel)
+        private void OpenFormInPanel(Form form)
+        {
+            if (child_panel.Controls.Count > 0)
+                child_panel.Controls.Clear();
+
+            form.TopLevel = false;
+            form.Dock = DockStyle.Fill;
+            child_panel.Controls.Add(form);
+            form.Show();
+        }
 
         // ------------------------------------------------------
-        // Loading Button State functions
+        // Loading Button State methods
         private void Loading_ButtonState(Button button)
         {
+            button.Font = new Font("Unisans", 15, FontStyle.Bold);
             button.Text = "Loading...";
             button.ForeColor = Color.DarkGreen;
-            button.BackColor = Color.Silver;
+            button.BackColor = Color.Gainsboro;
             Application.DoEvents();
         }
 
         private void FinishedLoading_ButtonState(Button button, string str)
         {
             button.Text = str;
-            button.ForeColor = Color.White;
-            button.BackColor = Color.LightSkyBlue;
-            button.Font = new Font("Microsoft YaHei UI", 10, FontStyle.Bold);
+            button.ForeColor = Color.Black;
+            button.BackColor = Color.CornflowerBlue;
+            button.Font = new Font("Unisans", 18, FontStyle.Bold);
         }
 
-        
+        private void CurrentDisplay_ButtonState(Button button, string str)
+        {
+            button.Text = str;
+            button.ForeColor = Color.Black;
+            button.BackColor = Color.SpringGreen;
+            button.Font = new Font("Unisans", 18, FontStyle.Bold);
+        }
+
+        private void EndDisplay_ButtonState(Button button)
+        {
+            //button.ForeColor = Color.Black;
+            button.BackColor = Color.CornflowerBlue;
+        }
+
+
     }
 }

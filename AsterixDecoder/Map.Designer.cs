@@ -38,13 +38,10 @@ namespace AsterixDecoder
             this.Stop_button = new System.Windows.Forms.Button();
             this.Time_label = new System.Windows.Forms.Label();
             this.TargetData_DGV = new System.Windows.Forms.DataGridView();
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.ExportKML_button = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.ClearSelection_button = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // GMap_control
@@ -55,7 +52,7 @@ namespace AsterixDecoder
             this.GMap_control.GrayScaleMode = false;
             this.GMap_control.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
             this.GMap_control.LevelsKeepInMemory = 5;
-            this.GMap_control.Location = new System.Drawing.Point(454, 94);
+            this.GMap_control.Location = new System.Drawing.Point(1, 1);
             this.GMap_control.MarkersEnabled = true;
             this.GMap_control.MaxZoom = 2;
             this.GMap_control.MinZoom = 2;
@@ -69,7 +66,7 @@ namespace AsterixDecoder
             this.GMap_control.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.GMap_control.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.GMap_control.ShowTileGridLines = false;
-            this.GMap_control.Size = new System.Drawing.Size(1032, 547);
+            this.GMap_control.Size = new System.Drawing.Size(1099, 481);
             this.GMap_control.TabIndex = 6;
             this.GMap_control.Zoom = 0D;
             this.GMap_control.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.GMap_control_OnMarkerClick);
@@ -81,7 +78,7 @@ namespace AsterixDecoder
             // 
             // Play_button
             // 
-            this.Play_button.Location = new System.Drawing.Point(600, 718);
+            this.Play_button.Location = new System.Drawing.Point(26, 660);
             this.Play_button.Name = "Play_button";
             this.Play_button.Size = new System.Drawing.Size(119, 32);
             this.Play_button.TabIndex = 8;
@@ -91,7 +88,7 @@ namespace AsterixDecoder
             // 
             // Stop_button
             // 
-            this.Stop_button.Location = new System.Drawing.Point(725, 718);
+            this.Stop_button.Location = new System.Drawing.Point(26, 698);
             this.Stop_button.Name = "Stop_button";
             this.Stop_button.Size = new System.Drawing.Size(119, 32);
             this.Stop_button.TabIndex = 9;
@@ -102,20 +99,23 @@ namespace AsterixDecoder
             // Time_label
             // 
             this.Time_label.AutoSize = true;
-            this.Time_label.Location = new System.Drawing.Point(958, 66);
+            this.Time_label.ForeColor = System.Drawing.Color.Black;
+            this.Time_label.Location = new System.Drawing.Point(23, 498);
             this.Time_label.Name = "Time_label";
-            this.Time_label.Size = new System.Drawing.Size(104, 26);
+            this.Time_label.Size = new System.Drawing.Size(57, 13);
             this.Time_label.TabIndex = 10;
             this.Time_label.Text = "00:00:00";
             // 
             // TargetData_DGV
             // 
+            this.TargetData_DGV.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.TargetData_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.TargetData_DGV.Location = new System.Drawing.Point(27, 146);
+            this.TargetData_DGV.Location = new System.Drawing.Point(194, 498);
             this.TargetData_DGV.Name = "TargetData_DGV";
             this.TargetData_DGV.RowHeadersWidth = 62;
             this.TargetData_DGV.RowTemplate.Height = 28;
-            this.TargetData_DGV.Size = new System.Drawing.Size(310, 311);
+            this.TargetData_DGV.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TargetData_DGV.Size = new System.Drawing.Size(320, 225);
             this.TargetData_DGV.TabIndex = 11;
             // 
             // ExportKML_button
@@ -124,7 +124,7 @@ namespace AsterixDecoder
             this.ExportKML_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ExportKML_button.ForeColor = System.Drawing.Color.Black;
             this.ExportKML_button.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.ExportKML_button.Location = new System.Drawing.Point(1255, 686);
+            this.ExportKML_button.Location = new System.Drawing.Point(755, 594);
             this.ExportKML_button.Name = "ExportKML_button";
             this.ExportKML_button.Size = new System.Drawing.Size(165, 88);
             this.ExportKML_button.TabIndex = 16;
@@ -137,9 +137,9 @@ namespace AsterixDecoder
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.SystemColors.Control;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(64, 681);
+            this.label3.Location = new System.Drawing.Point(23, 608);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(152, 26);
+            this.label3.Size = new System.Drawing.Size(80, 13);
             this.label3.TabIndex = 21;
             this.label3.Text = "TIME SCALE";
             // 
@@ -148,29 +148,16 @@ namespace AsterixDecoder
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.SystemColors.Control;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(168, 738);
+            this.label4.Location = new System.Drawing.Point(23, 632);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(37, 26);
+            this.label4.Size = new System.Drawing.Size(20, 13);
             this.label4.TabIndex = 22;
             this.label4.Text = "x1";
             // 
-            // ClearSelection_button
-            // 
-            this.ClearSelection_button.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClearSelection_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ClearSelection_button.Location = new System.Drawing.Point(27, 80);
-            this.ClearSelection_button.Name = "ClearSelection_button";
-            this.ClearSelection_button.Size = new System.Drawing.Size(310, 60);
-            this.ClearSelection_button.TabIndex = 26;
-            this.ClearSelection_button.Text = "CLEAR SELECTION";
-            this.ClearSelection_button.UseVisualStyleBackColor = false;
-            this.ClearSelection_button.Click += new System.EventHandler(this.ClearSelection_button_Click);
-            // 
             // Map
             // 
-            this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(1522, 804);
-            this.Controls.Add(this.ClearSelection_button);
+            this.BackColor = System.Drawing.Color.AliceBlue;
+            this.ClientSize = new System.Drawing.Size(1100, 760);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.ExportKML_button);
@@ -180,13 +167,12 @@ namespace AsterixDecoder
             this.Controls.Add(this.Play_button);
             this.Controls.Add(this.GMap_control);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Map";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Menu";
             this.Load += new System.EventHandler(this.Map_Load);
             ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -199,11 +185,9 @@ namespace AsterixDecoder
         private Button Stop_button;
         private Label Time_label;
         private DataGridView TargetData_DGV;
-        private BindingSource bindingSource1;
         private Button ExportKML_button;
         private Label label3;
         private Label label4;
-        private Button ClearSelection_button;
     }
 }
 

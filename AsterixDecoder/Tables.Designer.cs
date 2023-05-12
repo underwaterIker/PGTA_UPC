@@ -53,6 +53,7 @@ namespace AsterixDecoder
             this.dataList_DGV.AllowUserToDeleteRows = false;
             this.dataList_DGV.AllowUserToResizeColumns = false;
             this.dataList_DGV.AllowUserToResizeRows = false;
+            this.dataList_DGV.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.dataList_DGV.ColumnHeadersHeight = 46;
             this.dataList_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataList_DGV.ColumnHeadersVisible = false;
@@ -64,7 +65,7 @@ namespace AsterixDecoder
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataList_DGV.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dataList_DGV.Location = new System.Drawing.Point(12, 27);
+            this.dataList_DGV.Location = new System.Drawing.Point(6, 6);
             this.dataList_DGV.MultiSelect = false;
             this.dataList_DGV.Name = "dataList_DGV";
             this.dataList_DGV.ReadOnly = true;
@@ -84,6 +85,7 @@ namespace AsterixDecoder
             this.dataItems_DGV.AllowUserToDeleteRows = false;
             this.dataItems_DGV.AllowUserToResizeColumns = false;
             this.dataItems_DGV.AllowUserToResizeRows = false;
+            this.dataItems_DGV.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.dataItems_DGV.ColumnHeadersHeight = 46;
             this.dataItems_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataItems_DGV.ColumnHeadersVisible = false;
@@ -95,7 +97,7 @@ namespace AsterixDecoder
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataItems_DGV.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dataItems_DGV.Location = new System.Drawing.Point(328, 27);
+            this.dataItems_DGV.Location = new System.Drawing.Point(322, 6);
             this.dataItems_DGV.MultiSelect = false;
             this.dataItems_DGV.Name = "dataItems_DGV";
             this.dataItems_DGV.ReadOnly = true;
@@ -115,6 +117,7 @@ namespace AsterixDecoder
             this.Item_DGV.AllowUserToDeleteRows = false;
             this.Item_DGV.AllowUserToResizeColumns = false;
             this.Item_DGV.AllowUserToResizeRows = false;
+            this.Item_DGV.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.Item_DGV.ColumnHeadersHeight = 46;
             this.Item_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.Item_DGV.ColumnHeadersVisible = false;
@@ -126,7 +129,7 @@ namespace AsterixDecoder
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.Item_DGV.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Item_DGV.Location = new System.Drawing.Point(714, 27);
+            this.Item_DGV.Location = new System.Drawing.Point(708, 6);
             this.Item_DGV.MultiSelect = false;
             this.Item_DGV.Name = "Item_DGV";
             this.Item_DGV.ReadOnly = true;
@@ -141,18 +144,24 @@ namespace AsterixDecoder
             // 
             // ExportCSV_button
             // 
-            this.ExportCSV_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ExportCSV_button.Location = new System.Drawing.Point(836, 598);
+            this.ExportCSV_button.BackColor = System.Drawing.Color.SaddleBrown;
+            this.ExportCSV_button.FlatAppearance.BorderSize = 3;
+            this.ExportCSV_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ExportCSV_button.Font = new System.Drawing.Font("Unispace", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ExportCSV_button.ForeColor = System.Drawing.Color.Black;
+            this.ExportCSV_button.Location = new System.Drawing.Point(842, 585);
             this.ExportCSV_button.Name = "ExportCSV_button";
-            this.ExportCSV_button.Size = new System.Drawing.Size(117, 68);
+            this.ExportCSV_button.Size = new System.Drawing.Size(131, 88);
             this.ExportCSV_button.TabIndex = 11;
-            this.ExportCSV_button.Text = "Export to .CSV";
-            this.ExportCSV_button.UseVisualStyleBackColor = true;
+            this.ExportCSV_button.Text = "EXPORT TO .CSV";
+            this.ExportCSV_button.UseVisualStyleBackColor = false;
             this.ExportCSV_button.Click += new System.EventHandler(this.ExportCSV_button_Click);
             // 
             // Filter_comboBox
             // 
+            this.Filter_comboBox.BackColor = System.Drawing.Color.White;
             this.Filter_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Filter_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Filter_comboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Filter_comboBox.FormattingEnabled = true;
             this.Filter_comboBox.Items.AddRange(new object[] {
@@ -160,48 +169,59 @@ namespace AsterixDecoder
             "Target Address",
             "Target Identification",
             "Mode 3A Code"});
-            this.Filter_comboBox.Location = new System.Drawing.Point(402, 566);
+            this.Filter_comboBox.Location = new System.Drawing.Point(376, 546);
             this.Filter_comboBox.Name = "Filter_comboBox";
-            this.Filter_comboBox.Size = new System.Drawing.Size(253, 32);
+            this.Filter_comboBox.Size = new System.Drawing.Size(279, 32);
             this.Filter_comboBox.TabIndex = 12;
             this.Filter_comboBox.SelectedIndexChanged += new System.EventHandler(this.Filter_comboBox_SelectedIndexChanged);
             // 
             // Filter_textBox
             // 
+            this.Filter_textBox.BackColor = System.Drawing.Color.White;
+            this.Filter_textBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Filter_textBox.Enabled = false;
             this.Filter_textBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Filter_textBox.Location = new System.Drawing.Point(402, 617);
+            this.Filter_textBox.Location = new System.Drawing.Point(376, 597);
             this.Filter_textBox.Name = "Filter_textBox";
-            this.Filter_textBox.Size = new System.Drawing.Size(253, 29);
+            this.Filter_textBox.Size = new System.Drawing.Size(279, 29);
             this.Filter_textBox.TabIndex = 13;
             // 
             // Filter_button
             // 
+            this.Filter_button.BackColor = System.Drawing.Color.SaddleBrown;
             this.Filter_button.Enabled = false;
-            this.Filter_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Filter_button.Location = new System.Drawing.Point(402, 667);
+            this.Filter_button.FlatAppearance.BorderSize = 3;
+            this.Filter_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Filter_button.Font = new System.Drawing.Font("Unispace", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Filter_button.ForeColor = System.Drawing.Color.Black;
+            this.Filter_button.Location = new System.Drawing.Point(376, 644);
             this.Filter_button.Name = "Filter_button";
-            this.Filter_button.Size = new System.Drawing.Size(138, 55);
+            this.Filter_button.Size = new System.Drawing.Size(135, 64);
             this.Filter_button.TabIndex = 14;
-            this.Filter_button.Text = "Filter";
-            this.Filter_button.UseVisualStyleBackColor = true;
+            this.Filter_button.Text = "APPLY FILTER";
+            this.Filter_button.UseVisualStyleBackColor = false;
             this.Filter_button.Click += new System.EventHandler(this.Filter_button_Click);
             // 
             // UndoFilter_button
             // 
+            this.UndoFilter_button.BackColor = System.Drawing.Color.SaddleBrown;
             this.UndoFilter_button.Enabled = false;
-            this.UndoFilter_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.UndoFilter_button.Location = new System.Drawing.Point(559, 660);
+            this.UndoFilter_button.FlatAppearance.BorderSize = 3;
+            this.UndoFilter_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.UndoFilter_button.Font = new System.Drawing.Font("Unispace", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UndoFilter_button.ForeColor = System.Drawing.Color.Black;
+            this.UndoFilter_button.Location = new System.Drawing.Point(543, 644);
             this.UndoFilter_button.Name = "UndoFilter_button";
-            this.UndoFilter_button.Size = new System.Drawing.Size(96, 68);
+            this.UndoFilter_button.Size = new System.Drawing.Size(112, 64);
             this.UndoFilter_button.TabIndex = 15;
-            this.UndoFilter_button.Text = "Undo Filter";
-            this.UndoFilter_button.UseVisualStyleBackColor = true;
+            this.UndoFilter_button.Text = "UNDO FILTER";
+            this.UndoFilter_button.UseVisualStyleBackColor = false;
             this.UndoFilter_button.Click += new System.EventHandler(this.UndoFilter_button_Click);
             // 
             // Tables
             // 
-            this.ClientSize = new System.Drawing.Size(1105, 740);
+            this.BackColor = System.Drawing.Color.AliceBlue;
+            this.ClientSize = new System.Drawing.Size(1100, 760);
             this.Controls.Add(this.UndoFilter_button);
             this.Controls.Add(this.Filter_button);
             this.Controls.Add(this.Filter_textBox);
@@ -210,7 +230,7 @@ namespace AsterixDecoder
             this.Controls.Add(this.Item_DGV);
             this.Controls.Add(this.dataItems_DGV);
             this.Controls.Add(this.dataList_DGV);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Tables";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Asterix Decoder";

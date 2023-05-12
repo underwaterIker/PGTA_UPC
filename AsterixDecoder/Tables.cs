@@ -281,7 +281,7 @@ namespace AsterixDecoder
 
             dataItems_DGV.Rows[0].Cells[0].Selected = false;
             dataItems_DGV.Columns[0].Width = 120;
-            dataItems_DGV.Columns[1].Width = 240;
+            dataItems_DGV.Columns[1].Width = 260;
 
             // Row[0] Bold and Frozen
             dataItems_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
@@ -334,8 +334,8 @@ namespace AsterixDecoder
             Item_DGV.ColumnCount = 2;
 
             Item_DGV.Rows[0].Cells[0].Selected = false;
-            Item_DGV.Columns[0].Width = 160;
-            Item_DGV.Columns[1].Width = 200;
+            Item_DGV.Columns[0].Width = 170;
+            Item_DGV.Columns[1].Width = 210;
 
             // Row[0] Bold and Frozen
             Item_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
