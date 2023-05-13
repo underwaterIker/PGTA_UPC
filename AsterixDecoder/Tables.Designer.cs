@@ -144,10 +144,10 @@ namespace AsterixDecoder
             // 
             // ExportCSV_button
             // 
-            this.ExportCSV_button.BackColor = System.Drawing.Color.SaddleBrown;
+            this.ExportCSV_button.BackColor = System.Drawing.Color.Snow;
             this.ExportCSV_button.FlatAppearance.BorderSize = 3;
             this.ExportCSV_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ExportCSV_button.Font = new System.Drawing.Font("Unispace", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ExportCSV_button.Font = new System.Drawing.Font("Unispace", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ExportCSV_button.ForeColor = System.Drawing.Color.Black;
             this.ExportCSV_button.Location = new System.Drawing.Point(842, 585);
             this.ExportCSV_button.Name = "ExportCSV_button";
@@ -188,11 +188,11 @@ namespace AsterixDecoder
             // 
             // Filter_button
             // 
-            this.Filter_button.BackColor = System.Drawing.Color.SaddleBrown;
+            this.Filter_button.BackColor = System.Drawing.Color.Snow;
             this.Filter_button.Enabled = false;
             this.Filter_button.FlatAppearance.BorderSize = 3;
             this.Filter_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Filter_button.Font = new System.Drawing.Font("Unispace", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Filter_button.Font = new System.Drawing.Font("Unispace", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Filter_button.ForeColor = System.Drawing.Color.Black;
             this.Filter_button.Location = new System.Drawing.Point(376, 644);
             this.Filter_button.Name = "Filter_button";
@@ -204,11 +204,11 @@ namespace AsterixDecoder
             // 
             // UndoFilter_button
             // 
-            this.UndoFilter_button.BackColor = System.Drawing.Color.SaddleBrown;
+            this.UndoFilter_button.BackColor = System.Drawing.Color.Snow;
             this.UndoFilter_button.Enabled = false;
             this.UndoFilter_button.FlatAppearance.BorderSize = 3;
             this.UndoFilter_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.UndoFilter_button.Font = new System.Drawing.Font("Unispace", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UndoFilter_button.Font = new System.Drawing.Font("Unispace", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.UndoFilter_button.ForeColor = System.Drawing.Color.Black;
             this.UndoFilter_button.Location = new System.Drawing.Point(543, 644);
             this.UndoFilter_button.Name = "UndoFilter_button";
@@ -220,7 +220,7 @@ namespace AsterixDecoder
             // 
             // Tables
             // 
-            this.BackColor = System.Drawing.Color.AliceBlue;
+            this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.ClientSize = new System.Drawing.Size(1100, 760);
             this.Controls.Add(this.UndoFilter_button);
             this.Controls.Add(this.Filter_button);

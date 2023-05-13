@@ -113,7 +113,7 @@
             // 
             // child_panel
             // 
-            this.child_panel.BackColor = System.Drawing.Color.AliceBlue;
+            this.child_panel.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.child_panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.child_panel.Location = new System.Drawing.Point(176, -1);
             this.child_panel.Name = "child_panel";

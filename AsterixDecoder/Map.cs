@@ -16,6 +16,13 @@ using System.IO;
 using System.Threading;
 using System.Timers;
 using MultiCAT6.Utils;
+using System.Reflection;
+using System.Xml.Serialization;
+using SharpKml.Base;
+using SharpKml.Dom;
+using SharpKml.Engine;
+using Document = SharpKml.Dom.Document;
+using System.Xml;
 
 namespace AsterixDecoder
 {
@@ -46,7 +53,9 @@ namespace AsterixDecoder
         private PointLatLng LEBL_position = new PointLatLng(41.29839, 2.08331);
 
         // Current time
-        private string currentTime = "08:00:00";
+        
+        private string currentTime= "08:00:00";
+        System.TimeSpan timeElapsed;
 
         // GeoUtils class
         private GeoUtils myGeoUtils = new GeoUtils();
@@ -88,6 +97,7 @@ namespace AsterixDecoder
             //timer1.Enabled = true;
             //timer1.Interval = 1000;
             timer1.Start();
+            ChooseTime();
         }
 
         // Stop button
@@ -110,15 +120,78 @@ namespace AsterixDecoder
         private void ExportKML_button_Click(object sender, EventArgs e)
         {
 
+            // Crear un objeto Kml
+            var kml = new SharpKml.Dom.Kml();
+
+            // Crear el documento KML
+            var document = new Document();
+            document.Name = "Mi Mapa";
+            kml.Feature = document;
+
+            // Recorrer todos los marcadores del mapa
+            foreach (var marker in SMR_overlay.Markers)
+            {
+                // Crear un Placemark para el marcador
+                var placemark = new SharpKml.Dom.Placemark();
+                placemark.Name = marker.ToolTipText;
+                placemark.Geometry = new SharpKml.Dom.Point()
+                {
+                    Coordinate = new Vector(marker.Position.Lat, marker.Position.Lng)
+                };
+
+                // Agregar el Placemark al Document
+                document.AddFeature(placemark);
+            }
+            foreach (var marker in ADSB_overlay.Markers)
+            {
+                // Crear un Placemark para el marcador
+                var placemark = new SharpKml.Dom.Placemark();
+                placemark.Name = marker.ToolTipText;
+                placemark.Geometry = new SharpKml.Dom.Point()
+                {
+                    Coordinate = new Vector(marker.Position.Lat, marker.Position.Lng)
+                };
+
+                // Agregar el Placemark al Document
+                document.AddFeature(placemark);
+            }
+            foreach (var marker in MLAT_overlay.Markers)
+            {
+                // Crear un Placemark para el marcador
+                var placemark = new SharpKml.Dom.Placemark();
+                placemark.Name = marker.ToolTipText;
+                placemark.Geometry = new SharpKml.Dom.Point()
+                {
+                    Coordinate = new Vector(marker.Position.Lat, marker.Position.Lng)
+                };
+
+                // Agregar el Placemark al Document
+                document.AddFeature(placemark);
+            }
+            // Guardar el archivo KML;
+            // Agregar los Placemarks al KML ...
+            string fileName = @"C:\Users\paula\Desktop\mi_mapa.kml";
+            using (var stream = File.Create(fileName))
+            {
+                KmlFile kml1 = KmlFile.Create(document, false);
+                kml1.Save(stream);
+            }
         }
 
         // timer1.Tick: Method that is executed in every timer1.Interval
         private void timer1_Tick(object sender, EventArgs e)
         {
-            TimeSpan time = TimeSpan.FromSeconds(TimeSpan.Parse(this.currentTime).TotalSeconds + 1);
-            this.currentTime = time.ToString(@"hh\:mm\:ss");
-            Time_label.Text = this.currentTime;
+
+            System.TimeSpan time = System.TimeSpan.FromSeconds(System.TimeSpan.Parse(this.currentTime).TotalSeconds + 1);
+            currentTime = time.ToString(@"hh\:mm\:ss");
+            Time_label.Text = currentTime;
             CheckTargets();
+
+            
+            //trackBar1.Value = (int)time.TotalSeconds;
+            //trackBar1.Minimum = (int)System.TimeSpan.Parse(targetData_list[0].Time).TotalSeconds;
+            //trackBar1.Maximum = (int)System.TimeSpan.Parse(targetData_list[100000].Time).TotalSeconds;
+
         }
 
         // Method that is executed when a marker from the GMap_control is clicked
@@ -133,7 +206,7 @@ namespace AsterixDecoder
         {
             for (int index = 0; index<this.targetData_list.Count; index++)
             {
-                if ((double)TimeSpan.Parse(targetData_list[index].Time).TotalSeconds <= (double)TimeSpan.Parse(this.currentTime).TotalSeconds)
+                if ((double)System.TimeSpan.Parse(targetData_list[index].Time).TotalSeconds <= (double)System.TimeSpan.Parse(this.currentTime).TotalSeconds)
                 {
                     AddMarkerToItsOverlay(index);
                 }
@@ -170,7 +243,7 @@ namespace AsterixDecoder
                     markerType = GMarkerGoogleType.yellow_small;
                     marker = CreateMarker(latitude, longitude, markerType, index);
 
-                    RemovePreviousMarker_and_AddNewMarker(marker, this.SMR_markerTags, this.SMR_overlay);
+                    RemovePreviousMarker_and_AddNewMarker(marker, this.SMR_markerTags, this.SMR_overlay,latitude,longitude);
                 }
                 else if (this.targetData_list[index].isMLAT is true)
                 {
@@ -184,7 +257,7 @@ namespace AsterixDecoder
                     markerType = GMarkerGoogleType.green_small;
                     marker = CreateMarker(latitude, longitude, markerType, index);
 
-                    RemovePreviousMarker_and_AddNewMarker(marker, this.MLAT_markerTags, this.MLAT_overlay);
+                    RemovePreviousMarker_and_AddNewMarker(marker, this.MLAT_markerTags, this.MLAT_overlay,latitude,longitude);
                 }
             }
             else //if (this.targetData_list[index].isADSB is true)
@@ -195,12 +268,28 @@ namespace AsterixDecoder
                 markerType = GMarkerGoogleType.red_small;
                 marker = CreateMarker(latitude, longitude, markerType, index);
 
-                RemovePreviousMarker_and_AddNewMarker(marker, this.ADSB_markerTags, this.ADSB_overlay);
+                RemovePreviousMarker_and_AddNewMarker(marker, this.ADSB_markerTags, this.ADSB_overlay,latitude,longitude);
             }
 
         }
+        private int Maximum()
+        {
+            int step = 0;
+            for (int index = 0; index < this.targetData_list.Count; index++)
+            {
+                if ((double)System.TimeSpan.Parse(targetData_list[index].Time).TotalSeconds <= (double)System.TimeSpan.Parse(this.currentTime).TotalSeconds)
+                {
+                   
+                }
+                else
+                {
+                    break;
+                }
 
-        private GMarkerGoogle CreateMarker(double latitude, double longitude, GMarkerGoogleType markerType, int index)
+            }
+            return step;
+        }
+    private GMarkerGoogle CreateMarker(double latitude, double longitude, GMarkerGoogleType markerType, int index)
         {
             GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
             marker.ToolTipText = this.targetData_list[index].ID[0];
@@ -209,13 +298,16 @@ namespace AsterixDecoder
             return marker;
         }
 
-        private void RemovePreviousMarker_and_AddNewMarker(GMarkerGoogle marker, List<string> markerTags, GMapOverlay overlay)
+        private void RemovePreviousMarker_and_AddNewMarker(GMarkerGoogle marker, List<string> markerTags, GMapOverlay overlay,double latitude,double longitude)
         {
             int delete_index = markerTags.IndexOf(marker.ToolTipText);
             if (delete_index != -1)
             {
+                GMarkerGoogleType markerType = new GMarkerGoogleType();
                 markerTags.RemoveAt(delete_index);
                 overlay.Markers.RemoveAt(delete_index);
+                //markerType = GMarkerGoogleType.arrow;//CAMBIAR
+                //marker = CreateMarker(latitude, longitude, markerType, delete_index);
             }
 
             markerTags.Add(marker.ToolTipText);
@@ -224,21 +316,31 @@ namespace AsterixDecoder
 
         private void AddOverlays()
         {
-            if (this.SMR_overlay.Markers.Any())
-            {
-                this.GMap_control.Overlays.Add(this.SMR_overlay);
-                //MessageBox.Show("smr");
-            }
-            if (this.MLAT_overlay.Markers.Any())
-            {
-                this.GMap_control.Overlays.Add(this.MLAT_overlay);
-                //MessageBox.Show("mlat");
-            }
-            if (this.ADSB_overlay.Markers.Any())
-            {
-                this.GMap_control.Overlays.Add(this.ADSB_overlay);
-                //MessageBox.Show("adsb");
-            }
+         
+           
+                if (this.SMR_overlay.Markers.Any())
+                {
+                    this.GMap_control.Overlays.Add(this.SMR_overlay);
+                    //MessageBox.Show("smr");
+                }
+                if (this.MLAT_overlay.Markers.Any())
+                {
+                    this.GMap_control.Overlays.Add(this.MLAT_overlay);
+                    //MessageBox.Show("mlat");
+                }
+                if (this.ADSB_overlay.Markers.Any())
+                {
+                    this.GMap_control.Overlays.Add(this.ADSB_overlay);
+                    //MessageBox.Show("adsb");
+                }
+           
+           
+                if (this.SMR_overlay.Markers.Any())
+                {
+                    this.GMap_control.Overlays.Add(this.SMR_overlay);
+                    //MessageBox.Show("smr");
+                }
+           
 
             //this.GMap_control.Overlays.Add(this.SMR_overlay);
             //this.GMap_control.Overlays.Add(this.MLAT_overlay);
@@ -309,18 +411,206 @@ namespace AsterixDecoder
         private void Loading_ButtonState(Button button)
         {
             button.Text = "Loading...";
-            button.ForeColor = Color.Red;
-            button.BackColor = Color.Gray;
+            button.ForeColor = System.Drawing.Color.Red;
+            button.BackColor = System.Drawing.Color.Gray;
             Application.DoEvents();
         }
 
         private void FinishedLoading_ButtonState(Button button, string str)
         {
             button.Text = str;
-            button.ForeColor = Color.Black;
-            button.BackColor = Color.White;
+            button.ForeColor = System.Drawing.Color.Black;
+            button.BackColor = System.Drawing.Color.White;
         }
 
-        
+        //TIME SCALE
+
+        //FORWARD
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            if (label4.Text=="x1")
+            {
+                label4.Text= "x1.25";
+                timer1.Interval =Convert.ToInt32((1000)/(1.25));
+
+            }
+            else if (label4.Text=="x0.25")
+            {
+                label4.Text = "x0.5";
+                timer1.Interval = (1000)*2;
+            }
+            else if (label4.Text == "x0.5")
+            {
+                label4.Text = "x0.75";
+                timer1.Interval = Convert.ToInt32(1000 / 0.75);
+            }
+            else if (label4.Text == "x1.25")
+            {
+                label4.Text = "x1.5";
+                timer1.Interval = Convert.ToInt32(1000 / 1.5);
+            }
+            else if (label4.Text == "x1.5")
+            {
+                label4.Text = "x1.75";
+                timer1.Interval = Convert.ToInt32(1000 / 1.75);
+            }
+            else if (label4.Text == "x1.75")
+            {
+                label4.Text = "x2";
+                timer1.Interval =1000/2;
+            }
+            else
+            {
+                MessageBox.Show("You can not move forward");
+            }
+        }
+
+        //BACKWARD
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+            if (label4.Text == "x1")
+            {
+                label4.Text = "x0.75";
+                timer1.Interval = Convert.ToInt32((1000)/0.75);
+
+            }
+            else if (label4.Text == "x0.75")
+            {
+                label4.Text = "x0.5";
+                timer1.Interval = Convert.ToInt32((1000) / 0.5);
+
+            }
+            else if (label4.Text == "x0.5")
+            {
+                label4.Text = "x0.25";
+                timer1.Interval = Convert.ToInt32(1000 / 0.25);
+            }
+            else if (label4.Text == "x1.5")
+            {
+                label4.Text = "x1.25";
+                timer1.Interval = Convert.ToInt32(1000 / 1.25);
+            }
+            else if (label4.Text == "x1.75")
+            {
+                label4.Text = "x1.5";
+                timer1.Interval = Convert.ToInt32( 1000 / 1.5);
+            }
+            else if (label4.Text == "x1.25")
+            {
+                label4.Text = "x1";
+                timer1.Interval = 1000;
+            }
+            else if (label4.Text == "x2")
+            {
+                label4.Text = "x1.75";
+                timer1.Interval = Convert.ToInt32( 1000 /1.75);
+            }
+            else
+            {
+                MessageBox.Show("You can not move backward");
+            }
+         
+        }
+
+        //CHOOSE THE TIME TO START
+        private void ChooseTime()
+        {
+            try
+            {
+                if (textBox1.Text != "")
+                {
+                    currentTime = textBox1.Text;
+                }
+                else
+                {
+                    currentTime = "08:00:00";
+                }
+            }
+            catch
+            {
+                MessageBox.Show("You must enter the hour in hh:mm:ss");
+            }
+            
+        }
+        //CHECK BOX
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+           
+                // Determinar qué casillas de verificación están activas
+                bool smrChecked = checkBox1.Checked;
+                bool mlatChecked = checkBox2.Checked;
+                bool adsbChecked = checkBox3.Checked;
+
+                // Mostrar u ocultar los marcadores según el estado de las casillas de verificación
+                if (smrChecked && mlatChecked && adsbChecked)
+                {
+                    // Mostrar todos los aviones
+                    SMR_overlay.IsVisibile = true;
+                    MLAT_overlay.IsVisibile = true;
+                    ADSB_overlay.IsVisibile = true;
+                }
+                else if (smrChecked && mlatChecked)
+                {
+                    // Mostrar los aviones SMR y MLAT
+                    SMR_overlay.IsVisibile = true;
+                    MLAT_overlay.IsVisibile = true;
+                    ADSB_overlay.IsVisibile = false;
+                }
+                else if (smrChecked && adsbChecked)
+                {
+                    // Mostrar los aviones SMR y ADSB
+                    SMR_overlay.IsVisibile = true;
+                    MLAT_overlay.IsVisibile = false;
+                    ADSB_overlay.IsVisibile = true;
+                }
+                else if (mlatChecked && adsbChecked)
+                {
+                    // Mostrar los aviones MLAT y ADSB
+                    SMR_overlay.IsVisibile = false;
+                    MLAT_overlay.IsVisibile = true;
+                    ADSB_overlay.IsVisibile = true;
+                }
+                else if (smrChecked)
+                {
+                    // Mostrar solo los aviones SMR
+                    SMR_overlay.IsVisibile = true;
+                    MLAT_overlay.IsVisibile = false;
+                    ADSB_overlay.IsVisibile = false;
+                }
+                else if (mlatChecked)
+                {
+                    // Mostrar solo los aviones MLAT
+                    SMR_overlay.IsVisibile = false;
+                    MLAT_overlay.IsVisibile = true;
+                    ADSB_overlay.IsVisibile = false;
+                }
+                else if (adsbChecked)
+                {
+                    // Mostrar solo los aviones ADSB
+                    SMR_overlay.IsVisibile = false;
+                    MLAT_overlay.IsVisibile = false;
+                    ADSB_overlay.IsVisibile = true;
+                }
+
+        }
+
+        //HACIA DELANTE EN EL TIEMPO
+        private int lastTrackBarValue = 0;
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            // Calcular la diferencia entre el valor actual del TrackBar y el valor anterior
+            int trackBarValue = trackBar1.Value;
+            int delta = trackBarValue - lastTrackBarValue;
+            System.TimeSpan time =System.TimeSpan.FromSeconds(System.TimeSpan.Parse(this.currentTime).TotalSeconds + delta);
+            Time_label.Text = currentTime;
+
+            // Actualizar el valor de lastTrackBarValue
+            lastTrackBarValue = trackBarValue;
+
+
+        }
+
+      
     }
 }
