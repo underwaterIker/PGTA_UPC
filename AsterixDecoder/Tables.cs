@@ -51,6 +51,8 @@ namespace AsterixDecoder
             {
                 if (e.RowIndex != 0)
                 {
+                    label1.Hide();
+
                     int index = e.RowIndex - 1;
                     this.index_messagesDataList = index;
                     if (this.Filter_flag is false)
@@ -75,6 +77,8 @@ namespace AsterixDecoder
             {
                 if (e.RowIndex != 0)
                 {
+                    label2.Hide();
+
                     int index = e.RowIndex - 1;
                     this.index_dataItems = index;
                     if (this.Filter_flag is false)
@@ -99,6 +103,12 @@ namespace AsterixDecoder
             Filter_button.Enabled = true;
 
             Filter_textBox.Clear();
+            Filter_textBox.Text = "Write here...";
+        }
+
+        private void Filter_textBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            Filter_textBox.Clear();
         }
 
         private void Filter_button_Click(object sender, EventArgs e)
@@ -115,7 +125,11 @@ namespace AsterixDecoder
                     int[] cat;
                     int[] fieldType;
                     int[] index_item;
+                    
+                    if (Filter_textBox.Text == "Write here...")
+                        Filter_textBox.Text = "";
                     string textBox = Filter_textBox.Text;
+
 
                     switch (Filter_comboBox.SelectedIndex)
                     {
@@ -221,6 +235,9 @@ namespace AsterixDecoder
         // Set DataGridView funcions
         private void Set_dataList_DGV(List<Data> messagesData_list)
         {
+            label1.Show();
+            label2.Show();
+
             dataList_DGV.Columns.Clear();
             dataList_DGV.Rows.Clear();
             dataItems_DGV.Columns.Clear();
@@ -627,9 +644,9 @@ namespace AsterixDecoder
         // Loading Button State functions
         private void Loading_ButtonState(Button button)
         {
-            button.Text = "Loading...";
-            button.ForeColor = Color.Red;
-            button.BackColor = Color.Gray;
+            button.Text = "Loading\n...";
+            button.ForeColor = Color.White;
+            button.BackColor = Color.Black;
             Application.DoEvents();
         }
 
@@ -640,6 +657,6 @@ namespace AsterixDecoder
             button.BackColor = Color.White;
         }
 
-
+        
     }
 }

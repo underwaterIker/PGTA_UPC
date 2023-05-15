@@ -55,6 +55,7 @@ namespace AsterixDecoder
             this.Minuts_comboBox = new System.Windows.Forms.ComboBox();
             this.Seconds_comboBox = new System.Windows.Forms.ComboBox();
             this.SeeTraces_checkBox = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TimeScaleBackward_button)).BeginInit();
@@ -99,7 +100,8 @@ namespace AsterixDecoder
             this.Play_button.FlatAppearance.BorderSize = 3;
             this.Play_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Play_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Play_button.Location = new System.Drawing.Point(186, 486);
+            this.Play_button.ForeColor = System.Drawing.Color.DarkOliveGreen;
+            this.Play_button.Location = new System.Drawing.Point(186, 492);
             this.Play_button.Name = "Play_button";
             this.Play_button.Size = new System.Drawing.Size(119, 45);
             this.Play_button.TabIndex = 8;
@@ -113,7 +115,8 @@ namespace AsterixDecoder
             this.Stop_button.FlatAppearance.BorderSize = 3;
             this.Stop_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Stop_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Stop_button.Location = new System.Drawing.Point(186, 537);
+            this.Stop_button.ForeColor = System.Drawing.Color.DarkRed;
+            this.Stop_button.Location = new System.Drawing.Point(186, 543);
             this.Stop_button.Name = "Stop_button";
             this.Stop_button.Size = new System.Drawing.Size(119, 47);
             this.Stop_button.TabIndex = 9;
@@ -125,7 +128,7 @@ namespace AsterixDecoder
             // 
             this.Time_label.AutoSize = true;
             this.Time_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Time_label.Location = new System.Drawing.Point(476, 9);
+            this.Time_label.Location = new System.Drawing.Point(476, 4);
             this.Time_label.Name = "Time_label";
             this.Time_label.Size = new System.Drawing.Size(88, 24);
             this.Time_label.TabIndex = 10;
@@ -135,11 +138,15 @@ namespace AsterixDecoder
             // 
             this.TargetData_DGV.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.TargetData_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.TargetData_DGV.Location = new System.Drawing.Point(336, 485);
+            this.TargetData_DGV.Location = new System.Drawing.Point(341, 498);
             this.TargetData_DGV.Name = "TargetData_DGV";
+            this.TargetData_DGV.RowHeadersVisible = false;
             this.TargetData_DGV.RowHeadersWidth = 62;
+            this.TargetData_DGV.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.TargetData_DGV.RowTemplate.Height = 28;
-            this.TargetData_DGV.Size = new System.Drawing.Size(288, 262);
+            this.TargetData_DGV.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TargetData_DGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.TargetData_DGV.Size = new System.Drawing.Size(320, 226);
             this.TargetData_DGV.TabIndex = 11;
             // 
             // ExportKML_button
@@ -150,7 +157,7 @@ namespace AsterixDecoder
             this.ExportKML_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ExportKML_button.ForeColor = System.Drawing.Color.Black;
             this.ExportKML_button.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.ExportKML_button.Location = new System.Drawing.Point(183, 590);
+            this.ExportKML_button.Location = new System.Drawing.Point(186, 616);
             this.ExportKML_button.Name = "ExportKML_button";
             this.ExportKML_button.Size = new System.Drawing.Size(122, 114);
             this.ExportKML_button.TabIndex = 16;
@@ -163,7 +170,7 @@ namespace AsterixDecoder
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(7, 486);
+            this.label3.Location = new System.Drawing.Point(7, 492);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 20);
             this.label3.TabIndex = 21;
@@ -174,7 +181,7 @@ namespace AsterixDecoder
             this.TimeScaleIndicator_label.AutoSize = true;
             this.TimeScaleIndicator_label.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.TimeScaleIndicator_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TimeScaleIndicator_label.Location = new System.Drawing.Point(62, 577);
+            this.TimeScaleIndicator_label.Location = new System.Drawing.Point(63, 583);
             this.TimeScaleIndicator_label.Name = "TimeScaleIndicator_label";
             this.TimeScaleIndicator_label.Size = new System.Drawing.Size(27, 20);
             this.TimeScaleIndicator_label.TabIndex = 22;
@@ -183,7 +190,7 @@ namespace AsterixDecoder
             // TimeScaleBackward_button
             // 
             this.TimeScaleBackward_button.Image = ((System.Drawing.Image)(resources.GetObject("TimeScaleBackward_button.Image")));
-            this.TimeScaleBackward_button.Location = new System.Drawing.Point(12, 518);
+            this.TimeScaleBackward_button.Location = new System.Drawing.Point(12, 524);
             this.TimeScaleBackward_button.Name = "TimeScaleBackward_button";
             this.TimeScaleBackward_button.Size = new System.Drawing.Size(51, 56);
             this.TimeScaleBackward_button.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -194,7 +201,7 @@ namespace AsterixDecoder
             // TimeScaleForward_button
             // 
             this.TimeScaleForward_button.Image = ((System.Drawing.Image)(resources.GetObject("TimeScaleForward_button.Image")));
-            this.TimeScaleForward_button.Location = new System.Drawing.Point(96, 518);
+            this.TimeScaleForward_button.Location = new System.Drawing.Point(96, 524);
             this.TimeScaleForward_button.Name = "TimeScaleForward_button";
             this.TimeScaleForward_button.Size = new System.Drawing.Size(56, 56);
             this.TimeScaleForward_button.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -207,7 +214,7 @@ namespace AsterixDecoder
             this.SMR_checkBox.AutoSize = true;
             this.SMR_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SMR_checkBox.ForeColor = System.Drawing.Color.Yellow;
-            this.SMR_checkBox.Location = new System.Drawing.Point(744, 610);
+            this.SMR_checkBox.Location = new System.Drawing.Point(738, 621);
             this.SMR_checkBox.Name = "SMR_checkBox";
             this.SMR_checkBox.Size = new System.Drawing.Size(73, 28);
             this.SMR_checkBox.TabIndex = 31;
@@ -220,7 +227,7 @@ namespace AsterixDecoder
             this.ADSB_checkBox.AutoSize = true;
             this.ADSB_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ADSB_checkBox.ForeColor = System.Drawing.Color.Red;
-            this.ADSB_checkBox.Location = new System.Drawing.Point(744, 672);
+            this.ADSB_checkBox.Location = new System.Drawing.Point(738, 683);
             this.ADSB_checkBox.Name = "ADSB_checkBox";
             this.ADSB_checkBox.Size = new System.Drawing.Size(83, 28);
             this.ADSB_checkBox.TabIndex = 32;
@@ -233,7 +240,7 @@ namespace AsterixDecoder
             this.MLAT_checkBox.AutoSize = true;
             this.MLAT_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MLAT_checkBox.ForeColor = System.Drawing.Color.Green;
-            this.MLAT_checkBox.Location = new System.Drawing.Point(744, 640);
+            this.MLAT_checkBox.Location = new System.Drawing.Point(738, 651);
             this.MLAT_checkBox.Name = "MLAT_checkBox";
             this.MLAT_checkBox.Size = new System.Drawing.Size(84, 28);
             this.MLAT_checkBox.TabIndex = 33;
@@ -247,7 +254,7 @@ namespace AsterixDecoder
             this.label1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label1.Location = new System.Drawing.Point(651, 509);
+            this.label1.Location = new System.Drawing.Point(711, 513);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(273, 20);
             this.label1.TabIndex = 35;
@@ -255,7 +262,7 @@ namespace AsterixDecoder
             // 
             // Set_button
             // 
-            this.Set_button.Location = new System.Drawing.Point(941, 541);
+            this.Set_button.Location = new System.Drawing.Point(955, 547);
             this.Set_button.Name = "Set_button";
             this.Set_button.Size = new System.Drawing.Size(73, 43);
             this.Set_button.TabIndex = 36;
@@ -271,7 +278,7 @@ namespace AsterixDecoder
             this.ZoomInLEBL_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ZoomInLEBL_button.ForeColor = System.Drawing.Color.Black;
             this.ZoomInLEBL_button.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.ZoomInLEBL_button.Location = new System.Drawing.Point(12, 609);
+            this.ZoomInLEBL_button.Location = new System.Drawing.Point(12, 629);
             this.ZoomInLEBL_button.Name = "ZoomInLEBL_button";
             this.ZoomInLEBL_button.Size = new System.Drawing.Size(153, 88);
             this.ZoomInLEBL_button.TabIndex = 37;
@@ -308,7 +315,7 @@ namespace AsterixDecoder
             "22",
             "23",
             "24"});
-            this.Hour_comboBox.Location = new System.Drawing.Point(701, 545);
+            this.Hour_comboBox.Location = new System.Drawing.Point(715, 551);
             this.Hour_comboBox.Name = "Hour_comboBox";
             this.Hour_comboBox.Size = new System.Drawing.Size(67, 28);
             this.Hour_comboBox.TabIndex = 38;
@@ -377,7 +384,7 @@ namespace AsterixDecoder
             "57",
             "58",
             "59"});
-            this.Minuts_comboBox.Location = new System.Drawing.Point(774, 545);
+            this.Minuts_comboBox.Location = new System.Drawing.Point(788, 551);
             this.Minuts_comboBox.Name = "Minuts_comboBox";
             this.Minuts_comboBox.Size = new System.Drawing.Size(71, 28);
             this.Minuts_comboBox.TabIndex = 41;
@@ -446,7 +453,7 @@ namespace AsterixDecoder
             "57",
             "58",
             "59"});
-            this.Seconds_comboBox.Location = new System.Drawing.Point(851, 545);
+            this.Seconds_comboBox.Location = new System.Drawing.Point(865, 551);
             this.Seconds_comboBox.Name = "Seconds_comboBox";
             this.Seconds_comboBox.Size = new System.Drawing.Size(74, 28);
             this.Seconds_comboBox.TabIndex = 42;
@@ -455,7 +462,7 @@ namespace AsterixDecoder
             // 
             this.SeeTraces_checkBox.AutoSize = true;
             this.SeeTraces_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SeeTraces_checkBox.Location = new System.Drawing.Point(871, 640);
+            this.SeeTraces_checkBox.Location = new System.Drawing.Point(865, 651);
             this.SeeTraces_checkBox.Name = "SeeTraces_checkBox";
             this.SeeTraces_checkBox.Size = new System.Drawing.Size(158, 28);
             this.SeeTraces_checkBox.TabIndex = 43;
@@ -463,10 +470,22 @@ namespace AsterixDecoder
             this.SeeTraces_checkBox.UseVisualStyleBackColor = true;
             this.SeeTraces_checkBox.CheckedChanged += new System.EventHandler(this.SeeTraces_checkBox_CheckedChanged);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(420, 573);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(162, 68);
+            this.label2.TabIndex = 44;
+            this.label2.Text = "CLICK ON\r\nA TARGET";
+            // 
             // Map
             // 
             this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.ClientSize = new System.Drawing.Size(1100, 760);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.SeeTraces_checkBox);
             this.Controls.Add(this.Seconds_comboBox);
             this.Controls.Add(this.Minuts_comboBox);
@@ -525,6 +544,7 @@ namespace AsterixDecoder
         private ComboBox Minuts_comboBox;
         private ComboBox Seconds_comboBox;
         private CheckBox SeeTraces_checkBox;
+        private Label label2;
     }
 }
 

@@ -31,9 +31,9 @@ namespace AsterixDecoder
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataList_DGV = new System.Windows.Forms.DataGridView();
             this.dataItems_DGV = new System.Windows.Forms.DataGridView();
             this.Item_DGV = new System.Windows.Forms.DataGridView();
@@ -42,6 +42,8 @@ namespace AsterixDecoder
             this.Filter_textBox = new System.Windows.Forms.TextBox();
             this.Filter_button = new System.Windows.Forms.Button();
             this.UndoFilter_button = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataList_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataItems_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Item_DGV)).BeginInit();
@@ -57,14 +59,14 @@ namespace AsterixDecoder
             this.dataList_DGV.ColumnHeadersHeight = 46;
             this.dataList_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataList_DGV.ColumnHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataList_DGV.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataList_DGV.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataList_DGV.Location = new System.Drawing.Point(6, 6);
             this.dataList_DGV.MultiSelect = false;
             this.dataList_DGV.Name = "dataList_DGV";
@@ -89,14 +91,14 @@ namespace AsterixDecoder
             this.dataItems_DGV.ColumnHeadersHeight = 46;
             this.dataItems_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataItems_DGV.ColumnHeadersVisible = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataItems_DGV.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataItems_DGV.DefaultCellStyle = dataGridViewCellStyle5;
             this.dataItems_DGV.Location = new System.Drawing.Point(322, 6);
             this.dataItems_DGV.MultiSelect = false;
             this.dataItems_DGV.Name = "dataItems_DGV";
@@ -105,6 +107,7 @@ namespace AsterixDecoder
             this.dataItems_DGV.RowHeadersWidth = 82;
             this.dataItems_DGV.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataItems_DGV.RowTemplate.Height = 26;
+            this.dataItems_DGV.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataItems_DGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataItems_DGV.Size = new System.Drawing.Size(380, 504);
             this.dataItems_DGV.TabIndex = 9;
@@ -121,14 +124,14 @@ namespace AsterixDecoder
             this.Item_DGV.ColumnHeadersHeight = 46;
             this.Item_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.Item_DGV.ColumnHeadersVisible = false;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.Item_DGV.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.Item_DGV.DefaultCellStyle = dataGridViewCellStyle6;
             this.Item_DGV.Location = new System.Drawing.Point(708, 6);
             this.Item_DGV.MultiSelect = false;
             this.Item_DGV.Name = "Item_DGV";
@@ -137,6 +140,7 @@ namespace AsterixDecoder
             this.Item_DGV.RowHeadersWidth = 82;
             this.Item_DGV.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.Item_DGV.RowTemplate.Height = 26;
+            this.Item_DGV.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.Item_DGV.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.Item_DGV.Size = new System.Drawing.Size(380, 504);
             this.Item_DGV.TabIndex = 10;
@@ -161,7 +165,6 @@ namespace AsterixDecoder
             // 
             this.Filter_comboBox.BackColor = System.Drawing.Color.White;
             this.Filter_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.Filter_comboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Filter_comboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Filter_comboBox.FormattingEnabled = true;
             this.Filter_comboBox.Items.AddRange(new object[] {
@@ -185,6 +188,7 @@ namespace AsterixDecoder
             this.Filter_textBox.Name = "Filter_textBox";
             this.Filter_textBox.Size = new System.Drawing.Size(279, 29);
             this.Filter_textBox.TabIndex = 13;
+            this.Filter_textBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Filter_textBox_MouseClick);
             // 
             // Filter_button
             // 
@@ -218,10 +222,34 @@ namespace AsterixDecoder
             this.UndoFilter_button.UseVisualStyleBackColor = false;
             this.UndoFilter_button.Click += new System.EventHandler(this.UndoFilter_button_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(409, 228);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(205, 86);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "SELECT A\r\nMESSAGE";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(797, 228);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(218, 86);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "SELECT A\r\nDATA ITEM";
+            // 
             // Tables
             // 
             this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.ClientSize = new System.Drawing.Size(1100, 760);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.UndoFilter_button);
             this.Controls.Add(this.Filter_button);
             this.Controls.Add(this.Filter_textBox);
@@ -251,6 +279,8 @@ namespace AsterixDecoder
         private Button Filter_button;
         private Button UndoFilter_button;
         public DataGridView dataList_DGV;
+        private Label label1;
+        private Label label2;
     }
 }
 

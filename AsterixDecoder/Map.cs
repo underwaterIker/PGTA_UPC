@@ -209,7 +209,7 @@ namespace AsterixDecoder
         {
             System.TimeSpan time = System.TimeSpan.FromSeconds(System.TimeSpan.Parse(this.currentTime).TotalSeconds + 1);
             currentTime = time.ToString(@"hh\:mm\:ss");
-            Time_label.Text = currentTime;
+            Time_label.Text = this.currentTime;
             CheckTargets();
         }
 
@@ -217,6 +217,156 @@ namespace AsterixDecoder
         private void GMap_control_OnMarkerClick(GMap.NET.WindowsForms.GMapMarker item, MouseEventArgs e)
         {
             Set_TargetData_DGV(item);
+        }
+
+        // TIME SCALE
+        private void TimeScaleForward_button_Click(object sender, EventArgs e)
+        {
+            if (TimeScaleIndicator_label.Text == "x1")
+            {
+                TimeScaleIndicator_label.Text = "x1.25";
+                timer1.Interval = Convert.ToInt32((1000) / (1.25));
+
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.25")
+            {
+                TimeScaleIndicator_label.Text = "x0.5";
+                timer1.Interval = (1000) * 2;
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.5")
+            {
+                TimeScaleIndicator_label.Text = "x0.75";
+                timer1.Interval = Convert.ToInt32(1000 / 0.75);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.25")
+            {
+                TimeScaleIndicator_label.Text = "x1.5";
+                timer1.Interval = Convert.ToInt32(1000 / 1.5);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.5")
+            {
+                TimeScaleIndicator_label.Text = "x1.75";
+                timer1.Interval = Convert.ToInt32(1000 / 1.75);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.75")
+            {
+                TimeScaleIndicator_label.Text = "x2";
+                timer1.Interval = 1000 / 2;
+            }
+            else
+            {
+                MessageBox.Show("You can not move forward");
+            }
+        }
+
+        private void TimeScaleBackward_button_Click(object sender, EventArgs e)
+        {
+
+            if (TimeScaleIndicator_label.Text == "x1")
+            {
+                TimeScaleIndicator_label.Text = "x0.75";
+                timer1.Interval = Convert.ToInt32((1000) / 0.75);
+
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.75")
+            {
+                TimeScaleIndicator_label.Text = "x0.5";
+                timer1.Interval = Convert.ToInt32((1000) / 0.5);
+
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.5")
+            {
+                TimeScaleIndicator_label.Text = "x0.25";
+                timer1.Interval = Convert.ToInt32(1000 / 0.25);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.5")
+            {
+                TimeScaleIndicator_label.Text = "x1.25";
+                timer1.Interval = Convert.ToInt32(1000 / 1.25);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.75")
+            {
+                TimeScaleIndicator_label.Text = "x1.5";
+                timer1.Interval = Convert.ToInt32(1000 / 1.5);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.25")
+            {
+                TimeScaleIndicator_label.Text = "x1";
+                timer1.Interval = 1000;
+            }
+            else if (TimeScaleIndicator_label.Text == "x2")
+            {
+                TimeScaleIndicator_label.Text = "x1.75";
+                timer1.Interval = Convert.ToInt32(1000 / 1.75);
+            }
+            else
+            {
+                MessageBox.Show("You can not move backward");
+            }
+
+        }
+
+        // CHECK BOXES
+        private void SMR_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SMR_overlay.IsVisibile = SMR_checkBox.Checked;
+        }
+
+        private void MLAT_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.MLAT_overlay.IsVisibile = MLAT_checkBox.Checked;
+        }
+
+        private void ADSB_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ADSB_overlay.IsVisibile = ADSB_checkBox.Checked;
+        }
+
+        private void SeeTraces_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SMR_traces_overlay.IsVisibile = SeeTraces_checkBox.Checked;
+            this.MLAT_traces_overlay.IsVisibile = SeeTraces_checkBox.Checked;
+            this.ADSB_traces_overlay.IsVisibile = SeeTraces_checkBox.Checked;
+        }
+
+        // SET HOUR
+        private void Set_button_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (Hour_comboBox.SelectedIndex != -1)
+                {
+                    ClearLists();
+
+                    if (Minuts_comboBox.SelectedIndex == -1)
+                        Minuts_comboBox.SelectedItem = "00";
+
+                    if (Seconds_comboBox.SelectedIndex == -1)
+                        Seconds_comboBox.SelectedItem = "00";
+
+                    this.currentTime = Hour_comboBox.SelectedItem.ToString() + ":" + Minuts_comboBox.SelectedItem.ToString() + ":" + Seconds_comboBox.SelectedItem.ToString();
+                    Time_label.Text = this.currentTime;
+                }
+                else
+                {
+                    MessageBox.Show("Select at least the start Hour!");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        // ZOOM IN LEBL
+        private void ZoomInLEBL_button_Click(object sender, EventArgs e)
+        {
+            GMap_control.Position = new PointLatLng(41.403046, 2.162958);
+            GMap_control.Position = LEBL_position;
+            GMap_control.MinZoom = 8;
+            GMap_control.MaxZoom = 22;
+            GMap_control.Zoom = 13;
+            GMap_control.AutoScroll = true;
         }
 
         // -----------------------------------------------------------------------------------------------------------------------------
@@ -305,7 +455,9 @@ namespace AsterixDecoder
             if (delete_index != -1)
             {
                 // Add removed marker to the traces overlay
+                overlay.Markers[delete_index].Size = new Size(9, 9);
                 traces_overlay.Markers.Add(overlay.Markers[delete_index]);
+                
 
                 // Remove previous marker
                 markerTags.RemoveAt(delete_index);
@@ -318,6 +470,8 @@ namespace AsterixDecoder
 
         private void Set_TargetData_DGV(GMap.NET.WindowsForms.GMapMarker target)
         {
+            label2.Hide();
+
             TargetData_DGV.Columns.Clear();
             TargetData_DGV.Rows.Clear();
 
@@ -334,6 +488,8 @@ namespace AsterixDecoder
 
             // Column[0] bold
             TargetData_DGV.Columns[0].DefaultCellStyle.Font = new Font("Tahoma", 11, FontStyle.Bold);
+            // Column[1] not bold
+            TargetData_DGV.Columns[1].DefaultCellStyle.Font = new Font("Tahoma", 11);
 
             TargetData_DGV.Rows[0].Cells[0].Value = "Time";
             TargetData_DGV.Rows[1].Cells[0].Value = "Pos. Latitude";
@@ -375,158 +531,6 @@ namespace AsterixDecoder
         }
  
 
-        // TIME SCALE
-
-        //FORWARD
-        private void TimeScaleForward_button_Click(object sender, EventArgs e)
-        {
-            if (TimeScaleIndicator_label.Text=="x1")
-            {
-                TimeScaleIndicator_label.Text= "x1.25";
-                timer1.Interval =Convert.ToInt32((1000)/(1.25));
-
-            }
-            else if (TimeScaleIndicator_label.Text=="x0.25")
-            {
-                TimeScaleIndicator_label.Text = "x0.5";
-                timer1.Interval = (1000)*2;
-            }
-            else if (TimeScaleIndicator_label.Text == "x0.5")
-            {
-                TimeScaleIndicator_label.Text = "x0.75";
-                timer1.Interval = Convert.ToInt32(1000 / 0.75);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.25")
-            {
-                TimeScaleIndicator_label.Text = "x1.5";
-                timer1.Interval = Convert.ToInt32(1000 / 1.5);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.5")
-            {
-                TimeScaleIndicator_label.Text = "x1.75";
-                timer1.Interval = Convert.ToInt32(1000 / 1.75);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.75")
-            {
-                TimeScaleIndicator_label.Text = "x2";
-                timer1.Interval =1000/2;
-            }
-            else
-            {
-                MessageBox.Show("You can not move forward");
-            }
-        }
-
-        //BACKWARD
-        private void TimeScaleBackward_button_Click(object sender, EventArgs e)
-        {
-
-            if (TimeScaleIndicator_label.Text == "x1")
-            {
-                TimeScaleIndicator_label.Text = "x0.75";
-                timer1.Interval = Convert.ToInt32((1000)/0.75);
-
-            }
-            else if (TimeScaleIndicator_label.Text == "x0.75")
-            {
-                TimeScaleIndicator_label.Text = "x0.5";
-                timer1.Interval = Convert.ToInt32((1000) / 0.5);
-
-            }
-            else if (TimeScaleIndicator_label.Text == "x0.5")
-            {
-                TimeScaleIndicator_label.Text = "x0.25";
-                timer1.Interval = Convert.ToInt32(1000 / 0.25);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.5")
-            {
-                TimeScaleIndicator_label.Text = "x1.25";
-                timer1.Interval = Convert.ToInt32(1000 / 1.25);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.75")
-            {
-                TimeScaleIndicator_label.Text = "x1.5";
-                timer1.Interval = Convert.ToInt32( 1000 / 1.5);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.25")
-            {
-                TimeScaleIndicator_label.Text = "x1";
-                timer1.Interval = 1000;
-            }
-            else if (TimeScaleIndicator_label.Text == "x2")
-            {
-                TimeScaleIndicator_label.Text = "x1.75";
-                timer1.Interval = Convert.ToInt32( 1000 /1.75);
-            }
-            else
-            {
-                MessageBox.Show("You can not move backward");
-            }
-         
-        }
-
-        // CHECK BOXES
-        private void SMR_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            this.SMR_overlay.IsVisibile = SMR_checkBox.Checked;
-        }
-
-        private void MLAT_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            this.MLAT_overlay.IsVisibile = MLAT_checkBox.Checked;
-        }
-
-        private void ADSB_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            this.ADSB_overlay.IsVisibile = ADSB_checkBox.Checked;
-        }
-
-        private void SeeTraces_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            this.SMR_traces_overlay.IsVisibile = SeeTraces_checkBox.Checked;
-            this.MLAT_traces_overlay.IsVisibile = SeeTraces_checkBox.Checked;
-            this.ADSB_traces_overlay.IsVisibile = SeeTraces_checkBox.Checked;
-        }
-
-        // SET HOUR
-        private void Set_button_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (timerstarted == false)
-                {
-                    if (Hour_comboBox.SelectedIndex != -1 && Minuts_comboBox.SelectedIndex != -1 && Seconds_comboBox.SelectedIndex != -1)
-                    {
-                        ClearLists();
-                        this.currentTime = Hour_comboBox.SelectedItem.ToString() + ":" + Minuts_comboBox.SelectedItem.ToString() + ":" + Seconds_comboBox.SelectedItem.ToString();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Select the Hour, Minuts and Seconds!");
-                    }
-
-                }
-                else if (timerstarted == true)
-                {
-                    MessageBox.Show("The simulation must be stopped.");
-                }
-            }
-            catch
-            {
-                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-
-        private void ZoomInLEBL_button_Click(object sender, EventArgs e)
-        {
-            GMap_control.Position = new PointLatLng(41.403046, 2.162958);
-            GMap_control.Position = LEBL_position;
-            GMap_control.MinZoom = 8;
-            GMap_control.MaxZoom = 22;
-            GMap_control.Zoom = 13;
-            GMap_control.AutoScroll = true;
-        }
-
         // ------------------------------------------------------
         // Clear all lists method
         private void ClearLists()
@@ -548,9 +552,9 @@ namespace AsterixDecoder
         // Loading Button State functions
         private void Loading_ButtonState(Button button)
         {
-            button.Text = "Loading...";
-            button.ForeColor = Color.DarkGreen;
-            button.BackColor = Color.Gainsboro;
+            button.Text = "Loading\n...";
+            button.ForeColor = Color.White;
+            button.BackColor = Color.Black;
             Application.DoEvents();
         }
 
@@ -558,9 +562,9 @@ namespace AsterixDecoder
         {
             button.Text = str;
             button.ForeColor = Color.Black;
-            button.BackColor = Color.Snow;
+            button.BackColor = Color.White;
         }
 
-        
+
     }
 }
