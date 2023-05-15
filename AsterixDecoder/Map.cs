@@ -30,7 +30,8 @@ namespace AsterixDecoder
         // ATTRIBUTES
         // List containing TargetData of all targets
         private List<TargetData> targetData_list;
-        
+        private int list_index = 0;
+
         // One Overlay for each type
         private GMapOverlay SMR_overlay = new GMapOverlay("SMR");
         private GMapOverlay MLAT_overlay = new GMapOverlay("MLAT");
@@ -59,8 +60,8 @@ namespace AsterixDecoder
         // GeoUtils class
         private GeoUtils myGeoUtils = new GeoUtils();
 
-        //BOOL
-        bool timerstarted = false;
+        // Timer started indicator
+        private bool timerstarted = false;
 
 
         // CONSTRUCTOR
@@ -104,6 +105,9 @@ namespace AsterixDecoder
             SMR_checkBox.Checked = true;
             ADSB_checkBox.Checked = true;
             MLAT_checkBox.Checked = true;
+
+            // We set the Hour label
+            Time_label.Text = this.currentTime;
         }
 
         // Play button
@@ -226,7 +230,6 @@ namespace AsterixDecoder
             {
                 TimeScaleIndicator_label.Text = "x1.25";
                 timer1.Interval = Convert.ToInt32((1000) / (1.25));
-
             }
             else if (TimeScaleIndicator_label.Text == "x0.25")
             {
@@ -237,6 +240,11 @@ namespace AsterixDecoder
             {
                 TimeScaleIndicator_label.Text = "x0.75";
                 timer1.Interval = Convert.ToInt32(1000 / 0.75);
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.75")
+            {
+                TimeScaleIndicator_label.Text = "x1";
+                timer1.Interval = 1000;
             }
             else if (TimeScaleIndicator_label.Text == "x1.25")
             {
@@ -266,13 +274,11 @@ namespace AsterixDecoder
             {
                 TimeScaleIndicator_label.Text = "x0.75";
                 timer1.Interval = Convert.ToInt32((1000) / 0.75);
-
             }
             else if (TimeScaleIndicator_label.Text == "x0.75")
             {
                 TimeScaleIndicator_label.Text = "x0.5";
                 timer1.Interval = Convert.ToInt32((1000) / 0.5);
-
             }
             else if (TimeScaleIndicator_label.Text == "x0.5")
             {
@@ -336,7 +342,7 @@ namespace AsterixDecoder
             {
                 if (Hour_comboBox.SelectedIndex != -1)
                 {
-                    ClearLists();
+                    ClearCurrentLists();
 
                     if (Minuts_comboBox.SelectedIndex == -1)
                         Minuts_comboBox.SelectedItem = "00";
@@ -346,6 +352,16 @@ namespace AsterixDecoder
 
                     this.currentTime = Hour_comboBox.SelectedItem.ToString() + ":" + Minuts_comboBox.SelectedItem.ToString() + ":" + Seconds_comboBox.SelectedItem.ToString();
                     Time_label.Text = this.currentTime;
+
+                    this.list_index = this.targetData_list.Count; // Just in case the following loop does not find the index value (because the Time Set is when the file with messages has already finished)
+                    for (int index = 0; index < this.targetData_list.Count; index++)
+                    {
+                        if ((double)System.TimeSpan.Parse(targetData_list[index].Time).TotalSeconds >= (double)System.TimeSpan.Parse(this.currentTime).TotalSeconds)
+                        {
+                            this.list_index = index;
+                            break;
+                        }
+                    }
                 }
                 else
                 {
@@ -373,16 +389,31 @@ namespace AsterixDecoder
 
         private void CheckTargets()
         {
-            for (int index = 0; index<this.targetData_list.Count; index++)
+            //if ((double)System.TimeSpan.Parse(this.currentTime).TotalSeconds % 5  == 0)
+            //    ClearLists();
+            ClearCurrentLists();
+            for (; this.list_index<this.targetData_list.Count; this.list_index++)
             {
-                if ((double)System.TimeSpan.Parse(targetData_list[index].Time).TotalSeconds <= (double)System.TimeSpan.Parse(this.currentTime).TotalSeconds)
+                if ((double)System.TimeSpan.Parse(targetData_list[this.list_index].Time).TotalSeconds <= (double)System.TimeSpan.Parse(this.currentTime).TotalSeconds)
                 {
-                    AddMarkerToItsOverlay(index);
+                    AddMarkerToItsOverlay(this.list_index);
                 }
                 else
                 {
                     break;
                 } 
+            }
+
+            // Check if we have reached the end of the simulation
+            if (this.list_index == this.targetData_list.Count)
+            {
+                Stop_button.Hide();
+                Play_button.Show();
+
+                timerstarted = false;
+                timer1.Stop();
+
+                MessageBox.Show("End of the file has been reached!", "End", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -451,6 +482,7 @@ namespace AsterixDecoder
 
         private void RemovePreviousMarker_and_AddNewMarker(GMarkerGoogle marker, List<string> markerTags, GMapOverlay overlay, GMapOverlay traces_overlay, double latitude,double longitude)
         {
+            /*
             int delete_index = markerTags.IndexOf(marker.ToolTipText);
             if (delete_index != -1)
             {
@@ -463,7 +495,7 @@ namespace AsterixDecoder
                 markerTags.RemoveAt(delete_index);
                 overlay.Markers.RemoveAt(delete_index);
             }
-
+            */
             markerTags.Add(marker.ToolTipText);
             overlay.Markers.Add(marker);
         }
@@ -532,20 +564,23 @@ namespace AsterixDecoder
  
 
         // ------------------------------------------------------
-        // Clear all lists method
-        private void ClearLists()
+        // Clear lists methods
+        private void ClearCurrentLists()
         {
             this.SMR_overlay.Clear();
             this.MLAT_overlay.Clear();
             this.ADSB_overlay.Clear();
 
-            this.SMR_traces_overlay.Clear();
-            this.MLAT_traces_overlay.Clear();
-            this.ADSB_traces_overlay.Clear();
-
             this.SMR_markerTags.Clear();
             this.MLAT_markerTags.Clear();
             this.ADSB_markerTags.Clear();
+        }
+
+        private void ClearTracesLists()
+        {
+            this.SMR_traces_overlay.Clear();
+            this.MLAT_traces_overlay.Clear();
+            this.ADSB_traces_overlay.Clear();
         }
 
         // ------------------------------------------------------

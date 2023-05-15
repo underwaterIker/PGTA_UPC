@@ -189,10 +189,11 @@ namespace AsterixDecoder
             // 
             // TimeScaleBackward_button
             // 
+            this.TimeScaleBackward_button.Cursor = System.Windows.Forms.Cursors.Hand;
             this.TimeScaleBackward_button.Image = ((System.Drawing.Image)(resources.GetObject("TimeScaleBackward_button.Image")));
             this.TimeScaleBackward_button.Location = new System.Drawing.Point(12, 524);
             this.TimeScaleBackward_button.Name = "TimeScaleBackward_button";
-            this.TimeScaleBackward_button.Size = new System.Drawing.Size(51, 56);
+            this.TimeScaleBackward_button.Size = new System.Drawing.Size(50, 50);
             this.TimeScaleBackward_button.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.TimeScaleBackward_button.TabIndex = 27;
             this.TimeScaleBackward_button.TabStop = false;
@@ -200,10 +201,11 @@ namespace AsterixDecoder
             // 
             // TimeScaleForward_button
             // 
+            this.TimeScaleForward_button.Cursor = System.Windows.Forms.Cursors.Hand;
             this.TimeScaleForward_button.Image = ((System.Drawing.Image)(resources.GetObject("TimeScaleForward_button.Image")));
             this.TimeScaleForward_button.Location = new System.Drawing.Point(96, 524);
             this.TimeScaleForward_button.Name = "TimeScaleForward_button";
-            this.TimeScaleForward_button.Size = new System.Drawing.Size(56, 56);
+            this.TimeScaleForward_button.Size = new System.Drawing.Size(55, 55);
             this.TimeScaleForward_button.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.TimeScaleForward_button.TabIndex = 29;
             this.TimeScaleForward_button.TabStop = false;
@@ -214,7 +216,7 @@ namespace AsterixDecoder
             this.SMR_checkBox.AutoSize = true;
             this.SMR_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SMR_checkBox.ForeColor = System.Drawing.Color.Yellow;
-            this.SMR_checkBox.Location = new System.Drawing.Point(738, 621);
+            this.SMR_checkBox.Location = new System.Drawing.Point(738, 627);
             this.SMR_checkBox.Name = "SMR_checkBox";
             this.SMR_checkBox.Size = new System.Drawing.Size(73, 28);
             this.SMR_checkBox.TabIndex = 31;
@@ -227,7 +229,7 @@ namespace AsterixDecoder
             this.ADSB_checkBox.AutoSize = true;
             this.ADSB_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ADSB_checkBox.ForeColor = System.Drawing.Color.Red;
-            this.ADSB_checkBox.Location = new System.Drawing.Point(738, 683);
+            this.ADSB_checkBox.Location = new System.Drawing.Point(738, 689);
             this.ADSB_checkBox.Name = "ADSB_checkBox";
             this.ADSB_checkBox.Size = new System.Drawing.Size(83, 28);
             this.ADSB_checkBox.TabIndex = 32;
@@ -240,7 +242,7 @@ namespace AsterixDecoder
             this.MLAT_checkBox.AutoSize = true;
             this.MLAT_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MLAT_checkBox.ForeColor = System.Drawing.Color.Green;
-            this.MLAT_checkBox.Location = new System.Drawing.Point(738, 651);
+            this.MLAT_checkBox.Location = new System.Drawing.Point(738, 657);
             this.MLAT_checkBox.Name = "MLAT_checkBox";
             this.MLAT_checkBox.Size = new System.Drawing.Size(84, 28);
             this.MLAT_checkBox.TabIndex = 33;
@@ -262,7 +264,7 @@ namespace AsterixDecoder
             // 
             // Set_button
             // 
-            this.Set_button.Location = new System.Drawing.Point(955, 547);
+            this.Set_button.Location = new System.Drawing.Point(963, 547);
             this.Set_button.Name = "Set_button";
             this.Set_button.Size = new System.Drawing.Size(73, 43);
             this.Set_button.TabIndex = 36;
@@ -288,6 +290,7 @@ namespace AsterixDecoder
             // 
             // Hour_comboBox
             // 
+            this.Hour_comboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Hour_comboBox.FormattingEnabled = true;
             this.Hour_comboBox.Items.AddRange(new object[] {
             "00",
@@ -313,15 +316,16 @@ namespace AsterixDecoder
             "20",
             "21",
             "22",
-            "23",
-            "24"});
+            "23"});
             this.Hour_comboBox.Location = new System.Drawing.Point(715, 551);
             this.Hour_comboBox.Name = "Hour_comboBox";
-            this.Hour_comboBox.Size = new System.Drawing.Size(67, 28);
+            this.Hour_comboBox.Size = new System.Drawing.Size(70, 28);
             this.Hour_comboBox.TabIndex = 38;
+            this.Hour_comboBox.Text = "Hour";
             // 
             // Minuts_comboBox
             // 
+            this.Minuts_comboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Minuts_comboBox.FormattingEnabled = true;
             this.Minuts_comboBox.Items.AddRange(new object[] {
             "00",
@@ -384,13 +388,15 @@ namespace AsterixDecoder
             "57",
             "58",
             "59"});
-            this.Minuts_comboBox.Location = new System.Drawing.Point(788, 551);
+            this.Minuts_comboBox.Location = new System.Drawing.Point(793, 551);
             this.Minuts_comboBox.Name = "Minuts_comboBox";
-            this.Minuts_comboBox.Size = new System.Drawing.Size(71, 28);
+            this.Minuts_comboBox.Size = new System.Drawing.Size(70, 28);
             this.Minuts_comboBox.TabIndex = 41;
+            this.Minuts_comboBox.Text = "Min";
             // 
             // Seconds_comboBox
             // 
+            this.Seconds_comboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Seconds_comboBox.FormattingEnabled = true;
             this.Seconds_comboBox.Items.AddRange(new object[] {
             "00",
@@ -453,16 +459,17 @@ namespace AsterixDecoder
             "57",
             "58",
             "59"});
-            this.Seconds_comboBox.Location = new System.Drawing.Point(865, 551);
+            this.Seconds_comboBox.Location = new System.Drawing.Point(870, 551);
             this.Seconds_comboBox.Name = "Seconds_comboBox";
-            this.Seconds_comboBox.Size = new System.Drawing.Size(74, 28);
+            this.Seconds_comboBox.Size = new System.Drawing.Size(70, 28);
             this.Seconds_comboBox.TabIndex = 42;
+            this.Seconds_comboBox.Text = "Sec";
             // 
             // SeeTraces_checkBox
             // 
             this.SeeTraces_checkBox.AutoSize = true;
             this.SeeTraces_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SeeTraces_checkBox.Location = new System.Drawing.Point(865, 651);
+            this.SeeTraces_checkBox.Location = new System.Drawing.Point(865, 657);
             this.SeeTraces_checkBox.Name = "SeeTraces_checkBox";
             this.SeeTraces_checkBox.Size = new System.Drawing.Size(158, 28);
             this.SeeTraces_checkBox.TabIndex = 43;
