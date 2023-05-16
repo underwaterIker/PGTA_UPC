@@ -32,14 +32,9 @@ namespace AsterixDecoder
         private int list_index = 0;
 
         // HISTORIC lists of markers for the traces
-        List<GMapMarker> Historic_SMR_markers = new List<GMapMarker>();
-        List<GMapMarker> Historic_MLAT_markers = new List<GMapMarker>();
-        List<GMapMarker> Historic_ADSB_markers = new List<GMapMarker>();
-
-        // HISTORIC lists containing the IDs of the targets ploted
-        private List<string> SMR_markerIDs = new List<string>();
-        private List<string> MLAT_markerIDs = new List<string>();
-        private List<string> ADSB_markerIDs = new List<string>();
+        private List<GMapMarker> Historic_SMR_markers = new List<GMapMarker>();
+        private List<GMapMarker> Historic_MLAT_markers = new List<GMapMarker>();
+        private List<GMapMarker> Historic_ADSB_markers = new List<GMapMarker>();
 
         // One Overlay for each type
         private GMapOverlay SMR_overlay = new GMapOverlay("SMR");
@@ -354,8 +349,7 @@ namespace AsterixDecoder
             {
                 if (Hour_comboBox.SelectedIndex != -1)
                 {
-                    ClearCurrentLists();
-                    ClearTracesLists();
+                    ClearAllLists();
 
                     if (Minuts_comboBox.SelectedIndex == -1)
                         Minuts_comboBox.SelectedItem = "00";
@@ -476,7 +470,7 @@ namespace AsterixDecoder
                     markerType = GMarkerGoogleType.yellow_small;
                     marker = CreateMarker(latitude, longitude, markerType, index);
 
-                    RemovePreviousMarker_and_AddNewMarker(marker, this.SMR_markerIDs, this.SMR_overlay, this.SMR_traces_overlay, this.SMR_traces_routes, this.Historic_SMR_markers, latitude,longitude);
+                    RemovePreviousMarker_and_AddNewMarker(marker, this.SMR_overlay, this.SMR_traces_routes, this.Historic_SMR_markers);
                 }
                 else if (this.targetData_list[index].isMLAT is true)
                 {
@@ -490,7 +484,7 @@ namespace AsterixDecoder
                     markerType = GMarkerGoogleType.green_small;
                     marker = CreateMarker(latitude, longitude, markerType, index);
 
-                    RemovePreviousMarker_and_AddNewMarker(marker, this.MLAT_markerIDs, this.MLAT_overlay, this.MLAT_traces_overlay, this.MLAT_traces_routes, this.Historic_MLAT_markers, latitude,longitude);
+                    RemovePreviousMarker_and_AddNewMarker(marker, this.MLAT_overlay, this.MLAT_traces_routes, this.Historic_MLAT_markers);
                 }
             }
             else //if (this.targetData_list[index].isADSB is true)
@@ -501,7 +495,7 @@ namespace AsterixDecoder
                 markerType = GMarkerGoogleType.red_small;
                 marker = CreateMarker(latitude, longitude, markerType, index);
 
-                RemovePreviousMarker_and_AddNewMarker(marker, this.ADSB_markerIDs, this.ADSB_overlay, this.ADSB_traces_overlay, this.ADSB_traces_routes, this.Historic_ADSB_markers, latitude,longitude);
+                RemovePreviousMarker_and_AddNewMarker(marker, this.ADSB_overlay, this.ADSB_traces_routes, this.Historic_ADSB_markers);
             }
 
         }
@@ -515,35 +509,34 @@ namespace AsterixDecoder
             return marker;
         }
 
-        private void RemovePreviousMarker_and_AddNewMarker(GMarkerGoogle marker, List<string> markerIDs, GMapOverlay overlay, GMapOverlay traces_overlay, List<GMapRoute> routesList, List<GMapMarker> Historic_markers, double latitude,double longitude)
+        private void RemovePreviousMarker_and_AddNewMarker(GMarkerGoogle marker, GMapOverlay overlay, List<GMapRoute> routesList, List<GMapMarker> Historic_markers)
         {
-            int delete_index = markerIDs.IndexOf(marker.ToolTipText);
+            int delete_index = Historic_markers.FindIndex(x => x.ToolTipText == marker.ToolTipText);
+
             if (delete_index != -1)
             {
                 int routesList_index =routesList.FindIndex(x => x.Name==marker.ToolTipText);
-                if (routesList[routesList_index].Points.Count ==100)
+                if (routesList[routesList_index].Points.Count ==50)
                     routesList[routesList_index].Points.RemoveAt(0);
                 routesList[routesList_index].Points.Add(marker.Position);                
 
-                // Remove previous marker
-                markerIDs.RemoveAt(delete_index);
+                // Remove previous marker in the Historic
                 Historic_markers.RemoveAt(delete_index);
             }
             else
             {
                 GMapRoute onetrace = new GMapRoute(marker.ToolTipText);
                 onetrace.Points.Add(marker.Position);
-                onetrace.Tag = marker.ToolTipText;
+                //onetrace.Tag = marker.ToolTipText;
                 routesList.Add(onetrace);
             }
             
-            markerIDs.Add(marker.ToolTipText);
+            // Add markers
             overlay.Markers.Add(marker);
-
             Historic_markers.Add(marker);
         }
 
-        private void Set_TargetData_DGV(GMap.NET.WindowsForms.GMapMarker target)
+        private void Set_TargetData_DGV(GMapMarker target)
         {
             label2.Hide();
 
@@ -613,10 +606,6 @@ namespace AsterixDecoder
             this.SMR_overlay.Clear();
             this.MLAT_overlay.Clear();
             this.ADSB_overlay.Clear();
-
-            //this.SMR_markerIDs.Clear();
-            //this.MLAT_markerIDs.Clear();
-            //this.ADSB_markerIDs.Clear();
         }
 
         private void ClearTracesLists()
@@ -624,6 +613,19 @@ namespace AsterixDecoder
             this.SMR_traces_overlay.Clear();
             this.MLAT_traces_overlay.Clear();
             this.ADSB_traces_overlay.Clear();
+        }
+
+        private void ClearAllLists()
+        {
+            ClearCurrentLists();
+            this.Historic_SMR_markers.Clear();
+            this.Historic_MLAT_markers.Clear();
+            this.Historic_ADSB_markers.Clear();
+
+            ClearTracesLists();
+            this.SMR_traces_routes.Clear();
+            this.MLAT_traces_routes.Clear();
+            this.ADSB_traces_routes.Clear();
         }
 
         // ------------------------------------------------------
