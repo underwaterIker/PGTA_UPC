@@ -16,11 +16,6 @@ using System.IO;
 using MultiCAT6.Utils;
 using System.Reflection;
 using System.Xml.Serialization;
-using SharpKml.Base;
-using SharpKml.Dom;
-using SharpKml.Engine;
-using Document = SharpKml.Dom.Document;
-using System.Xml;
 
 namespace AsterixDecoder
 {
@@ -30,11 +25,6 @@ namespace AsterixDecoder
         // List containing TargetData of all targets
         private List<TargetData> targetData_list;
         private int list_index = 0;
-
-        // HISTORIC lists of markers for the traces
-        private List<GMapMarker> Historic_SMR_markers = new List<GMapMarker>();
-        private List<GMapMarker> Historic_MLAT_markers = new List<GMapMarker>();
-        private List<GMapMarker> Historic_ADSB_markers = new List<GMapMarker>();
 
         // One Overlay for each type
         private GMapOverlay SMR_overlay = new GMapOverlay("SMR");
@@ -46,10 +36,15 @@ namespace AsterixDecoder
         private GMapOverlay MLAT_traces_overlay = new GMapOverlay("MLAT_traces");
         private GMapOverlay ADSB_traces_overlay = new GMapOverlay("ADSB_traces");
 
-        // 
+        // Lists containing the route of each target for the last 50 detections
         private List<GMapRoute> SMR_traces_routes = new List<GMapRoute>();
         private List<GMapRoute> MLAT_traces_routes = new List<GMapRoute>();
         private List<GMapRoute> ADSB_traces_routes = new List<GMapRoute>();
+
+        // Lists containing the COMPLETE route of each target (useful for exporting to .kml)
+        private List<GMapRoute> SMR_complete_routes = new List<GMapRoute>();
+        private List<GMapRoute> MLAT_complete_routes = new List<GMapRoute>();
+        private List<GMapRoute> ADSB_complete_routes = new List<GMapRoute>();
 
         // Radar WGS84 Coordinates of SMR and MLAT
         private CoordinatesWGS84 SMR_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29561833), Functions.Deg2Rad(2.09511417));
@@ -98,9 +93,6 @@ namespace AsterixDecoder
             GMap_control.Overlays.Add(this.ADSB_overlay);
 
             // We add the overlays of the traces to the GMap
-            //this.SMR_traces_overlay.Routes.Add(this.SMR_traces_route);
-            //this.MLAT_traces_overlay.Routes.Add(this.MLAT_traces_route);
-            //this.ADSB_traces_overlay.Routes.Add(this.ADSB_traces_route);
             GMap_control.Overlays.Add(this.SMR_traces_overlay);
             GMap_control.Overlays.Add(this.MLAT_traces_overlay);
             GMap_control.Overlays.Add(this.ADSB_traces_overlay);
@@ -142,74 +134,16 @@ namespace AsterixDecoder
         {
             Loading_ButtonState(ExportKML_button);
 
-            // Crear un objeto Kml
-            Kml kml = new Kml();
-          
-            // Crear el documento KML
-            var document = new Document();
-            //document.Name = "Mi Mapa";
-            kml.Feature = document;
-
-            // Recorrer todos los marcadores del mapa
-            foreach (var marker in SMR_overlay.Markers)
+            try
             {
-                // Crear un Placemark para el marcador
-                var placemark = new SharpKml.Dom.Placemark();
-                placemark.Name = marker.ToolTipText;
-                placemark.Geometry = new SharpKml.Dom.Point()
 
-                {
-                    Coordinate = new Vector(marker.Position.Lat, marker.Position.Lng)
-                };
+                ExportKML();
 
-                // Agregar el Placemark al Document
-                document.AddFeature(placemark);
-            }
-            foreach (var marker in ADSB_overlay.Markers)
-            {
-                // Crear un Placemark para el marcador
-                var placemark = new SharpKml.Dom.Placemark();
-                placemark.Name = marker.ToolTipText;
-                placemark.Geometry = new SharpKml.Dom.Point()
                 
-                {
-                    Coordinate = new Vector(marker.Position.Lat, marker.Position.Lng)
-                };
-              
-
-                // Asignar el estilo al Placemark
-                placemark.StyleUrl = new Uri("#red", UriKind.Relative);
-
-                // Agregar el Placemark al Document
-                document.AddFeature(placemark);
             }
-            foreach (var marker in MLAT_overlay.Markers)
+            catch
             {
-                // Crear un Placemark para el marcador
-                var placemark = new SharpKml.Dom.Placemark();
-                placemark.Name = marker.ToolTipText;
-                placemark.Geometry = new SharpKml.Dom.Point()
-                {
-                    Coordinate = new Vector(marker.Position.Lat, marker.Position.Lng)
-                };
-
-                // Agregar el Placemark al Document
-                document.AddFeature(placemark);
-            }
-
-            // Save the .KML file
-            SaveFileDialog saveFile = new SaveFileDialog() { Filter = "KML|*.kml", FileName = "myMap" };
-            if (saveFile.ShowDialog() == DialogResult.OK)
-            {
-                using (var stream = File.Create(saveFile.FileName))
-                {
-                    KmlFile kml1 = KmlFile.Create(document, false);
-                    kml1.Save(stream);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Error when saving .kml file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
             FinishedLoading_ButtonState(ExportKML_button, "EXPORT TO .KML");
@@ -219,7 +153,7 @@ namespace AsterixDecoder
         private void timer1_Tick(object sender, EventArgs e)
         {
             System.TimeSpan time = System.TimeSpan.FromSeconds(System.TimeSpan.Parse(this.currentTime).TotalSeconds + 1);
-            currentTime = time.ToString(@"hh\:mm\:ss");
+            this.currentTime = time.ToString(@"hh\:mm\:ss");
             Time_label.Text = this.currentTime;
             CheckTargets();
         }
@@ -227,7 +161,14 @@ namespace AsterixDecoder
         // Method that is executed when a marker from the GMap_control is clicked
         private void GMap_control_OnMarkerClick(GMap.NET.WindowsForms.GMapMarker item, MouseEventArgs e)
         {
-            Set_TargetData_DGV(item);
+            try
+            {
+                Set_TargetData_DGV(item);
+            }
+            catch
+            {
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
         }
 
         // TIME SCALE
@@ -323,23 +264,35 @@ namespace AsterixDecoder
         private void SMR_checkBox_CheckedChanged(object sender, EventArgs e)
         {
             this.SMR_overlay.IsVisibile = SMR_checkBox.Checked;
+            SeeTraces_checkBox_CheckedChanged(sender, e);
         }
 
         private void MLAT_checkBox_CheckedChanged(object sender, EventArgs e)
         {
             this.MLAT_overlay.IsVisibile = MLAT_checkBox.Checked;
+            SeeTraces_checkBox_CheckedChanged(sender, e);
         }
 
         private void ADSB_checkBox_CheckedChanged(object sender, EventArgs e)
         {
             this.ADSB_overlay.IsVisibile = ADSB_checkBox.Checked;
+            SeeTraces_checkBox_CheckedChanged(sender, e);
         }
 
         private void SeeTraces_checkBox_CheckedChanged(object sender, EventArgs e)
         {
-            this.SMR_traces_overlay.IsVisibile = SeeTraces_checkBox.Checked;
-            this.MLAT_traces_overlay.IsVisibile = SeeTraces_checkBox.Checked;
-            this.ADSB_traces_overlay.IsVisibile = SeeTraces_checkBox.Checked;
+            if (SeeTraces_checkBox.Checked is true)
+            {
+                this.SMR_traces_overlay.IsVisibile = SMR_checkBox.Checked;
+                this.MLAT_traces_overlay.IsVisibile = MLAT_checkBox.Checked;
+                this.ADSB_traces_overlay.IsVisibile = ADSB_checkBox.Checked;
+            }
+            else
+            {
+                this.SMR_traces_overlay.IsVisibile = false;
+                this.MLAT_traces_overlay.IsVisibile = false;
+                this.ADSB_traces_overlay.IsVisibile = false;
+            }
         }
 
         // SET HOUR
@@ -359,7 +312,7 @@ namespace AsterixDecoder
 
                     this.currentTime = Hour_comboBox.SelectedItem.ToString() + ":" + Minuts_comboBox.SelectedItem.ToString() + ":" + Seconds_comboBox.SelectedItem.ToString();
                     Time_label.Text = this.currentTime;
-
+                    
                     this.list_index = this.targetData_list.Count; // Just in case the following loop does not find the index value (because the Time Set is when the file with messages has already finished)
                     for (int index = 0; index < this.targetData_list.Count; index++)
                     {
@@ -369,6 +322,7 @@ namespace AsterixDecoder
                             break;
                         }
                     }
+                    
                 }
                 else
                 {
@@ -414,23 +368,24 @@ namespace AsterixDecoder
                 } 
             }
 
-            for(int i=0; i<this.SMR_overlay.Markers.Count;i++)
+            for (int i=0; i<this.SMR_overlay.Markers.Count;i++)
             {
                 int routesList_index = this.SMR_traces_routes.FindIndex(x => x.Name == this.SMR_overlay.Markers[i].ToolTipText);
                 this.SMR_traces_overlay.Routes.Add(this.SMR_traces_routes[routesList_index]);
-                this.GMap_control.UpdateRouteLocalPosition(this.SMR_traces_routes[routesList_index]);
+                //this.GMap_control.UpdateRouteLocalPosition(this.SMR_traces_routes[routesList_index]);
             }
+            
             for (int i = 0; i < this.MLAT_overlay.Markers.Count; i++)
             {
                 int routesList_index = this.MLAT_traces_routes.FindIndex(x => x.Name == this.MLAT_overlay.Markers[i].ToolTipText);
                 this.MLAT_traces_overlay.Routes.Add(this.MLAT_traces_routes[routesList_index]);
-                this.GMap_control.UpdateRouteLocalPosition(this.MLAT_traces_routes[routesList_index]);
+                //this.GMap_control.UpdateRouteLocalPosition(this.MLAT_traces_routes[routesList_index]);
             }
             for (int i = 0; i < this.ADSB_overlay.Markers.Count; i++)
             {
                 int routesList_index = this.ADSB_traces_routes.FindIndex(x => x.Name == this.ADSB_overlay.Markers[i].ToolTipText);
                 this.ADSB_traces_overlay.Routes.Add(this.ADSB_traces_routes[routesList_index]);
-                this.GMap_control.UpdateRouteLocalPosition(this.ADSB_traces_routes[routesList_index]);
+                //this.GMap_control.UpdateRouteLocalPosition(this.ADSB_traces_routes[routesList_index]);
             }
 
             // Check if we have reached the end of the simulation
@@ -467,10 +422,11 @@ namespace AsterixDecoder
                     longitude = Functions.Rad2Deg(geodesic.Lon);
                     //double h = geodesic.Height;
 
+                    Pen trace_pen = new Pen(Color.Goldenrod, 3);
                     markerType = GMarkerGoogleType.yellow_small;
                     marker = CreateMarker(latitude, longitude, markerType, index);
 
-                    RemovePreviousMarker_and_AddNewMarker(marker, this.SMR_overlay, this.SMR_traces_routes, this.Historic_SMR_markers);
+                    RemovePreviousMarker_and_AddNewMarker(marker, this.SMR_overlay, this.SMR_traces_routes, this.SMR_complete_routes, trace_pen);
                 }
                 else if (this.targetData_list[index].isMLAT is true)
                 {
@@ -481,10 +437,11 @@ namespace AsterixDecoder
                     longitude = Functions.Rad2Deg(geodesic.Lon);
                     //double h = geodesic.Height;
 
+                    Pen trace_pen = new Pen(Color.OliveDrab, 3);
                     markerType = GMarkerGoogleType.green_small;
                     marker = CreateMarker(latitude, longitude, markerType, index);
 
-                    RemovePreviousMarker_and_AddNewMarker(marker, this.MLAT_overlay, this.MLAT_traces_routes, this.Historic_MLAT_markers);
+                    RemovePreviousMarker_and_AddNewMarker(marker, this.MLAT_overlay, this.MLAT_traces_routes, this.MLAT_complete_routes, trace_pen);
                 }
             }
             else //if (this.targetData_list[index].isADSB is true)
@@ -492,15 +449,17 @@ namespace AsterixDecoder
                 latitude = this.targetData_list[index].Position[0];
                 longitude = this.targetData_list[index].Position[1];
 
+                Pen trace_pen = new Pen(Color.IndianRed, 3);
+                //trace_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                 markerType = GMarkerGoogleType.red_small;
                 marker = CreateMarker(latitude, longitude, markerType, index);
 
-                RemovePreviousMarker_and_AddNewMarker(marker, this.ADSB_overlay, this.ADSB_traces_routes, this.Historic_ADSB_markers);
+                RemovePreviousMarker_and_AddNewMarker(marker, this.ADSB_overlay, this.ADSB_traces_routes, this.ADSB_complete_routes, trace_pen);
             }
 
         }
 
-    private GMarkerGoogle CreateMarker(double latitude, double longitude, GMarkerGoogleType markerType, int index)
+        private GMarkerGoogle CreateMarker(double latitude, double longitude, GMarkerGoogleType markerType, int index)
         {
             GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(latitude, longitude), markerType);
             marker.ToolTipText = this.targetData_list[index].ID[0];
@@ -509,32 +468,207 @@ namespace AsterixDecoder
             return marker;
         }
 
-        private void RemovePreviousMarker_and_AddNewMarker(GMarkerGoogle marker, GMapOverlay overlay, List<GMapRoute> routesList, List<GMapMarker> Historic_markers)
+        private void RemovePreviousMarker_and_AddNewMarker(GMarkerGoogle marker, GMapOverlay overlay, List<GMapRoute> partialRoutes_list, List<GMapRoute> completeRoutes_list, Pen pen)
         {
-            int delete_index = Historic_markers.FindIndex(x => x.ToolTipText == marker.ToolTipText);
 
-            if (delete_index != -1)
+            int routesList_index = partialRoutes_list.FindIndex(x => x.Name == marker.ToolTipText);
+            
+
+            if (routesList_index != -1)
             {
-                int routesList_index =routesList.FindIndex(x => x.Name==marker.ToolTipText);
-                if (routesList[routesList_index].Points.Count ==50)
-                    routesList[routesList_index].Points.RemoveAt(0);
-                routesList[routesList_index].Points.Add(marker.Position);                
+                GMapRoute myRoute = partialRoutes_list[routesList_index];
+                if (myRoute.Points.Count == 50) // Defines number of detections for the traces
+                {
+                    myRoute.Points.RemoveAt(0);
+                }
 
-                // Remove previous marker in the Historic
-                Historic_markers.RemoveAt(delete_index);
+                myRoute.Points.Add(marker.Position);
+                partialRoutes_list[routesList_index] = myRoute;
             }
             else
             {
-                GMapRoute onetrace = new GMapRoute(marker.ToolTipText);
-                onetrace.Points.Add(marker.Position);
-                //onetrace.Tag = marker.ToolTipText;
-                routesList.Add(onetrace);
+                GMapRoute route = new GMapRoute(marker.ToolTipText);
+                route.Stroke = pen;
+                route.Points.Add(marker.Position);
+
+                partialRoutes_list.Add(route);
             }
             
-            // Add markers
+            // Add marker
             overlay.Markers.Add(marker);
-            Historic_markers.Add(marker);
         }
+
+        // ------------------------------
+        // EXPORT TO KML
+        private void ExportKML()
+        {
+            FulfillCompleteRoutesLists();
+
+            StringBuilder KML_file = new StringBuilder();
+            SaveFileDialog saveFile = new SaveFileDialog() { Filter = "KML|*.kml", FileName = "routes" };
+
+            KML_file.AppendLine("<?xml version='1.0' encoding='UTF-8'?>");
+            KML_file.AppendLine("<kml xmlns='http://www.opengis.net/kml/2.2'>");
+            KML_file.AppendLine("<Document>");
+
+            foreach (GMapRoute route in this.SMR_complete_routes)
+            {
+                KML_file.AppendLine("<Placemark>");
+                KML_file.AppendLine("<Style>");
+                KML_file.AppendLine("<LineStyle>");
+                KML_file.AppendLine("<color>DAA520</color>"); // yellow (goldenrod)
+                KML_file.AppendLine("<width>3</width>");
+                KML_file.AppendLine("</LineStyle>");
+                KML_file.AppendLine("</Style>");
+                KML_file.AppendLine("<name>" + "SMR" + "</name>");
+                KML_file.AppendLine("<description>" + "something" + "</description>");
+                KML_file.AppendLine("<LineString>");
+                KML_file.AppendLine("<coordinates>");
+
+                foreach (PointLatLng point in route.Points)
+                {
+                    KML_file.AppendLine(Convert.ToString(point.Lng).Replace(",", ".") + "," + Convert.ToString(point.Lat).Replace(",", "."));
+                }
+
+                KML_file.AppendLine("</coordinates>");
+                KML_file.AppendLine("</LineString>");
+                KML_file.AppendLine("</Placemark>");
+            }
+
+            foreach (GMapRoute route in this.MLAT_complete_routes)
+            {
+                KML_file.AppendLine("<Placemark>");
+                KML_file.AppendLine("<Style>");
+                KML_file.AppendLine("<LineStyle>");
+                KML_file.AppendLine("<color>6B8E23</color>"); // green (olivedrab)
+                KML_file.AppendLine("<width>3</width>");
+                KML_file.AppendLine("</LineStyle>");
+                KML_file.AppendLine("</Style>");
+                KML_file.AppendLine("<name>" + "MLAT" + "</name>");
+                KML_file.AppendLine("<description>" + "something" + "</description>");
+                KML_file.AppendLine("<LineString>");
+                KML_file.AppendLine("<coordinates>");
+
+                foreach (PointLatLng point in route.Points)
+                {
+                    KML_file.AppendLine(Convert.ToString(point.Lng).Replace(",", ".") + "," + Convert.ToString(point.Lat).Replace(",", "."));
+                }
+
+                KML_file.AppendLine("</coordinates>");
+                KML_file.AppendLine("</LineString>");
+                KML_file.AppendLine("</Placemark>");
+            }
+
+            foreach (GMapRoute route in this.ADSB_complete_routes)
+            {
+                KML_file.AppendLine("<Placemark>");
+                KML_file.AppendLine("<Style>");
+                KML_file.AppendLine("<LineStyle>");
+                KML_file.AppendLine("<color>CD5C5C</color>"); // red (indianred)
+                KML_file.AppendLine("<width>3</width>");
+                KML_file.AppendLine("</LineStyle>");
+                KML_file.AppendLine("</Style>");
+                KML_file.AppendLine("<name>" + "ADSB" + "</name>");
+                KML_file.AppendLine("<description>" + "something" + "</description>");
+                KML_file.AppendLine("<LineString>");
+                KML_file.AppendLine("<coordinates>");
+
+                foreach (PointLatLng point in route.Points)
+                {
+                    KML_file.AppendLine(Convert.ToString(point.Lng).Replace(",", ".") + "," + Convert.ToString(point.Lat).Replace(",", "."));
+                }
+
+                KML_file.AppendLine("</coordinates>");
+                KML_file.AppendLine("</LineString>");
+                KML_file.AppendLine("</Placemark>");
+            }
+
+            KML_file.AppendLine("</Document>");
+            KML_file.AppendLine("</kml>");
+
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(saveFile.FileName, KML_file.ToString());
+            }
+            else
+            {
+                MessageBox.Show("Error when saving .kml file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+        }
+
+        private void FulfillCompleteRoutesLists()
+        {
+            for (int index = 0; index < this.targetData_list.Count; index++)
+            {
+                PointLatLng point;
+                Pen pen;
+                List<GMapRoute> completeRoutes_list;
+
+                CoordinatesXYZ cartesian;
+                CoordinatesXYZ geocentric = new CoordinatesXYZ();
+                double latitude = 0;
+                double longitude = 0;
+
+                if (this.targetData_list[index].isSMR is true)
+                {
+                    cartesian = new CoordinatesXYZ(this.targetData_list[index].Position[0], this.targetData_list[index].Position[1], this.targetData_list[index].Position[2]);
+                    geocentric = this.myGeoUtils.change_radar_cartesian2geocentric(this.SMR_radar_WGS84Coordinates, cartesian);
+                    CoordinatesWGS84 geodesic = this.myGeoUtils.change_geocentric2geodesic(geocentric);
+                    latitude = Functions.Rad2Deg(geodesic.Lat);
+                    longitude = Functions.Rad2Deg(geodesic.Lon);
+                    //double h = geodesic.Height;
+
+                    pen = new Pen(Color.Goldenrod, 3);
+                    completeRoutes_list = this.SMR_complete_routes;
+                }
+                else if (this.targetData_list[index].isMLAT is true)
+                {
+                    cartesian = new CoordinatesXYZ(this.targetData_list[index].Position[0], this.targetData_list[index].Position[1], this.targetData_list[index].Position[2]);
+                    geocentric = this.myGeoUtils.change_radar_cartesian2geocentric(this.MLAT_radar_WGS84Coordinates, cartesian);
+                    CoordinatesWGS84 geodesic = this.myGeoUtils.change_geocentric2geodesic(geocentric);
+                    latitude = Functions.Rad2Deg(geodesic.Lat);
+                    longitude = Functions.Rad2Deg(geodesic.Lon);
+                    //double h = geodesic.Height;
+
+                    pen = new Pen(Color.OliveDrab, 3);
+                    completeRoutes_list = this.MLAT_complete_routes;
+                }
+                else //if (this.targetData_list[index].isADSB is true)
+                {
+                    latitude = this.targetData_list[index].Position[0];
+                    longitude = this.targetData_list[index].Position[1];
+
+                    pen = new Pen(Color.IndianRed, 3);
+                    completeRoutes_list = this.ADSB_complete_routes;
+                }
+
+                point = new PointLatLng(latitude, longitude);
+                AddPointToCompleteRoute(index, point, pen, completeRoutes_list);
+            }
+        }
+
+        private void AddPointToCompleteRoute(int index, PointLatLng point, Pen pen, List<GMapRoute> completeRoutes_list)
+        {
+            int routesList_index = completeRoutes_list.FindIndex(x => x.Name == this.targetData_list[index].ID[0]);
+
+            if (routesList_index != -1)
+            {
+                GMapRoute myRoute = completeRoutes_list[routesList_index];
+                myRoute.Points.Add(point);
+                completeRoutes_list[routesList_index] = myRoute;
+            }
+            else
+            {
+                GMapRoute newRoute = new GMapRoute(this.targetData_list[index].ID[0]);
+                newRoute.Stroke = pen;
+                newRoute.Points.Add(point);
+
+                completeRoutes_list.Add(newRoute);
+            }
+        }
+        // EXPORT TO KML (end)
+        // ------------------------------
 
         private void Set_TargetData_DGV(GMapMarker target)
         {
@@ -618,9 +752,6 @@ namespace AsterixDecoder
         private void ClearAllLists()
         {
             ClearCurrentLists();
-            this.Historic_SMR_markers.Clear();
-            this.Historic_MLAT_markers.Clear();
-            this.Historic_ADSB_markers.Clear();
 
             ClearTracesLists();
             this.SMR_traces_routes.Clear();

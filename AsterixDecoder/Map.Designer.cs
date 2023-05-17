@@ -39,7 +39,6 @@ namespace AsterixDecoder
             this.Stop_button = new System.Windows.Forms.Button();
             this.Time_label = new System.Windows.Forms.Label();
             this.TargetData_DGV = new System.Windows.Forms.DataGridView();
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.ExportKML_button = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.TimeScaleIndicator_label = new System.Windows.Forms.Label();
@@ -57,7 +56,6 @@ namespace AsterixDecoder
             this.SeeTraces_checkBox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TimeScaleBackward_button)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TimeScaleForward_button)).BeginInit();
             this.SuspendLayout();
@@ -520,7 +518,6 @@ namespace AsterixDecoder
             this.Text = "00:00:00.000";
             this.Load += new System.EventHandler(this.Map_Load);
             ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TimeScaleBackward_button)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TimeScaleForward_button)).EndInit();
             this.ResumeLayout(false);
@@ -535,7 +532,6 @@ namespace AsterixDecoder
         private Button Stop_button;
         private Label Time_label;
         private DataGridView TargetData_DGV;
-        private BindingSource bindingSource1;
         private Button ExportKML_button;
         private Label label3;
         private Label TimeScaleIndicator_label;

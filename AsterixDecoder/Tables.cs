@@ -279,7 +279,7 @@ namespace AsterixDecoder
 
         private void dataList_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
         {
-            //SetRowsColor(e.RowIndex, dataList_DGV);
+            SetRowsColor(e.RowIndex, dataList_DGV);
         }
 
         private void Set_dataItems_DGV(Data messageData)
