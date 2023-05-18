@@ -17,7 +17,7 @@ namespace ClassLibrary
         //public string TargetAddres { get; set; }
         //public string TargetIdentification { get; set; }
         public string Mode3ACode { get; set; }
-        public double FlightLevel { get; set; }
+        public double? FlightLevel { get; set; }
 
         // SMR, MLAT or ADSB message indicator
         public bool isSMR { get; set; } = false;

@@ -65,15 +65,7 @@ namespace AsterixDecoder
         private readonly CoordinatesWGS84 SMR_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29561833), Functions.Deg2Rad(2.09511417));
         private readonly CoordinatesWGS84 MLAT_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29706278), Functions.Deg2Rad(2.07844722));
 
-        // Deteccion zone of FL (DER: Departure End of Runway)
-        private readonly PointLatLng DER_startRight_WGS84Coordinates = new PointLatLng(41.282975, 2.075364);
-        private readonly PointLatLng DER_startLeft_WGS84Coordinates = new PointLatLng(41.282447, 2.075648);
-        private readonly PointLatLng DER_endRight_WGS84Coordinates = new PointLatLng(41.282290, 2.073250);
-        private readonly PointLatLng DER_endLeft_WGS84Coordinates = new PointLatLng(41.281548, 2.073695);
-        private List<List<double>> FLs = new List<List<double>>();
-        private List<string> targetIDs = new List<string>();
-
-
+        
         // CONSTRUCTOR
         public Map(List<TargetData> targetData_list)
         {
@@ -318,74 +310,6 @@ namespace AsterixDecoder
             }            
         }
         // Play & Stop buttons + timer1 methods
-        // ------------------------------------------------------------
-
-        // ------------------------------------------------------------
-        // Save FLs inside the DER
-        private void SaveFLsInDER_button_Click(object sender, EventArgs e)
-        {
-            Loading_ButtonState(SaveFLsInDER_button);
-
-            try
-            {
-                SaveFLsInsideDER();
-            }
-            catch
-            {
-                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            FinishedLoading_ButtonState(SaveFLsInDER_button, "Save FLs inside DER");
-        }
-
-        private void SaveFLsInsideDER()
-        {
-            foreach (TargetData targetData in this.targetData_list)
-            {
-                // Note down the FLs inside the DER
-                if (targetData.Position[1] >= this.DER_endRight_WGS84Coordinates.Lng && targetData.Position[1] <= this.DER_startLeft_WGS84Coordinates.Lng)
-                {
-                    if (targetData.Position[0] >= this.DER_endLeft_WGS84Coordinates.Lat && targetData.Position[0] <= this.DER_startRight_WGS84Coordinates.Lat)
-                    {
-                        int FLs_index = this.targetIDs.FindIndex(x => x == targetData.ID[0]);
-                        if (FLs_index != -1)
-                        {
-                            this.FLs[FLs_index].Add(targetData.FlightLevel);
-                        }
-                        else
-                        {
-                            this.targetIDs.Add(targetData.ID[0]);
-                            List<double> FL = new List<double>() { targetData.FlightLevel };
-                            this.FLs.Add(FL);
-                        }
-                    }
-                }
-            }
-
-            StringBuilder txt_file = new StringBuilder();
-            SaveFileDialog saveFile = new SaveFileDialog() { Filter = "TXT|*.txt", FileName = "FLs" };
-
-            foreach (List<double> fl_list in this.FLs)
-            {
-                string str = "";
-                foreach (double fl in fl_list)
-                {
-                    str = str + fl.ToString() + " - ";
-                }
-                string finalString = str.Remove(str.Length - 3, 2); // Just to remove the last " - "
-                txt_file.AppendLine(finalString);
-            }
-
-            if (saveFile.ShowDialog() == DialogResult.OK)
-            {
-                File.WriteAllText(saveFile.FileName, txt_file.ToString());
-            }
-            else
-            {
-                MessageBox.Show("Error when saving .txt file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-        // Save FLs inside the DER
         // ------------------------------------------------------------
 
         // ------------------------------------------------------------
@@ -645,8 +569,8 @@ namespace AsterixDecoder
                 TargetData_DGV.Rows[6].Cells[1].Value = "--";
 
 
-            double FL = this.targetData_list[index].FlightLevel;
-            if (FL != 0)
+            double? FL = this.targetData_list[index].FlightLevel;
+            if (FL != null)
                 TargetData_DGV.Rows[7].Cells[1].Value = FL;
             else
                 TargetData_DGV.Rows[7].Cells[1].Value = "--";

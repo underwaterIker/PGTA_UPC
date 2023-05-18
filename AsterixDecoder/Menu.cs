@@ -38,6 +38,7 @@ namespace AsterixDecoder
             child_panel.Controls.Clear();
             EndDisplay_ButtonState(ViewData_button);
             EndDisplay_ButtonState(ViewMap_button);
+            EndDisplay_ButtonState(FLsInsideDER_button);
             EndDisplay_ButtonState(AboutUs_button);
 
             Loading_ButtonState(LoadFile_button);
@@ -65,7 +66,7 @@ namespace AsterixDecoder
                 MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
-            FinishedLoading_ButtonState(LoadFile_button, "LOAD FILE");
+            FinishedLoading_ButtonState(LoadFile_button, "LOAD FILE", 18);
         }
 
         // ViewData
@@ -76,6 +77,7 @@ namespace AsterixDecoder
             if (this.fileLoaded_flag == true)
             {
                 EndDisplay_ButtonState(ViewMap_button);
+                EndDisplay_ButtonState(FLsInsideDER_button);
                 EndDisplay_ButtonState(AboutUs_button);
 
                 Tables myTables = new Tables(this.myDecoder.messagesData_list, this.myDecoder.CAT10_flag, this.myDecoder.CAT21_flag);
@@ -83,16 +85,13 @@ namespace AsterixDecoder
 
                 //myTables.dataList_DGV.Rows[0].Cells[0].Selected = false;
 
-                CurrentDisplay_ButtonState(ViewData_button, "VIEW DATA");
+                CurrentDisplay_ButtonState(ViewData_button, "VIEW DATA", 18);
             }
             else
             {
                 MessageBox.Show("Load the File first.", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                FinishedLoading_ButtonState(ViewData_button, "VIEW DATA");
+                FinishedLoading_ButtonState(ViewData_button, "VIEW DATA", 18);
             }
-
-            
-            
         }
 
         // MapView
@@ -103,17 +102,41 @@ namespace AsterixDecoder
             if (this.fileLoaded_flag == true)
             {
                 EndDisplay_ButtonState(ViewData_button);
+                EndDisplay_ButtonState(FLsInsideDER_button);
                 EndDisplay_ButtonState(AboutUs_button);
 
                 Map myMap = new Map(this.myDecoder.targetData_list);
                 OpenFormInPanel(myMap);
 
-                CurrentDisplay_ButtonState(ViewMap_button, "VIEW MAP");
+                CurrentDisplay_ButtonState(ViewMap_button, "VIEW MAP", 18);
             }
             else
             {
                 MessageBox.Show("Load the File first.", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                FinishedLoading_ButtonState(ViewMap_button, "VIEW MAP");
+                FinishedLoading_ButtonState(ViewMap_button, "VIEW MAP", 18);
+            }
+        }
+
+        // Flight Levels inside DER
+        private void FLsInsideDER_button_Click(object sender, EventArgs e)
+        {
+            Loading_ButtonState(FLsInsideDER_button);
+
+            if (this.fileLoaded_flag == true)
+            {
+                EndDisplay_ButtonState(ViewData_button);
+                EndDisplay_ButtonState(ViewMap_button);
+                EndDisplay_ButtonState(AboutUs_button);
+
+                FLsInsideDER myFLsInsideDER = new FLsInsideDER(this.myDecoder.targetData_list);
+                OpenFormInPanel(myFLsInsideDER);
+
+                CurrentDisplay_ButtonState(FLsInsideDER_button, "FLIGHT LEVELS INSIDE DER", 12);
+            }
+            else
+            {
+                MessageBox.Show("Load the File first.", "File not loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FinishedLoading_ButtonState(FLsInsideDER_button, "FLIGHT LEVELS INSIDE DER", 12);
             }
         }
 
@@ -125,8 +148,9 @@ namespace AsterixDecoder
 
             EndDisplay_ButtonState(ViewData_button);
             EndDisplay_ButtonState(ViewMap_button);
+            EndDisplay_ButtonState(FLsInsideDER_button);
 
-            CurrentDisplay_ButtonState(AboutUs_button, "ABOUT US");
+            CurrentDisplay_ButtonState(AboutUs_button, "ABOUT US", 18);
             
         }
 
@@ -160,20 +184,20 @@ namespace AsterixDecoder
             Application.DoEvents();
         }
 
-        private void FinishedLoading_ButtonState(Button button, string str)
+        private void FinishedLoading_ButtonState(Button button, string str, int fontSize)
         {
             button.Text = str;
             button.ForeColor = Color.Black;
             button.BackColor = Color.CornflowerBlue;
-            button.Font = new Font("Unisans", 18, FontStyle.Bold);
+            button.Font = new Font("Unisans", fontSize, FontStyle.Bold);
         }
 
-        private void CurrentDisplay_ButtonState(Button button, string str)
+        private void CurrentDisplay_ButtonState(Button button, string str, int fontSize)
         {
             button.Text = str;
             button.ForeColor = Color.Black;
             button.BackColor = Color.SpringGreen;
-            button.Font = new Font("Unisans", 18, FontStyle.Bold);
+            button.Font = new Font("Unisans", fontSize, FontStyle.Bold);
         }
 
         private void EndDisplay_ButtonState(Button button)
@@ -182,6 +206,6 @@ namespace AsterixDecoder
             button.BackColor = Color.CornflowerBlue;
         }
 
-
+        
     }
 }
