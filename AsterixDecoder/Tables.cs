@@ -45,6 +45,58 @@ namespace AsterixDecoder
 
 
         // METHODS
+
+        // ------------------------------------------------------------------------------
+        // DataGridViews
+        private void Set_dataList_DGV(List<Data> messagesData_list)
+        {
+            label1.Show();
+            label2.Show();
+
+            dataList_DGV.Columns.Clear();
+            dataList_DGV.Rows.Clear();
+            dataItems_DGV.Columns.Clear();
+            dataItems_DGV.Rows.Clear();
+            Item_DGV.Columns.Clear();
+            Item_DGV.Rows.Clear();
+
+            dataList_DGV.RowHeadersVisible = false;
+            dataList_DGV.ColumnHeadersVisible = false;
+
+            // Set the number of rows and columns
+            dataList_DGV.RowCount = messagesData_list.Count + 1;
+            dataList_DGV.ColumnCount = 4;
+
+            dataList_DGV.Rows[0].Cells[0].Selected = false;
+            dataList_DGV.Columns[0].Width = 50;
+            dataList_DGV.Columns[1].Width = 80;
+            dataList_DGV.Columns[2].Width = 80;
+            dataList_DGV.Columns[3].Width = 80;
+
+            // Row[0] Bold and Frozen
+            dataList_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
+            dataList_DGV.Rows[0].Frozen = true;
+            dataList_DGV.Columns[0].DefaultCellStyle.Font = new Font("Tahoma", 8, FontStyle.Bold);
+
+            // Headers
+            dataList_DGV.Rows[0].Cells[1].Value = "Length";
+            dataList_DGV.Rows[0].Cells[2].Value = "#Items";
+            dataList_DGV.Rows[0].Cells[3].Value = "CAT";
+
+            for (int i = 0; i < messagesData_list.Count; i++)
+            {
+                dataList_DGV.Rows[i + 1].Cells[0].Value = i + 1;
+                dataList_DGV.Rows[i + 1].Cells[1].Value = messagesData_list[i].LENGTH;
+                dataList_DGV.Rows[i + 1].Cells[2].Value = messagesData_list[i].numberOfDataItems;
+                dataList_DGV.Rows[i + 1].Cells[3].Value = messagesData_list[i].CAT;
+            }
+        }
+
+        private void dataList_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            SetRowsColor(e.RowIndex, dataList_DGV);
+        }
+
         private void dataList_DGV_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -69,6 +121,60 @@ namespace AsterixDecoder
             {
                 MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+        }
+
+        private void Set_dataItems_DGV(Data messageData)
+        {
+            dataItems_DGV.Columns.Clear();
+            dataItems_DGV.Rows.Clear();
+            Item_DGV.Columns.Clear();
+            Item_DGV.Rows.Clear();
+
+            dataItems_DGV.RowHeadersVisible = false;
+            dataItems_DGV.ColumnHeadersVisible = false;
+
+            // Set the number of rows and columns
+            dataItems_DGV.RowCount = messageData.numberOfDataItems + 1;
+            dataItems_DGV.ColumnCount = 2;
+
+            dataItems_DGV.Rows[0].Cells[0].Selected = false;
+            dataItems_DGV.Columns[0].Width = 120;
+            dataItems_DGV.Columns[1].Width = 260;
+
+            // Row[0] Bold and Frozen
+            dataItems_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
+            dataItems_DGV.Rows[0].Frozen = true;
+
+            // Headers
+            dataItems_DGV.Rows[0].Cells[0].Value = "Field Type";
+            dataItems_DGV.Rows[0].Cells[1].Value = "Description";
+
+            // Set Dictionaries depending on the CAT number
+            IDictionary<int, string> code_dict;
+            IDictionary<int, string> name_dict;
+            if (messageData.CAT == 10)
+            {
+                code_dict = Dictionaries.FieldType_Code_CAT10_dict;
+                name_dict = Dictionaries.FieldType_Name_CAT10_dict;
+            }
+            else
+            {
+                code_dict = Dictionaries.FieldType_Code_CAT21_dict;
+                name_dict = Dictionaries.FieldType_Name_CAT21_dict;
+            }
+
+            // Loop
+            for (int i = 0; i < messageData.numberOfDataItems; i++)
+            {
+                dataItems_DGV.Rows[i + 1].Cells[0].Value = code_dict[messageData.fieldTypes[i]];
+                dataItems_DGV.Rows[i + 1].Cells[1].Value = name_dict[messageData.fieldTypes[i]];
+
+            }
+        }
+
+        private void dataItems_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            SetRowsColor(e.RowIndex, dataItems_DGV);
         }
 
         private void dataItems_DGV_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -97,6 +203,74 @@ namespace AsterixDecoder
             }
         }
 
+        private void Set_Item_DGV(object item, int itemCode, int cat)
+        {
+            var item_array = item as IList;
+
+            Item_DGV.Columns.Clear();
+            Item_DGV.Rows.Clear();
+
+            Item_DGV.RowHeadersVisible = false;
+            Item_DGV.ColumnHeadersVisible = false;
+
+            // Set the number of rows and columns
+            Item_DGV.RowCount = item_array.Count + 1;
+            Item_DGV.ColumnCount = 2;
+
+            Item_DGV.Rows[0].Cells[0].Selected = false;
+            Item_DGV.Columns[0].Width = 170;
+            Item_DGV.Columns[1].Width = 210;
+
+            // Row[0] Bold and Frozen
+            Item_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
+            Item_DGV.Rows[0].Frozen = true;
+
+            // Headers
+            Item_DGV.Rows[0].Cells[0].Value = "Item name";
+            Item_DGV.Rows[0].Cells[1].Value = "Value";
+
+            // Set Item Dictionary depending on CAT number
+            string[] item_dict;
+            if (cat == 10)
+            {
+                item_dict = Dictionaries.FieldType_ItemsName_CAT10_dict[itemCode];
+            }
+            else //else if (cat == 21)
+            {
+                item_dict = Dictionaries.FieldType_ItemsName_CAT21_dict[itemCode];
+            }
+
+            // Loop depending if its a Compund Data Item or not            
+            for (int i = 0; i < item_array.Count; i++)
+            {
+                if (item_array[i] is IList) // REP items
+                {
+                    var REPitem_list = item_array[i] as IList;
+                    Item_DGV.ColumnCount = 2 * REPitem_list.Count;
+
+                    for (int j = 0; j < REPitem_list.Count; j++)
+                    {
+                        Item_DGV.Rows[i + 1].Cells[0 + 2 * j].Value = item_dict[i];
+                        Item_DGV.Rows[i + 1].Cells[1 + 2 * j].Value = REPitem_list[j];
+                    }
+                }
+                else // normal items
+                {
+                    Item_DGV.Rows[i + 1].Cells[0].Value = item_dict[i];
+                    Item_DGV.Rows[i + 1].Cells[1].Value = item_array[i];
+                }
+            }
+        }
+
+        private void Item_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            SetRowsColor(e.RowIndex, Item_DGV);
+        }
+        // DataGridViews
+        // ------------------------------------------------------------------------------
+
+        // ----------------------------------------------------------------------------
+        // Filter
         private void Filter_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             Filter_textBox.Enabled = true;
@@ -180,6 +354,50 @@ namespace AsterixDecoder
             FinishedLoading_ButtonState(Filter_button, "Filter");
         }
 
+        private void Set_Filtered_messagesData_list(int[] cat, int[] fieldType, int[] index_item, string textBox)
+        {
+            this.Filter_flag = true;
+
+            this.Filtered_messagesData_list = new List<Data>();
+            for (int i = 0; i < this.messagesData_list.Count; i++)
+            {
+                int index_cat10 = this.messagesData_list[i].fieldTypes.IndexOf(fieldType[0]);
+                int index_cat21 = this.messagesData_list[i].fieldTypes.IndexOf(fieldType[1]);
+                int cat_number = this.messagesData_list[i].CAT;
+
+                if (index_cat10 != -1 && cat_number == cat[0])
+                {
+                    if (textBox == "")
+                    {
+                        this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                    }
+                    else
+                    {
+                        if (this.messagesData_list[i].data_list[index_cat10][index_item[0]].ToString() == textBox)
+                        {
+                            this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                        }
+                    }
+
+                }
+                else if (index_cat21 != -1 && cat_number == cat[1])
+                {
+                    if (textBox == "")
+                    {
+                        this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                    }
+                    else
+                    {
+                        if (this.messagesData_list[i].data_list[index_cat21][index_item[1]].ToString() == textBox)
+                        {
+                            this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
+                        }
+                    }
+
+                }
+            }
+        }
+
         private void UndoFilter_button_Click(object sender, EventArgs e)
         {
             Loading_ButtonState(UndoFilter_button);
@@ -207,7 +425,11 @@ namespace AsterixDecoder
 
             FinishedLoading_ButtonState(UndoFilter_button, "Undo Filter");
         }
+        // Filter
+        // ----------------------------------------------------------------------------
 
+        // ----------------------------------------------------------------------------
+        // Export
         private void ExportCSV_button_Click(object sender, EventArgs e)
         {
             Loading_ButtonState(ExportCSV_button);
@@ -231,177 +453,6 @@ namespace AsterixDecoder
             FinishedLoading_ButtonState(ExportCSV_button, "Export to .CSV");
         }
 
-        // -----------------------------------------------------------------------------
-        // Set DataGridView funcions
-        private void Set_dataList_DGV(List<Data> messagesData_list)
-        {
-            label1.Show();
-            label2.Show();
-
-            dataList_DGV.Columns.Clear();
-            dataList_DGV.Rows.Clear();
-            dataItems_DGV.Columns.Clear();
-            dataItems_DGV.Rows.Clear();
-            Item_DGV.Columns.Clear();
-            Item_DGV.Rows.Clear();
-
-            dataList_DGV.RowHeadersVisible = false;
-            dataList_DGV.ColumnHeadersVisible = false;
-            
-            // Set the number of rows and columns
-            dataList_DGV.RowCount = messagesData_list.Count + 1;
-            dataList_DGV.ColumnCount = 4;
-
-            dataList_DGV.Rows[0].Cells[0].Selected = false;
-            dataList_DGV.Columns[0].Width = 50;
-            dataList_DGV.Columns[1].Width = 80;
-            dataList_DGV.Columns[2].Width = 80;
-            dataList_DGV.Columns[3].Width = 80;
-
-            // Row[0] Bold and Frozen
-            dataList_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
-            dataList_DGV.Rows[0].Frozen = true;
-            dataList_DGV.Columns[0].DefaultCellStyle.Font = new Font("Tahoma", 8, FontStyle.Bold);
-
-            // Headers
-            dataList_DGV.Rows[0].Cells[1].Value = "Length";
-            dataList_DGV.Rows[0].Cells[2].Value = "#Items";
-            dataList_DGV.Rows[0].Cells[3].Value = "CAT";
-
-            for (int i = 0; i < messagesData_list.Count; i++)
-            {
-                dataList_DGV.Rows[i + 1].Cells[0].Value = i + 1;
-                dataList_DGV.Rows[i + 1].Cells[1].Value = messagesData_list[i].LENGTH;
-                dataList_DGV.Rows[i + 1].Cells[2].Value = messagesData_list[i].numberOfDataItems;
-                dataList_DGV.Rows[i + 1].Cells[3].Value = messagesData_list[i].CAT;
-            }
-        }
-
-        private void dataList_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
-        {
-            SetRowsColor(e.RowIndex, dataList_DGV);
-        }
-
-        private void Set_dataItems_DGV(Data messageData)
-        {
-            dataItems_DGV.Columns.Clear();
-            dataItems_DGV.Rows.Clear();
-            Item_DGV.Columns.Clear();
-            Item_DGV.Rows.Clear();
-
-            dataItems_DGV.RowHeadersVisible = false;
-            dataItems_DGV.ColumnHeadersVisible = false;
-
-            // Set the number of rows and columns
-            dataItems_DGV.RowCount = messageData.numberOfDataItems + 1;
-            dataItems_DGV.ColumnCount = 2;
-
-            dataItems_DGV.Rows[0].Cells[0].Selected = false;
-            dataItems_DGV.Columns[0].Width = 120;
-            dataItems_DGV.Columns[1].Width = 260;
-
-            // Row[0] Bold and Frozen
-            dataItems_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
-            dataItems_DGV.Rows[0].Frozen = true;
-
-            // Headers
-            dataItems_DGV.Rows[0].Cells[0].Value = "Field Type";
-            dataItems_DGV.Rows[0].Cells[1].Value = "Description";
-
-            // Set Dictionaries depending on the CAT number
-            IDictionary<int, string> code_dict;
-            IDictionary<int, string> name_dict;
-            if (messageData.CAT == 10)
-            {
-                code_dict = Dictionaries.FieldType_Code_CAT10_dict;
-                name_dict = Dictionaries.FieldType_Name_CAT10_dict;
-            }
-            else
-            {
-                code_dict = Dictionaries.FieldType_Code_CAT21_dict;
-                name_dict = Dictionaries.FieldType_Name_CAT21_dict;
-            }
-
-            // Loop
-            for (int i = 0; i < messageData.numberOfDataItems; i++)
-            {
-                dataItems_DGV.Rows[i + 1].Cells[0].Value = code_dict[messageData.fieldTypes[i]];
-                dataItems_DGV.Rows[i + 1].Cells[1].Value = name_dict[messageData.fieldTypes[i]];
-                
-            }
-        }
-
-        private void dataItems_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
-        {
-            SetRowsColor(e.RowIndex, dataItems_DGV);
-        }
-
-        private void Set_Item_DGV(object item, int itemCode, int cat)
-        {
-            var item_array = item as IList;
-
-            Item_DGV.Columns.Clear();
-            Item_DGV.Rows.Clear();
-
-            Item_DGV.RowHeadersVisible = false;
-            Item_DGV.ColumnHeadersVisible = false;
-
-            // Set the number of rows and columns
-            Item_DGV.RowCount = item_array.Count + 1;
-            Item_DGV.ColumnCount = 2;
-
-            Item_DGV.Rows[0].Cells[0].Selected = false;
-            Item_DGV.Columns[0].Width = 170;
-            Item_DGV.Columns[1].Width = 210;
-
-            // Row[0] Bold and Frozen
-            Item_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
-            Item_DGV.Rows[0].Frozen = true;
-
-            // Headers
-            Item_DGV.Rows[0].Cells[0].Value = "Item name";
-            Item_DGV.Rows[0].Cells[1].Value = "Value";
-
-            // Set Item Dictionary depending on CAT number
-            string[] item_dict;
-            if (cat == 10)
-            {
-                item_dict = Dictionaries.FieldType_ItemsName_CAT10_dict[itemCode];
-            }
-            else //else if (cat == 21)
-            {
-                item_dict = Dictionaries.FieldType_ItemsName_CAT21_dict[itemCode];
-            }
-
-            // Loop depending if its a Compund Data Item or not            
-            for (int i = 0; i < item_array.Count; i++)
-            {
-                if (item_array[i] is IList) // REP items
-                {
-                    var REPitem_list = item_array[i] as IList;
-                    Item_DGV.ColumnCount = 2*REPitem_list.Count;
-
-                    for (int j = 0; j < REPitem_list.Count; j++)
-                    {
-                        Item_DGV.Rows[i + 1].Cells[0 + 2*j].Value = item_dict[i];
-                        Item_DGV.Rows[i + 1].Cells[1 + 2*j].Value = REPitem_list[j];
-                    }
-                }
-                else // normal items
-                {
-                    Item_DGV.Rows[i + 1].Cells[0].Value = item_dict[i];
-                    Item_DGV.Rows[i + 1].Cells[1].Value = item_array[i];
-                }    
-            } 
-        }
-
-        private void Item_DGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
-        {
-            SetRowsColor(e.RowIndex, Item_DGV);
-        }
-
-        // ------------------------------------------------------
-        // Export function
         private void ExportCSV(List<Data> messagesData_list)
         {
             // Set the StringBuilders we are going to need (one for each CAT present in the message)
@@ -444,7 +495,7 @@ namespace AsterixDecoder
 
                 flags[0] = false;
             }
-            
+
             // Headers CAT21
             if (this.CAT21_flag is true)
             {
@@ -469,7 +520,7 @@ namespace AsterixDecoder
 
                 flags[1] = false;
             }
-            
+
 
             // Messages
             int dictionary_index = 0;
@@ -481,7 +532,7 @@ namespace AsterixDecoder
                     if (flags[0] is false)
                     {
                         flags[0] = true;
-                    }    
+                    }
                 }
                 else if (oneMessageData.CAT == 21)
                 {
@@ -525,8 +576,8 @@ namespace AsterixDecoder
                                             {
                                                 REP_oneMessage.Add(oneMessage_emptyForREP);
                                             }
-                                                    
-                                            REP_oneMessage[j-1] = REP_oneMessage[j-1] + REPitem_list[j].ToString() + ";";
+
+                                            REP_oneMessage[j - 1] = REP_oneMessage[j - 1] + REPitem_list[j].ToString() + ";";
                                         }
 
                                     }
@@ -537,7 +588,7 @@ namespace AsterixDecoder
                                     oneMessage = oneMessage + item.ToString() + ";";
                                     oneMessage_emptyForREP = oneMessage_emptyForREP + ";";
                                 }
-                                        
+
                             }
                             else
                             {
@@ -560,7 +611,7 @@ namespace AsterixDecoder
                 }
 
                 CSVs[dictionary_index].AppendLine(oneMessage);
-                for(int i = 0; i < REP_oneMessage.Count; i++) // In case there is a REP Data Item
+                for (int i = 0; i < REP_oneMessage.Count; i++) // In case there is a REP Data Item
                 {
                     CSVs[dictionary_index].AppendLine(REP_oneMessage[i]);
                 }
@@ -583,52 +634,8 @@ namespace AsterixDecoder
             }
 
         }
-
-        // ------------------------------------------------------
-        // Filter function
-        private void Set_Filtered_messagesData_list(int[] cat, int[] fieldType, int[] index_item, string textBox)
-        {
-            this.Filter_flag = true;
-
-            this.Filtered_messagesData_list = new List<Data>();
-            for (int i = 0; i < this.messagesData_list.Count; i++)
-            {
-                int index_cat10 = this.messagesData_list[i].fieldTypes.IndexOf(fieldType[0]);
-                int index_cat21 = this.messagesData_list[i].fieldTypes.IndexOf(fieldType[1]);
-                int cat_number = this.messagesData_list[i].CAT;
-
-                if (index_cat10 != -1 && cat_number == cat[0])
-                {
-                    if (textBox == "")
-                    {
-                        this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
-                    }
-                    else
-                    {
-                        if (this.messagesData_list[i].data_list[index_cat10][index_item[0]].ToString() == textBox)
-                        {
-                            this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
-                        }
-                    }
-                    
-                }
-                else if (index_cat21 != -1 && cat_number == cat[1])
-                {
-                    if (textBox == "")
-                    {
-                        this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
-                    }
-                    else
-                    {
-                        if (this.messagesData_list[i].data_list[index_cat21][index_item[1]].ToString() == textBox)
-                        {
-                            this.Filtered_messagesData_list.Add(this.messagesData_list[i]);
-                        }
-                    }
-
-                }
-            }
-        }
+        // Export
+        // ----------------------------------------------------------------------------        
 
         // ------------------------------------------------------
         // Set Rows Color method
@@ -639,6 +646,8 @@ namespace AsterixDecoder
             else
                 DGV.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightCyan;
         }
+        // Set Rows Color method
+        // ------------------------------------------------------
 
         // ------------------------------------------------------
         // Loading Button State methods
@@ -656,7 +665,9 @@ namespace AsterixDecoder
             button.ForeColor = Color.Black;
             button.BackColor = Color.White;
         }
+        // Loading Button State methods
+        // ------------------------------------------------------
 
-        
+
     }
 }

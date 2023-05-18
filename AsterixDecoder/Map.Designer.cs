@@ -55,6 +55,7 @@ namespace AsterixDecoder
             this.Seconds_comboBox = new System.Windows.Forms.ComboBox();
             this.SeeTraces_checkBox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.SaveFLsInDER_button = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.TargetData_DGV)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TimeScaleBackward_button)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TimeScaleForward_button)).BeginInit();
@@ -136,7 +137,7 @@ namespace AsterixDecoder
             // 
             this.TargetData_DGV.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.TargetData_DGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.TargetData_DGV.Location = new System.Drawing.Point(341, 498);
+            this.TargetData_DGV.Location = new System.Drawing.Point(353, 498);
             this.TargetData_DGV.Name = "TargetData_DGV";
             this.TargetData_DGV.RowHeadersVisible = false;
             this.TargetData_DGV.RowHeadersWidth = 62;
@@ -155,9 +156,9 @@ namespace AsterixDecoder
             this.ExportKML_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ExportKML_button.ForeColor = System.Drawing.Color.Black;
             this.ExportKML_button.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.ExportKML_button.Location = new System.Drawing.Point(186, 616);
+            this.ExportKML_button.Location = new System.Drawing.Point(186, 606);
             this.ExportKML_button.Name = "ExportKML_button";
-            this.ExportKML_button.Size = new System.Drawing.Size(122, 114);
+            this.ExportKML_button.Size = new System.Drawing.Size(139, 69);
             this.ExportKML_button.TabIndex = 16;
             this.ExportKML_button.Text = "EXPORT TO .KML";
             this.ExportKML_button.UseVisualStyleBackColor = false;
@@ -480,16 +481,33 @@ namespace AsterixDecoder
             this.label2.AutoSize = true;
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(420, 573);
+            this.label2.Location = new System.Drawing.Point(434, 573);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(162, 68);
             this.label2.TabIndex = 44;
             this.label2.Text = "CLICK ON\r\nA TARGET";
             // 
+            // SaveFLsInDER_button
+            // 
+            this.SaveFLsInDER_button.BackColor = System.Drawing.Color.Snow;
+            this.SaveFLsInDER_button.FlatAppearance.BorderSize = 3;
+            this.SaveFLsInDER_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SaveFLsInDER_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SaveFLsInDER_button.ForeColor = System.Drawing.Color.Black;
+            this.SaveFLsInDER_button.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.SaveFLsInDER_button.Location = new System.Drawing.Point(186, 681);
+            this.SaveFLsInDER_button.Name = "SaveFLsInDER_button";
+            this.SaveFLsInDER_button.Size = new System.Drawing.Size(139, 69);
+            this.SaveFLsInDER_button.TabIndex = 45;
+            this.SaveFLsInDER_button.Text = "Save FLs inside DER";
+            this.SaveFLsInDER_button.UseVisualStyleBackColor = false;
+            this.SaveFLsInDER_button.Click += new System.EventHandler(this.SaveFLsInDER_button_Click);
+            // 
             // Map
             // 
             this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.ClientSize = new System.Drawing.Size(1100, 760);
+            this.Controls.Add(this.SaveFLsInDER_button);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.SeeTraces_checkBox);
             this.Controls.Add(this.Seconds_comboBox);
@@ -548,6 +566,7 @@ namespace AsterixDecoder
         private ComboBox Seconds_comboBox;
         private CheckBox SeeTraces_checkBox;
         private Label label2;
+        private Button SaveFLsInDER_button;
     }
 }
 

@@ -26,6 +26,21 @@ namespace AsterixDecoder
         private List<TargetData> targetData_list;
         private int list_index = 0;
 
+        // Refresh period (in seconds)
+        private int refreshPeriod = 1;
+
+        // Initial Position for the Map
+        private readonly PointLatLng LEBL_position = new PointLatLng(41.29839, 2.08331);
+
+        // Current time
+        private string currentTime = "08:00:00";
+
+        // GeoUtils class
+        private GeoUtils myGeoUtils = new GeoUtils();
+
+        // Timer started indicator
+        private bool timerstarted = false;
+
         // One Overlay for each type
         private GMapOverlay SMR_overlay = new GMapOverlay("SMR");
         private GMapOverlay MLAT_overlay = new GMapOverlay("MLAT");
@@ -47,20 +62,16 @@ namespace AsterixDecoder
         private List<GMapRoute> ADSB_complete_routes = new List<GMapRoute>();
 
         // Radar WGS84 Coordinates of SMR and MLAT
-        private CoordinatesWGS84 SMR_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29561833), Functions.Deg2Rad(2.09511417));
-        private CoordinatesWGS84 MLAT_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29706278), Functions.Deg2Rad(2.07844722));
+        private readonly CoordinatesWGS84 SMR_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29561833), Functions.Deg2Rad(2.09511417));
+        private readonly CoordinatesWGS84 MLAT_radar_WGS84Coordinates = new CoordinatesWGS84(Functions.Deg2Rad(41.29706278), Functions.Deg2Rad(2.07844722));
 
-        // Initial Position for the Map
-        private PointLatLng LEBL_position = new PointLatLng(41.29839, 2.08331);
-
-        // Current time
-        private string currentTime= "08:00:00";
-
-        // GeoUtils class
-        private GeoUtils myGeoUtils = new GeoUtils();
-
-        // Timer started indicator
-        private bool timerstarted = false;
+        // Deteccion zone of FL (DER: Departure End of Runway)
+        private readonly PointLatLng DER_startRight_WGS84Coordinates = new PointLatLng(41.282975, 2.075364);
+        private readonly PointLatLng DER_startLeft_WGS84Coordinates = new PointLatLng(41.282447, 2.075648);
+        private readonly PointLatLng DER_endRight_WGS84Coordinates = new PointLatLng(41.282290, 2.073250);
+        private readonly PointLatLng DER_endLeft_WGS84Coordinates = new PointLatLng(41.281548, 2.073695);
+        private List<List<double>> FLs = new List<List<double>>();
+        private List<string> targetIDs = new List<string>();
 
 
         // CONSTRUCTOR
@@ -72,7 +83,9 @@ namespace AsterixDecoder
 
 
         // METHODS
-        // Load GMap
+
+        // ------------------------------------------------------------
+        // Load Map form
         private void Map_Load(object sender, EventArgs e)
         {
             GMap_control.Show();
@@ -107,9 +120,15 @@ namespace AsterixDecoder
 
             // We set the Hour label
             Time_label.Text = this.currentTime;
-        }
 
-        // Play button
+            // We set the timer interval
+            timer1.Interval = 1000;
+        }
+        // Load Map form
+        // ------------------------------------------------------------
+
+        // ------------------------------------------------------------
+        // Play & Stop buttons + timer1 methods
         private void Play_button_Click(object sender, EventArgs e) //START 
         {
             Stop_button.Show();
@@ -129,224 +148,14 @@ namespace AsterixDecoder
             timer1.Stop();
         }
 
-        // Export to .KML button
-        private void ExportKML_button_Click(object sender, EventArgs e)
-        {
-            Loading_ButtonState(ExportKML_button);
-
-            try
-            {
-
-                ExportKML();
-
-                
-            }
-            catch
-            {
-                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            FinishedLoading_ButtonState(ExportKML_button, "EXPORT TO .KML");
-        }
-
         // timer1.Tick: Method that is executed in every timer1.Interval
         private void timer1_Tick(object sender, EventArgs e)
         {
-            System.TimeSpan time = System.TimeSpan.FromSeconds(System.TimeSpan.Parse(this.currentTime).TotalSeconds + 1);
+            System.TimeSpan time = System.TimeSpan.FromSeconds(System.TimeSpan.Parse(this.currentTime).TotalSeconds + this.refreshPeriod);
             this.currentTime = time.ToString(@"hh\:mm\:ss");
             Time_label.Text = this.currentTime;
             CheckTargets();
         }
-
-        // Method that is executed when a marker from the GMap_control is clicked
-        private void GMap_control_OnMarkerClick(GMap.NET.WindowsForms.GMapMarker item, MouseEventArgs e)
-        {
-            try
-            {
-                Set_TargetData_DGV(item);
-            }
-            catch
-            {
-                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-
-        // TIME SCALE
-        private void TimeScaleForward_button_Click(object sender, EventArgs e)
-        {
-            if (TimeScaleIndicator_label.Text == "x1")
-            {
-                TimeScaleIndicator_label.Text = "x1.25";
-                timer1.Interval = Convert.ToInt32((1000) / (1.25));
-            }
-            else if (TimeScaleIndicator_label.Text == "x0.25")
-            {
-                TimeScaleIndicator_label.Text = "x0.5";
-                timer1.Interval = (1000) * 2;
-            }
-            else if (TimeScaleIndicator_label.Text == "x0.5")
-            {
-                TimeScaleIndicator_label.Text = "x0.75";
-                timer1.Interval = Convert.ToInt32(1000 / 0.75);
-            }
-            else if (TimeScaleIndicator_label.Text == "x0.75")
-            {
-                TimeScaleIndicator_label.Text = "x1";
-                timer1.Interval = 1000;
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.25")
-            {
-                TimeScaleIndicator_label.Text = "x1.5";
-                timer1.Interval = Convert.ToInt32(1000 / 1.5);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.5")
-            {
-                TimeScaleIndicator_label.Text = "x1.75";
-                timer1.Interval = Convert.ToInt32(1000 / 1.75);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.75")
-            {
-                TimeScaleIndicator_label.Text = "x2";
-                timer1.Interval = 1000 / 2;
-            }
-            else
-            {
-                MessageBox.Show("You can not move forward");
-            }
-        }
-
-        private void TimeScaleBackward_button_Click(object sender, EventArgs e)
-        {
-
-            if (TimeScaleIndicator_label.Text == "x1")
-            {
-                TimeScaleIndicator_label.Text = "x0.75";
-                timer1.Interval = Convert.ToInt32((1000) / 0.75);
-            }
-            else if (TimeScaleIndicator_label.Text == "x0.75")
-            {
-                TimeScaleIndicator_label.Text = "x0.5";
-                timer1.Interval = Convert.ToInt32((1000) / 0.5);
-            }
-            else if (TimeScaleIndicator_label.Text == "x0.5")
-            {
-                TimeScaleIndicator_label.Text = "x0.25";
-                timer1.Interval = Convert.ToInt32(1000 / 0.25);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.5")
-            {
-                TimeScaleIndicator_label.Text = "x1.25";
-                timer1.Interval = Convert.ToInt32(1000 / 1.25);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.75")
-            {
-                TimeScaleIndicator_label.Text = "x1.5";
-                timer1.Interval = Convert.ToInt32(1000 / 1.5);
-            }
-            else if (TimeScaleIndicator_label.Text == "x1.25")
-            {
-                TimeScaleIndicator_label.Text = "x1";
-                timer1.Interval = 1000;
-            }
-            else if (TimeScaleIndicator_label.Text == "x2")
-            {
-                TimeScaleIndicator_label.Text = "x1.75";
-                timer1.Interval = Convert.ToInt32(1000 / 1.75);
-            }
-            else
-            {
-                MessageBox.Show("You can not move backward");
-            }
-
-        }
-
-        // CHECK BOXES
-        private void SMR_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            this.SMR_overlay.IsVisibile = SMR_checkBox.Checked;
-            SeeTraces_checkBox_CheckedChanged(sender, e);
-        }
-
-        private void MLAT_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            this.MLAT_overlay.IsVisibile = MLAT_checkBox.Checked;
-            SeeTraces_checkBox_CheckedChanged(sender, e);
-        }
-
-        private void ADSB_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            this.ADSB_overlay.IsVisibile = ADSB_checkBox.Checked;
-            SeeTraces_checkBox_CheckedChanged(sender, e);
-        }
-
-        private void SeeTraces_checkBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (SeeTraces_checkBox.Checked is true)
-            {
-                this.SMR_traces_overlay.IsVisibile = SMR_checkBox.Checked;
-                this.MLAT_traces_overlay.IsVisibile = MLAT_checkBox.Checked;
-                this.ADSB_traces_overlay.IsVisibile = ADSB_checkBox.Checked;
-            }
-            else
-            {
-                this.SMR_traces_overlay.IsVisibile = false;
-                this.MLAT_traces_overlay.IsVisibile = false;
-                this.ADSB_traces_overlay.IsVisibile = false;
-            }
-        }
-
-        // SET HOUR
-        private void Set_button_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (Hour_comboBox.SelectedIndex != -1)
-                {
-                    ClearAllLists();
-
-                    if (Minuts_comboBox.SelectedIndex == -1)
-                        Minuts_comboBox.SelectedItem = "00";
-
-                    if (Seconds_comboBox.SelectedIndex == -1)
-                        Seconds_comboBox.SelectedItem = "00";
-
-                    this.currentTime = Hour_comboBox.SelectedItem.ToString() + ":" + Minuts_comboBox.SelectedItem.ToString() + ":" + Seconds_comboBox.SelectedItem.ToString();
-                    Time_label.Text = this.currentTime;
-                    
-                    this.list_index = this.targetData_list.Count; // Just in case the following loop does not find the index value (because the Time Set is when the file with messages has already finished)
-                    for (int index = 0; index < this.targetData_list.Count; index++)
-                    {
-                        if ((double)System.TimeSpan.Parse(targetData_list[index].Time).TotalSeconds >= (double)System.TimeSpan.Parse(this.currentTime).TotalSeconds)
-                        {
-                            this.list_index = index;
-                            break;
-                        }
-                    }
-                    
-                }
-                else
-                {
-                    MessageBox.Show("Select at least the start Hour!");
-                }
-            }
-            catch
-            {
-                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-
-        // ZOOM IN LEBL
-        private void ZoomInLEBL_button_Click(object sender, EventArgs e)
-        {
-            GMap_control.Position = new PointLatLng(41.403046, 2.162958);
-            GMap_control.Position = LEBL_position;
-            GMap_control.MinZoom = 8;
-            GMap_control.MaxZoom = 22;
-            GMap_control.Zoom = 13;
-            GMap_control.AutoScroll = true;
-        }
-
-        // -----------------------------------------------------------------------------------------------------------------------------
 
         private void CheckTargets()
         {
@@ -356,7 +165,7 @@ namespace AsterixDecoder
             ClearCurrentLists();
             ClearTracesLists();
 
-            for (; this.list_index<this.targetData_list.Count; this.list_index++)
+            for (; this.list_index < this.targetData_list.Count; this.list_index++)
             {
                 if ((double)System.TimeSpan.Parse(targetData_list[this.list_index].Time).TotalSeconds <= (double)System.TimeSpan.Parse(this.currentTime).TotalSeconds)
                 {
@@ -365,16 +174,17 @@ namespace AsterixDecoder
                 else
                 {
                     break;
-                } 
+                }
             }
 
-            for (int i=0; i<this.SMR_overlay.Markers.Count;i++)
+            // Add routes of the current targets to the corresponding traces_overlay
+            for (int i = 0; i < this.SMR_overlay.Markers.Count; i++)
             {
                 int routesList_index = this.SMR_traces_routes.FindIndex(x => x.Name == this.SMR_overlay.Markers[i].ToolTipText);
                 this.SMR_traces_overlay.Routes.Add(this.SMR_traces_routes[routesList_index]);
                 //this.GMap_control.UpdateRouteLocalPosition(this.SMR_traces_routes[routesList_index]);
             }
-            
+
             for (int i = 0; i < this.MLAT_overlay.Markers.Count; i++)
             {
                 int routesList_index = this.MLAT_traces_routes.FindIndex(x => x.Name == this.MLAT_overlay.Markers[i].ToolTipText);
@@ -472,7 +282,7 @@ namespace AsterixDecoder
         {
 
             int routesList_index = partialRoutes_list.FindIndex(x => x.Name == marker.ToolTipText);
-            
+
 
             if (routesList_index != -1)
             {
@@ -493,13 +303,109 @@ namespace AsterixDecoder
 
                 partialRoutes_list.Add(route);
             }
-            
-            // Add marker
-            overlay.Markers.Add(marker);
+
+            // Add the marker to the overlay (or replace the old marker for the most recent one in case of duplicates)
+            int overlay_index = overlay.Markers.ToList().FindIndex(x => x.ToolTipText == marker.ToolTipText);
+            if (overlay_index != -1)
+            {
+                // Replace marker for the most recent one
+                overlay.Markers[overlay_index] = marker;
+            }
+            else
+            {
+                // Add marker
+                overlay.Markers.Add(marker);
+            }            
+        }
+        // Play & Stop buttons + timer1 methods
+        // ------------------------------------------------------------
+
+        // ------------------------------------------------------------
+        // Save FLs inside the DER
+        private void SaveFLsInDER_button_Click(object sender, EventArgs e)
+        {
+            Loading_ButtonState(SaveFLsInDER_button);
+
+            try
+            {
+                SaveFLsInsideDER();
+            }
+            catch
+            {
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+            FinishedLoading_ButtonState(SaveFLsInDER_button, "Save FLs inside DER");
         }
 
-        // ------------------------------
-        // EXPORT TO KML
+        private void SaveFLsInsideDER()
+        {
+            foreach (TargetData targetData in this.targetData_list)
+            {
+                // Note down the FLs inside the DER
+                if (targetData.Position[1] >= this.DER_endRight_WGS84Coordinates.Lng && targetData.Position[1] <= this.DER_startLeft_WGS84Coordinates.Lng)
+                {
+                    if (targetData.Position[0] >= this.DER_endLeft_WGS84Coordinates.Lat && targetData.Position[0] <= this.DER_startRight_WGS84Coordinates.Lat)
+                    {
+                        int FLs_index = this.targetIDs.FindIndex(x => x == targetData.ID[0]);
+                        if (FLs_index != -1)
+                        {
+                            this.FLs[FLs_index].Add(targetData.FlightLevel);
+                        }
+                        else
+                        {
+                            this.targetIDs.Add(targetData.ID[0]);
+                            List<double> FL = new List<double>() { targetData.FlightLevel };
+                            this.FLs.Add(FL);
+                        }
+                    }
+                }
+            }
+
+            StringBuilder txt_file = new StringBuilder();
+            SaveFileDialog saveFile = new SaveFileDialog() { Filter = "TXT|*.txt", FileName = "FLs" };
+
+            foreach (List<double> fl_list in this.FLs)
+            {
+                string str = "";
+                foreach (double fl in fl_list)
+                {
+                    str = str + fl.ToString() + " - ";
+                }
+                string finalString = str.Remove(str.Length - 3, 2); // Just to remove the last " - "
+                txt_file.AppendLine(finalString);
+            }
+
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(saveFile.FileName, txt_file.ToString());
+            }
+            else
+            {
+                MessageBox.Show("Error when saving .txt file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+        // Save FLs inside the DER
+        // ------------------------------------------------------------
+
+        // ------------------------------------------------------------
+        // Export to .KML
+        private void ExportKML_button_Click(object sender, EventArgs e)
+        {
+            Loading_ButtonState(ExportKML_button);
+
+            try
+            {
+                ExportKML();
+            }
+            catch
+            {
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+            FinishedLoading_ButtonState(ExportKML_button, "EXPORT TO .KML");
+        }
+
         private void ExportKML()
         {
             FulfillCompleteRoutesLists();
@@ -667,8 +573,22 @@ namespace AsterixDecoder
                 completeRoutes_list.Add(newRoute);
             }
         }
-        // EXPORT TO KML (end)
-        // ------------------------------
+        // Export to .KML
+        // ------------------------------------------------------------
+
+        // ------------------------------------------------------------
+        // Show Target Data in a table when a marker is clicked
+        private void GMap_control_OnMarkerClick(GMap.NET.WindowsForms.GMapMarker item, MouseEventArgs e)
+        {
+            try
+            {
+                Set_TargetData_DGV(item);
+            }
+            catch
+            {
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
 
         private void Set_TargetData_DGV(GMapMarker target)
         {
@@ -719,19 +639,227 @@ namespace AsterixDecoder
             }
 
             string mode3a = this.targetData_list[index].Mode3ACode;
-            if (mode3a != null )
+            if (mode3a != null)
                 TargetData_DGV.Rows[6].Cells[1].Value = mode3a;
             else
                 TargetData_DGV.Rows[6].Cells[1].Value = "--";
 
 
             double FL = this.targetData_list[index].FlightLevel;
-            if (FL != 0)  
+            if (FL != 0)
                 TargetData_DGV.Rows[7].Cells[1].Value = FL;
             else
                 TargetData_DGV.Rows[7].Cells[1].Value = "--";
         }
- 
+        // Show Target Data in a table when a marker is clicked
+        // ------------------------------------------------------------
+
+
+        // ------------------------------------------------------------------------------------
+        // Time Scale buttons
+        private void TimeScaleForward_button_Click(object sender, EventArgs e)
+        {
+            if (TimeScaleIndicator_label.Text == "x1")
+            {
+                TimeScaleIndicator_label.Text = "x1.25";
+                timer1.Interval = Convert.ToInt32(1000/1.25);
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.25")
+            {
+                TimeScaleIndicator_label.Text = "x0.5";
+                timer1.Interval = Convert.ToInt32(1000/0.5);
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.5")
+            {
+                TimeScaleIndicator_label.Text = "x0.75";
+                timer1.Interval = Convert.ToInt32(1000/0.75);
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.75")
+            {
+                TimeScaleIndicator_label.Text = "x1";
+                timer1.Interval = 1000;
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.25")
+            {
+                TimeScaleIndicator_label.Text = "x1.5";
+                timer1.Interval = Convert.ToInt32(1000 / 1.5);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.5")
+            {
+                TimeScaleIndicator_label.Text = "x1.75";
+                timer1.Interval = Convert.ToInt32(1000 / 1.75);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.75")
+            {
+                TimeScaleIndicator_label.Text = "x2";
+                timer1.Interval = Convert.ToInt32(1000 / 2);
+            }
+            else if (TimeScaleIndicator_label.Text == "x2")
+            {
+                TimeScaleIndicator_label.Text = "x5";
+                timer1.Interval = Convert.ToInt32(1000 / 5);
+            }
+            else if (TimeScaleIndicator_label.Text == "x5")
+            {
+                TimeScaleIndicator_label.Text = "x10";
+                timer1.Interval = Convert.ToInt32(1000 / 10);
+            }
+            else
+            {
+                MessageBox.Show("You can not move forward");
+            }
+        }
+
+        private void TimeScaleBackward_button_Click(object sender, EventArgs e)
+        {
+
+            if (TimeScaleIndicator_label.Text == "x1")
+            {
+                TimeScaleIndicator_label.Text = "x0.75";
+                timer1.Interval = Convert.ToInt32(1000 / 0.75);
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.75")
+            {
+                TimeScaleIndicator_label.Text = "x0.5";
+                timer1.Interval = Convert.ToInt32(1000 / 0.5);
+            }
+            else if (TimeScaleIndicator_label.Text == "x0.5")
+            {
+                TimeScaleIndicator_label.Text = "x0.25";
+                timer1.Interval = Convert.ToInt32(1000 / 0.25);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.5")
+            {
+                TimeScaleIndicator_label.Text = "x1.25";
+                timer1.Interval = Convert.ToInt32(1000 / 1.25);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.75")
+            {
+                TimeScaleIndicator_label.Text = "x1.5";
+                timer1.Interval = Convert.ToInt32(1000 / 1.5);
+            }
+            else if (TimeScaleIndicator_label.Text == "x1.25")
+            {
+                TimeScaleIndicator_label.Text = "x1";
+                timer1.Interval = 1000;
+            }
+            else if (TimeScaleIndicator_label.Text == "x2")
+            {
+                TimeScaleIndicator_label.Text = "x1.75";
+                timer1.Interval = Convert.ToInt32(1000 / 1.75);
+            }
+            else if (TimeScaleIndicator_label.Text == "x5")
+            {
+                TimeScaleIndicator_label.Text = "x2";
+                timer1.Interval = Convert.ToInt32(1000 / 2);
+            }
+            else if (TimeScaleIndicator_label.Text == "x10")
+            {
+                TimeScaleIndicator_label.Text = "x5";
+                timer1.Interval = Convert.ToInt32(1000 / 5);
+            }
+            else
+            {
+                MessageBox.Show("You can not move backward");
+            }
+        }
+        // Time Scale buttons
+        // ------------------------------------------------------------------------------------
+
+        // -----------------------------------------------------------------------------------
+        // Check Boxes
+        private void SMR_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SMR_overlay.IsVisibile = SMR_checkBox.Checked;
+            SeeTraces_checkBox_CheckedChanged(sender, e);
+        }
+
+        private void MLAT_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.MLAT_overlay.IsVisibile = MLAT_checkBox.Checked;
+            SeeTraces_checkBox_CheckedChanged(sender, e);
+        }
+
+        private void ADSB_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ADSB_overlay.IsVisibile = ADSB_checkBox.Checked;
+            SeeTraces_checkBox_CheckedChanged(sender, e);
+        }
+
+        private void SeeTraces_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SeeTraces_checkBox.Checked is true)
+            {
+                this.SMR_traces_overlay.IsVisibile = SMR_checkBox.Checked;
+                this.MLAT_traces_overlay.IsVisibile = MLAT_checkBox.Checked;
+                this.ADSB_traces_overlay.IsVisibile = ADSB_checkBox.Checked;
+            }
+            else
+            {
+                this.SMR_traces_overlay.IsVisibile = false;
+                this.MLAT_traces_overlay.IsVisibile = false;
+                this.ADSB_traces_overlay.IsVisibile = false;
+            }
+        }
+        // Check Boxes
+        // -----------------------------------------------------------------------------------
+
+        // ----------------------------------------------------------------------------------
+        // Set Hour
+        private void Set_button_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (Hour_comboBox.SelectedIndex != -1)
+                {
+                    ClearAllLists();
+
+                    if (Minuts_comboBox.SelectedIndex == -1)
+                        Minuts_comboBox.SelectedItem = "00";
+
+                    if (Seconds_comboBox.SelectedIndex == -1)
+                        Seconds_comboBox.SelectedItem = "00";
+
+                    this.currentTime = Hour_comboBox.SelectedItem.ToString() + ":" + Minuts_comboBox.SelectedItem.ToString() + ":" + Seconds_comboBox.SelectedItem.ToString();
+                    Time_label.Text = this.currentTime;
+                    
+                    this.list_index = this.targetData_list.Count; // Just in case the following loop does not find the index value (because the Time Set is when the file with messages has already finished)
+                    for (int index = 0; index < this.targetData_list.Count; index++)
+                    {
+                        if ((double)System.TimeSpan.Parse(targetData_list[index].Time).TotalSeconds >= (double)System.TimeSpan.Parse(this.currentTime).TotalSeconds)
+                        {
+                            this.list_index = index;
+                            break;
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    MessageBox.Show("Select at least the start Hour!");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("An error has occurred.\nPlease try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+        // Set Hour
+        // ----------------------------------------------------------------------------------
+
+        // ---------------------------------------------------------------------------------
+        // Zoom in LEBL
+        private void ZoomInLEBL_button_Click(object sender, EventArgs e)
+        {
+            GMap_control.Position = new PointLatLng(41.403046, 2.162958);
+            GMap_control.Position = LEBL_position;
+            GMap_control.MinZoom = 8;
+            GMap_control.MaxZoom = 22;
+            GMap_control.Zoom = 13;
+            GMap_control.AutoScroll = true;
+        }
+        // Zoom in LEBL
+        // ---------------------------------------------------------------------------------
 
         // ------------------------------------------------------
         // Clear lists methods
@@ -758,6 +886,8 @@ namespace AsterixDecoder
             this.MLAT_traces_routes.Clear();
             this.ADSB_traces_routes.Clear();
         }
+        // Clear lists methods
+        // ------------------------------------------------------
 
         // ------------------------------------------------------
         // Loading Button State functions
@@ -775,6 +905,8 @@ namespace AsterixDecoder
             button.ForeColor = Color.Black;
             button.BackColor = Color.White;
         }
+        // Loading Button State functions
+        // ------------------------------------------------------
 
 
     }
