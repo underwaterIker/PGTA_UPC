@@ -75,7 +75,8 @@ namespace AsterixDecoder
 
             // Row[0] Bold and Frozen
             dataList_DGV.Rows[0].DefaultCellStyle.Font = new Font("Tahoma", 12, FontStyle.Bold);
-            dataList_DGV.Rows[0].Frozen = true;
+            if (dataList_DGV.RowCount < 200000)
+                dataList_DGV.Rows[0].Frozen = true;
             dataList_DGV.Columns[0].DefaultCellStyle.Font = new Font("Tahoma", 8, FontStyle.Bold);
 
             // Headers

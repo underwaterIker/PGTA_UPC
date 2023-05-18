@@ -151,9 +151,6 @@ namespace AsterixDecoder
 
         private void CheckTargets()
         {
-            //if ((double)System.TimeSpan.Parse(this.currentTime).TotalSeconds % 5  == 0)
-            //    ClearLists();
-
             ClearCurrentLists();
             ClearTracesLists();
 
