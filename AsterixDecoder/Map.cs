@@ -344,13 +344,18 @@ namespace AsterixDecoder
                 KML_file.AppendLine("<Placemark>");
                 KML_file.AppendLine("<Style>");
                 KML_file.AppendLine("<LineStyle>");
-                KML_file.AppendLine("<color>DAA520</color>"); // yellow (goldenrod)
+                KML_file.AppendLine("<color>ff00ffff</color>"); // yellow
                 KML_file.AppendLine("<width>3</width>");
                 KML_file.AppendLine("</LineStyle>");
+                //KML_file.AppendLine("<PolyStyle>");
+                //KML_file.AppendLine("<color>DAA520</color>");
+                //KML_file.AppendLine("</PolyStyle>");
                 KML_file.AppendLine("</Style>");
                 KML_file.AppendLine("<name>" + "SMR" + "</name>");
                 KML_file.AppendLine("<description>" + "something" + "</description>");
                 KML_file.AppendLine("<LineString>");
+                //KML_file.AppendLine("<extrude>1</extrude>");
+                //KML_file.AppendLine("<tessellate>1</tessellate>");
                 KML_file.AppendLine("<coordinates>");
 
                 foreach (PointLatLng point in route.Points)
@@ -368,7 +373,7 @@ namespace AsterixDecoder
                 KML_file.AppendLine("<Placemark>");
                 KML_file.AppendLine("<Style>");
                 KML_file.AppendLine("<LineStyle>");
-                KML_file.AppendLine("<color>6B8E23</color>"); // green (olivedrab)
+                KML_file.AppendLine("<color>ff00ff00</color>"); // green
                 KML_file.AppendLine("<width>3</width>");
                 KML_file.AppendLine("</LineStyle>");
                 KML_file.AppendLine("</Style>");
@@ -392,7 +397,7 @@ namespace AsterixDecoder
                 KML_file.AppendLine("<Placemark>");
                 KML_file.AppendLine("<Style>");
                 KML_file.AppendLine("<LineStyle>");
-                KML_file.AppendLine("<color>CD5C5C</color>"); // red (indianred)
+                KML_file.AppendLine("<color>ff0000ff</color>"); // red
                 KML_file.AppendLine("<width>3</width>");
                 KML_file.AppendLine("</LineStyle>");
                 KML_file.AppendLine("</Style>");

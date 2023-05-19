@@ -64,7 +64,7 @@ namespace AsterixDecoder
             // 
             this.GMap_control.Bearing = 0F;
             this.GMap_control.CanDragMap = true;
-            this.GMap_control.EmptyTileColor = System.Drawing.Color.Navy;
+            this.GMap_control.EmptyTileColor = System.Drawing.Color.Orange;
             this.GMap_control.GrayScaleMode = false;
             this.GMap_control.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
             this.GMap_control.LevelsKeepInMemory = 5;
@@ -128,7 +128,7 @@ namespace AsterixDecoder
             this.Time_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Time_label.Location = new System.Drawing.Point(476, 4);
             this.Time_label.Name = "Time_label";
-            this.Time_label.Size = new System.Drawing.Size(88, 24);
+            this.Time_label.Size = new System.Drawing.Size(175, 44);
             this.Time_label.TabIndex = 10;
             this.Time_label.Text = "00:00:00";
             // 
@@ -170,7 +170,7 @@ namespace AsterixDecoder
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(7, 492);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(114, 20);
+            this.label3.Size = new System.Drawing.Size(216, 37);
             this.label3.TabIndex = 21;
             this.label3.Text = "TIME SCALE";
             // 
@@ -181,7 +181,7 @@ namespace AsterixDecoder
             this.TimeScaleIndicator_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TimeScaleIndicator_label.Location = new System.Drawing.Point(63, 583);
             this.TimeScaleIndicator_label.Name = "TimeScaleIndicator_label";
-            this.TimeScaleIndicator_label.Size = new System.Drawing.Size(27, 20);
+            this.TimeScaleIndicator_label.Size = new System.Drawing.Size(50, 37);
             this.TimeScaleIndicator_label.TabIndex = 22;
             this.TimeScaleIndicator_label.Text = "x1";
             // 
@@ -216,7 +216,7 @@ namespace AsterixDecoder
             this.SMR_checkBox.ForeColor = System.Drawing.Color.Yellow;
             this.SMR_checkBox.Location = new System.Drawing.Point(738, 627);
             this.SMR_checkBox.Name = "SMR_checkBox";
-            this.SMR_checkBox.Size = new System.Drawing.Size(73, 28);
+            this.SMR_checkBox.Size = new System.Drawing.Size(138, 48);
             this.SMR_checkBox.TabIndex = 31;
             this.SMR_checkBox.Text = "SMR";
             this.SMR_checkBox.UseVisualStyleBackColor = true;
@@ -229,7 +229,7 @@ namespace AsterixDecoder
             this.ADSB_checkBox.ForeColor = System.Drawing.Color.Red;
             this.ADSB_checkBox.Location = new System.Drawing.Point(738, 689);
             this.ADSB_checkBox.Name = "ADSB_checkBox";
-            this.ADSB_checkBox.Size = new System.Drawing.Size(83, 28);
+            this.ADSB_checkBox.Size = new System.Drawing.Size(157, 48);
             this.ADSB_checkBox.TabIndex = 32;
             this.ADSB_checkBox.Text = "ADSB";
             this.ADSB_checkBox.UseVisualStyleBackColor = true;
@@ -242,7 +242,7 @@ namespace AsterixDecoder
             this.MLAT_checkBox.ForeColor = System.Drawing.Color.Green;
             this.MLAT_checkBox.Location = new System.Drawing.Point(738, 657);
             this.MLAT_checkBox.Name = "MLAT_checkBox";
-            this.MLAT_checkBox.Size = new System.Drawing.Size(84, 28);
+            this.MLAT_checkBox.Size = new System.Drawing.Size(156, 48);
             this.MLAT_checkBox.TabIndex = 33;
             this.MLAT_checkBox.Text = "MLAT";
             this.MLAT_checkBox.UseVisualStyleBackColor = true;
@@ -256,7 +256,7 @@ namespace AsterixDecoder
             this.label1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label1.Location = new System.Drawing.Point(711, 513);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(273, 20);
+            this.label1.Size = new System.Drawing.Size(519, 37);
             this.label1.TabIndex = 35;
             this.label1.Text = "SIMULATION STARTING HOUR:";
             // 
@@ -322,7 +322,7 @@ namespace AsterixDecoder
             "23"});
             this.Hour_comboBox.Location = new System.Drawing.Point(715, 551);
             this.Hour_comboBox.Name = "Hour_comboBox";
-            this.Hour_comboBox.Size = new System.Drawing.Size(70, 28);
+            this.Hour_comboBox.Size = new System.Drawing.Size(70, 45);
             this.Hour_comboBox.TabIndex = 38;
             this.Hour_comboBox.Text = "Hour";
             // 
@@ -393,7 +393,7 @@ namespace AsterixDecoder
             "59"});
             this.Minuts_comboBox.Location = new System.Drawing.Point(793, 551);
             this.Minuts_comboBox.Name = "Minuts_comboBox";
-            this.Minuts_comboBox.Size = new System.Drawing.Size(70, 28);
+            this.Minuts_comboBox.Size = new System.Drawing.Size(70, 45);
             this.Minuts_comboBox.TabIndex = 41;
             this.Minuts_comboBox.Text = "Min";
             // 
@@ -464,7 +464,7 @@ namespace AsterixDecoder
             "59"});
             this.Seconds_comboBox.Location = new System.Drawing.Point(870, 551);
             this.Seconds_comboBox.Name = "Seconds_comboBox";
-            this.Seconds_comboBox.Size = new System.Drawing.Size(70, 28);
+            this.Seconds_comboBox.Size = new System.Drawing.Size(70, 45);
             this.Seconds_comboBox.TabIndex = 42;
             this.Seconds_comboBox.Text = "Sec";
             // 
@@ -474,7 +474,7 @@ namespace AsterixDecoder
             this.SeeTraces_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SeeTraces_checkBox.Location = new System.Drawing.Point(865, 657);
             this.SeeTraces_checkBox.Name = "SeeTraces_checkBox";
-            this.SeeTraces_checkBox.Size = new System.Drawing.Size(158, 28);
+            this.SeeTraces_checkBox.Size = new System.Drawing.Size(298, 48);
             this.SeeTraces_checkBox.TabIndex = 43;
             this.SeeTraces_checkBox.Text = "SEE TRACES";
             this.SeeTraces_checkBox.UseVisualStyleBackColor = true;
@@ -487,7 +487,7 @@ namespace AsterixDecoder
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(434, 573);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(162, 68);
+            this.label2.Size = new System.Drawing.Size(320, 136);
             this.label2.TabIndex = 44;
             this.label2.Text = "CLICK ON\r\nA TARGET";
             // 
