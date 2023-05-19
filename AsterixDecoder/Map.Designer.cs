@@ -68,7 +68,7 @@ namespace AsterixDecoder
             this.GMap_control.GrayScaleMode = false;
             this.GMap_control.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
             this.GMap_control.LevelsKeepInMemory = 5;
-            this.GMap_control.Location = new System.Drawing.Point(-1, 29);
+            this.GMap_control.Location = new System.Drawing.Point(0, 29);
             this.GMap_control.MarkersEnabled = true;
             this.GMap_control.MaxZoom = 2;
             this.GMap_control.MinZoom = 2;
@@ -82,7 +82,7 @@ namespace AsterixDecoder
             this.GMap_control.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.GMap_control.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.GMap_control.ShowTileGridLines = false;
-            this.GMap_control.Size = new System.Drawing.Size(1101, 450);
+            this.GMap_control.Size = new System.Drawing.Size(1100, 450);
             this.GMap_control.TabIndex = 6;
             this.GMap_control.Zoom = 0D;
             this.GMap_control.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.GMap_control_OnMarkerClick);

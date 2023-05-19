@@ -83,7 +83,8 @@ namespace AsterixDecoder
             GMap_control.Show();
             GMap_control.MarkersEnabled = true;
             GMap_control.PolygonsEnabled = true;
-            GMap_control.CanDragMap = false;
+            GMap_control.DragButton = MouseButtons.Left;
+            GMap_control.CanDragMap = true;
             GMap_control.MapProvider = GMapProviders.GoogleMap;
             
             GMap_control.Position = LEBL_position;
