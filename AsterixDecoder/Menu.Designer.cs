@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Menu));
             this.LoadFile_button = new System.Windows.Forms.Button();
             this.ViewData_button = new System.Windows.Forms.Button();
             this.ViewMap_button = new System.Windows.Forms.Button();
@@ -42,7 +43,7 @@
             this.LoadFile_button.BackColor = System.Drawing.Color.CornflowerBlue;
             this.LoadFile_button.FlatAppearance.BorderSize = 3;
             this.LoadFile_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.LoadFile_button.Font = new System.Drawing.Font("Unispace", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LoadFile_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LoadFile_button.ForeColor = System.Drawing.Color.Black;
             this.LoadFile_button.Location = new System.Drawing.Point(24, 38);
             this.LoadFile_button.Name = "LoadFile_button";
@@ -57,7 +58,7 @@
             this.ViewData_button.BackColor = System.Drawing.Color.CornflowerBlue;
             this.ViewData_button.FlatAppearance.BorderSize = 3;
             this.ViewData_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ViewData_button.Font = new System.Drawing.Font("Unispace", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ViewData_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ViewData_button.ForeColor = System.Drawing.Color.Black;
             this.ViewData_button.Location = new System.Drawing.Point(24, 156);
             this.ViewData_button.Name = "ViewData_button";
@@ -72,7 +73,7 @@
             this.ViewMap_button.BackColor = System.Drawing.Color.CornflowerBlue;
             this.ViewMap_button.FlatAppearance.BorderSize = 3;
             this.ViewMap_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ViewMap_button.Font = new System.Drawing.Font("Unispace", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ViewMap_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ViewMap_button.ForeColor = System.Drawing.Color.Black;
             this.ViewMap_button.Location = new System.Drawing.Point(24, 272);
             this.ViewMap_button.Name = "ViewMap_button";
@@ -87,7 +88,7 @@
             this.AboutUs_button.BackColor = System.Drawing.Color.CornflowerBlue;
             this.AboutUs_button.FlatAppearance.BorderSize = 3;
             this.AboutUs_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AboutUs_button.Font = new System.Drawing.Font("Unispace", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AboutUs_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.AboutUs_button.ForeColor = System.Drawing.Color.Black;
             this.AboutUs_button.Location = new System.Drawing.Point(24, 502);
             this.AboutUs_button.Name = "AboutUs_button";
@@ -102,7 +103,7 @@
             this.Exit_button.BackColor = System.Drawing.Color.IndianRed;
             this.Exit_button.FlatAppearance.BorderSize = 3;
             this.Exit_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Exit_button.Font = new System.Drawing.Font("Unispace", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Exit_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Exit_button.ForeColor = System.Drawing.Color.Black;
             this.Exit_button.Location = new System.Drawing.Point(24, 620);
             this.Exit_button.Name = "Exit_button";
@@ -126,7 +127,7 @@
             this.FLsInsideDER_button.BackColor = System.Drawing.Color.CornflowerBlue;
             this.FLsInsideDER_button.FlatAppearance.BorderSize = 3;
             this.FLsInsideDER_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FLsInsideDER_button.Font = new System.Drawing.Font("Unispace", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FLsInsideDER_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FLsInsideDER_button.ForeColor = System.Drawing.Color.Black;
             this.FLsInsideDER_button.Location = new System.Drawing.Point(24, 387);
             this.FLsInsideDER_button.Name = "FLsInsideDER_button";
@@ -150,6 +151,7 @@
             this.Controls.Add(this.ViewData_button);
             this.Controls.Add(this.LoadFile_button);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Menu";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ASTERIX DECODER";
